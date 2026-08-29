@@ -56,4 +56,16 @@ export async function fetchCommunityStats() {
   }
 }
 
-export default { fetchCommunityStats };
+export default { fetchCommunityStats, startCommunity };
+
+/**
+ * Begin the Community connection flow.
+ * Invokes Hermes `integration.community.start` (placeholder success envelope).
+ */
+export async function startCommunity() {
+  const res = await callSupabaseEdge('integration.community.start', { provider: 'community' });
+  return {
+    success: res?.success !== false,
+    message: res?.message || 'Community connection started',
+  };
+}

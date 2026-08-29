@@ -1,11 +1,12 @@
 import React from "react";
-import { TrendingUp, Users } from "lucide-react"; // cleaned imports
+import { TrendingUp, Users, Loader2, X } from "lucide-react"; // cleaned imports
 import {
   brutalBorder,
   brutalEyebrow,
   brutalHeading,
   theme,
 } from "../theme";
+import useIntegrationConnect from "../hooks/useIntegrationConnect";
 
 const cardStyle = {
   border: brutalBorder, // FIXED: no spreading a string
@@ -13,7 +14,15 @@ const cardStyle = {
   padding: "0.9rem",
 };
 
-const IntegrationCard = ({ title, description, status, cta, onConnect, children }) => (
+const IntegrationCard = ({
+  title,
+  description,
+  status,
+  cta,
+  connecting,
+  onConnect,
+  children,
+}) => (
   <div style={{ ...cardStyle, display: "grid", gap: "0.6rem" }}>
     <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
       <div>
@@ -34,16 +43,29 @@ const IntegrationCard = ({ title, description, status, cta, onConnect, children 
     <button
       type="button"
       onClick={onConnect}
+      disabled={connecting}
       style={{
         border: brutalBorder, // FIXED: no spread
         backgroundColor: status === "connected" ? theme.colors.card : theme.colors.orange,
         color: status === "connected" ? theme.colors.textPrimary : "#000000",
         padding: "0.55rem 0.7rem",
         fontWeight: 800,
-        cursor: "pointer",
+        cursor: connecting ? "progress" : "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "0.5rem",
+        opacity: connecting ? 0.75 : 1,
       }}
     >
-      {cta}
+      {connecting ? (
+        <>
+          <Loader2 size={15} className="spin" />
+          Connecting…
+        </>
+      ) : (
+        cta
+      )}
     </button>
   </div>
 );
@@ -57,9 +79,36 @@ function GrowthTab({ integrations }) {
   const social = integrations?.social || {};
   const email = integrations?.email || {};
   const community = integrations?.community || {};
+  const { connecting, notice, connect, clearNotice } = useIntegrationConnect();
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
+      {notice && (
+        <div
+          style={{
+            border: brutalBorder,
+            backgroundColor: notice.type === "success" ? theme.colors.success : theme.colors.darkRed,
+            color: notice.type === "success" ? "#000000" : "#ffffff",
+            padding: "0.6rem 0.8rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            fontSize: "0.9rem",
+            fontWeight: 700,
+          }}
+        >
+          <span>{notice.message}</span>
+          <button
+            type="button"
+            onClick={clearNotice}
+            aria-label="Dismiss"
+            style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
       <div
         style={{
           ...cardStyle,
@@ -96,6 +145,8 @@ function GrowthTab({ integrations }) {
             description={ga.propertyId || "Traffic, goals, and revenue."}
             status={ga.connected ? "connected" : "disconnected"}
             cta={ga.connected ? "Open Analytics" : "Connect Google Analytics"}
+            connecting={connecting === "googleAnalytics"}
+            onConnect={() => connect("googleAnalytics")}
           >
             {ga.connected ? (
               <div style={{ display: "grid", gap: "0.35rem", fontSize: "0.85rem" }}>
@@ -112,6 +163,8 @@ function GrowthTab({ integrations }) {
             description="Followers, engagement, and impressions."
             status={social.connected ? "connected" : "disconnected"}
             cta={social.connected ? "Manage Social" : "Connect Social"}
+            connecting={connecting === "social"}
+            onConnect={() => connect("social")}
           >
             {social.connected ? (
               <div style={{ display: "grid", gap: "0.35rem", fontSize: "0.85rem" }}>
@@ -128,6 +181,8 @@ function GrowthTab({ integrations }) {
             description={email.provider ? `${email.provider} list` : "Subscriber email performance."}
             status={email.connected ? "connected" : "disconnected"}
             cta={email.connected ? "Open Email Provider" : "Connect Email"}
+            connecting={connecting === "email"}
+            onConnect={() => connect("email")}
           >
             {email.connected ? (
               <div style={{ display: "grid", gap: "0.35rem", fontSize: "0.85rem" }}>
@@ -145,6 +200,8 @@ function GrowthTab({ integrations }) {
             description={community.platform ? community.platform : "Membership activity and growth."}
             status={community.connected ? "connected" : "disconnected"}
             cta={community.connected ? "Open Community" : "Connect Community"}
+            connecting={connecting === "community"}
+            onConnect={() => connect("community")}
           >
             {community.connected ? (
               <div style={{ display: "grid", gap: "0.35rem", fontSize: "0.85rem" }}>

@@ -618,6 +618,12 @@ select:focus {
   to { transform: rotate(360deg); }
 }
 
+/* Spinner for inline-loading actions (Connect buttons, etc.) */
+.spin {
+  animation: ddSpin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
 /* Enhanced card hover */
 .dd-card,
 .dd-interactive-card {

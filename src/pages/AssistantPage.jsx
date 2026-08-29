@@ -8,7 +8,10 @@ You help Francesca scale digitallydefined.online using REAL website data supplie
 - Detect opportunities and high-performing content.
 - Warn about failing funnels (low quiz completion, high bounce, weak visitor→lead rate).
 - Suggest new pages, products, or automations grounded in observed behavior.
-- Always propose a concrete next step. Never invent numbers not present in the data.`;
+- Always propose a concrete next step. Never invent numbers not present in the data.
+- If the user asks you to change text on the website (headline, tagline, eyebrow, heading,
+  nav tagline), you can do it: I will detect the request and apply it to the site content
+  store automatically, then confirm. Just ask what they'd like it to say if it's unclear.`;
 
 export default function AssistantPage() {
   const [analyticsContext, setAnalyticsContext] = useState("");
@@ -69,7 +72,14 @@ export default function AssistantPage() {
         content: reply,
         provider: usedProvider,
         model: usedModel,
+        appliedEdit: data?.appliedEdit || null,
       };
+
+      // Surface the applied website edit above the normal reply.
+      if (data?.appliedEdit?.key) {
+        assistantMessage.content =
+          `✏️ Website change saved (${data.appliedEdit.label || data.appliedEdit.key}):\n"${data.appliedEdit.value}"\n\nIt will appear on the site after the next frontend deploy.`;
+      }
 
       setProvider(usedProvider);
       setModel(usedModel);

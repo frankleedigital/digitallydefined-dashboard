@@ -15,8 +15,15 @@ export const getSupabaseEdgeUrl = (functionName = 'hermes') => {
 export const getSupabaseEdgeHeaders = (extra = {}) => {
   const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY;
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  if (!apiKey && import.meta.env.DEV) {
-    console.warn('[Hermes] VITE_DASHBOARD_API_KEY is not set. Dashboard API calls will fail.');
+  if (!apiKey) {
+    // Warn in ALL environments (not just dev) so a stale production build that
+    // is missing the key surfaces the real cause instead of a silent 401.
+    console.warn(
+      '[Hermes] VITE_DASHBOARD_API_KEY is not set in this build. Authenticated Hermes ' +
+        'calls (chat, dashboard, intelligence, …) will be rejected with 401. Ensure ' +
+        'VITE_DASHBOARD_API_KEY is set in the Vercel build env and matches the Supabase ' +
+        'DASHBOARD_API_KEY secret.'
+    );
   }
   if (!anonKey && import.meta.env.DEV) {
     console.warn('[Hermes] VITE_SUPABASE_ANON_KEY is not set. Edge Function auth may fail.');
@@ -32,10 +39,14 @@ export const getSupabaseEdgeHeaders = (extra = {}) => {
 };
 
 export async function callSupabaseEdge(action, payload = {}, extraHeaders = {}) {
+  const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY;
   const res = await fetch(getSupabaseEdgeUrl(), {
     method: 'POST',
     headers: getSupabaseEdgeHeaders(extraHeaders),
-    body: JSON.stringify({ action, ...payload }),
+    // Send the key in the body too (as `key`) so auth still works even if a
+    // proxy/CDN strips the x-api-key header. The Hermes edge reads `key` from
+    // the body as a fallback and still validates it against DASHBOARD_API_KEY.
+    body: JSON.stringify({ action, ...(apiKey ? { key: apiKey } : {}), ...payload }),
   });
 
   if (!res.ok) {

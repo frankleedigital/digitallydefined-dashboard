@@ -1,6 +1,6 @@
-export { fetchGoogleAnalytics } from "./google-analytics";
-export { fetchSocialStats } from "./social";
-export { fetchEmailStats } from "./email";
-export { fetchCommunityStats } from "./community";
+export { fetchGoogleAnalytics, startGoogleAnalytics } from "./google-analytics";
+export { fetchSocialStats, startSocial } from "./social";
+export { fetchEmailStats, startEmail } from "./email";
+export { fetchCommunityStats, startCommunity } from "./community";
 export { INTEGRATIONS, default as integrationsConfig } from "./config";
 export { emptyIntegrationPayload, normalizeNumber, normalizePercent, normalizeCurrency } from "./normalizer";

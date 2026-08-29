@@ -56,4 +56,16 @@ export async function fetchEmailStats() {
   }
 }
 
-export default { fetchEmailStats };
+export default { fetchEmailStats, startEmail };
+
+/**
+ * Begin the Email List connection flow.
+ * Invokes Hermes `integration.email.start` (placeholder success envelope).
+ */
+export async function startEmail() {
+  const res = await callSupabaseEdge('integration.email.start', { provider: 'email' });
+  return {
+    success: res?.success !== false,
+    message: res?.message || 'Email List connection started',
+  };
+}

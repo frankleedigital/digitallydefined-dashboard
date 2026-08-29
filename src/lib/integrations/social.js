@@ -74,4 +74,16 @@ export async function fetchSocialStats() {
   }
 }
 
-export default { fetchSocialStats };
+export default { fetchSocialStats, startSocial };
+
+/**
+ * Begin the Social Pages connection flow.
+ * Invokes Hermes `integration.social.start` (placeholder success envelope).
+ */
+export async function startSocial() {
+  const res = await callSupabaseEdge('integration.social.start', { provider: 'social' });
+  return {
+    success: res?.success !== false,
+    message: res?.message || 'Social Pages connection started',
+  };
+}
