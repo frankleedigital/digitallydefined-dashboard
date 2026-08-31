@@ -106,75 +106,6 @@ class PuterWorkspaceClient {
     return await this.puter.kv.delete(`${this.userId}/${key}`);
   }
 
-  // Agent operations
-  async runAgent(agentId, inputData = {}) {
-    const API_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/hermes`;
-    const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY;
-    
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-      },
-      body: JSON.stringify({
-        action: 'puter.run_agent',
-        agentId,
-        inputData,
-        userId: this.userId
-      }),
-    });
-    
-    return await response.json();
-  }
-
-  // Workflow operations
-  async runWorkflow(workflowId, inputData = {}) {
-    const API_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/hermes`;
-    const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY;
-    
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-      },
-      body: JSON.stringify({
-        action: 'puter.run_workflow',
-        workflowId,
-        inputData,
-        userId: this.userId
-      }),
-    });
-    
-    return await response.json();
-  }
-
-  // Pre-built workflows
-  async runWeeklyPlanning() {
-    return await this.runAgent('task_planner', {
-      tasks: [
-        { title: 'Review weekly metrics', priority: 'high' },
-        { title: 'Update content calendar', priority: 'medium' },
-        { title: 'Follow up with leads', priority: 'high' },
-        { title: 'Schedule social posts', priority: 'medium' },
-      ]
-    });
-  }
-
-  async runContentGeneration(topic) {
-    return await this.runAgent('content_writer', {
-      topic,
-      format: 'blog_post',
-      tone: 'professional',
-      tags: ['content', 'digital']
-    });
-  }
-
-  async runWorkspaceOrganization() {
-    return await this.runAgent('digital_organizer', {});
-  }
-
   // Memory operations
   async saveMemory(key, value) {
     return await this.setItem(`memory/${key}`, value);
@@ -313,39 +244,6 @@ export function PuterTaskManager({ workspace }) {
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
-
-export function PuterAgentRunner({ workspace }) {
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const runAgent = async (agentId, inputData = {}) => {
-    setLoading(true);
-    const res = await workspace.runAgent(agentId, inputData);
-    setResult(res);
-    setLoading(false);
-  };
-
-  return (
-    <div className="puter-agent-runner">
-      <h3>Run Agents</h3>
-      <button onClick={() => runAgent('task_planner', {
-        tasks: [{ title: 'Review metrics', priority: 'high' }]
-      })}>
-        Run Task Planner
-      </button>
-      <button onClick={() => runAgent('content_writer', { topic: 'Digital Marketing' })}>
-        Run Content Writer
-      </button>
-      <button onClick={() => runAgent('digital_organizer', {})}>
-        Run Digital Organizer
-      </button>
-      {result && (
-        <pre>{JSON.stringify(result, null, 2)}</pre>
-      )}
-      {loading && <div>Running agent...</div>}
     </div>
   );
 }
