@@ -11,7 +11,65 @@ You help Francesca scale digitallydefined.online using REAL website data supplie
 - Always propose a concrete next step. Never invent numbers not present in the data.
 - If the user asks you to change text on the website (headline, tagline, eyebrow, heading,
   nav tagline), you can do it: I will detect the request and apply it to the site content
-  store automatically, then confirm. Just ask what they'd like it to say if it's unclear.`;
+  store automatically, then confirm. Just ask what they'd like it to say if it's unclear.
+
+OUTPUT FORMAT (strict):
+- Reply in clean, structured plain text only.
+- NO markdown of any kind: no # headings, no **bold**, no *italics*, no _underscores_,
+  no \`inline code\`, no ~~strikethrough~~, no blockquote >, no horizontal rules ---.
+- NO decorative or special characters: no asterisks, no emoji, no symbols, no arrows.
+- No code fences or backticks anywhere.
+- Use short plain paragraphs, and simple numbering (1. 2. 3.) or plain dash lines (-)
+  for steps and lists.
+- Read like a direct business partner helping her grow and scale: clear, confident, actionable.`;
+
+/**
+ * Strip markdown and decorative/special characters so chat replies render as clean
+ * structured plain text (belt-and-suspenders on top of the system-prompt instruction).
+ */
+const cleanPartnerReply = (raw) => {
+  let text = String(raw || "");
+
+  // Remove fenced code blocks then any remaining backticks.
+  text = text.replace(/```[\s\S]*?```/g, (block) =>
+    block.replace(/```/g, "").trim()
+  );
+  text = text.replace(/`([^`]*)`/g, "$1");
+
+  // Remove heading hashes, blockquote chevrons, and horizontal-rule dashes/underscores.
+  text = text.replace(/^#{1,6}\s+/gm, "");
+  text = text.replace(/^>\s?/gm, "");
+  text = text.replace(/^\s*([-*_])\s*\1\s*\1\s*$/gm, "");
+
+  // Remove bold/italic/underline emphasis markers, keeping the inner text.
+  // The inner classes exclude newlines so a stray `*`/`_`/`~` can never swallow
+  // content across paragraph boundaries.
+  text = text.replace(/\*\*([^*\r\n]+)\*\*/g, "$1");
+  text = text.replace(/__([^_\r\n]+)__/g, "$1");
+  text = text.replace(/\*([^*\r\n]+)\*/g, "$1");
+  text = text.replace(/_([^_\r\n]+)_/g, "$1");
+  text = text.replace(/~~([^~\r\n]+)~~/g, "$1");
+
+  // Normalize bullet markers to a plain dash list; drop stray asterisks/tildes.
+  text = text.replace(/^\s*[*+]\s+/gm, "- ");
+  text = text.replace(/[~^]{1,}/g, "");
+
+  // Drop any leftover orphan asterisks.
+  text = text.replace(/\*/g, "");
+
+  // Remove decorative symbols and emoji: dingbats & checkmarks, arrows, misc
+  // symbols, the full emoji range, and dot/bullet glyphs — keep letters, numbers,
+  // and safe punctuation so real page/product titles survive intact.
+  text = text.replace(
+    /[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2600}-\u{27BF}\u{00B7}\u{2022}\u{2023}\u{2043}\u{25A0}-\u{25FF}\u{2B00}-\u{2BFF}]/gu,
+    ""
+  );
+
+  // Collapse runs of blank lines.
+  text = text.replace(/\n{3,}/g, "\n\n");
+
+  return text.trim();
+};
 
 export default function AssistantPage() {
   const [analyticsContext, setAnalyticsContext] = useState("");
@@ -63,7 +121,7 @@ export default function AssistantPage() {
         conversation: updatedMessages.slice(-10),
       });
 
-      const reply = data?.reply || "I’m here — but I didn’t get a response.";
+      const reply = cleanPartnerReply(data?.reply) || "I’m here — but I didn’t get a response.";
       const usedProvider = data?.provider || "Hermes";
       const usedModel = data?.model || null;
 
