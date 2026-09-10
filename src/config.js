@@ -208,8 +208,12 @@ const CONFIG = {
         id: "integrations",
         label: "INTEGRATIONS",
       },
+      {
+        id: "notion",
+        label: "NOTION",
+      },
     ],
-    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "openai/gpt-4o-mini",
+    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-2.5-flash",
     integrationsTitle: "Integrations",
     integrationsCta: "Connect Source",
     integrationsDescription: "Connect your growth sources so the dashboard and assistant can read live data.",

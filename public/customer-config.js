@@ -164,8 +164,8 @@ const CUSTOMER_CONFIG = {
     enableNotion: true
   },
   
-  // AI Assistant model (gpt-4o-mini, gpt-4o, claude-3-haiku, etc.)
-  assistantModel: "openai/gpt-4o-mini",
+  // AI Assistant model (Gemini Flash is the preferred low-cost default)
+  assistantModel: "gemini-2.5-flash",
   
   // ============================================
   // 📝 NOTES

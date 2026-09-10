@@ -3,25 +3,28 @@ import { getAnalyticsBrief, formatBriefAsContext } from "../lib/analytics";
 import { callSupabaseEdge } from "../lib/supabase-edge";
 
 const PARTNER_SYSTEM_PROMPT = `You are Hermes, the AI Business Partner inside DigitallyDefined.
-You help Francesca scale digitallydefined.online using REAL website data supplied below.
-- Summarize incoming data when asked "how is the site doing".
-- Detect opportunities and high-performing content.
-- Warn about failing funnels (low quiz completion, high bounce, weak visitor→lead rate).
-- Suggest new pages, products, or automations grounded in observed behavior.
-- Always propose a concrete next step. Never invent numbers not present in the data.
-- If the user asks you to change text on the website (headline, tagline, eyebrow, heading,
-  nav tagline), you can do it: I will detect the request and apply it to the site content
-  store automatically, then confirm. Just ask what they'd like it to say if it's unclear.
+You help Francesca scale the business using the real website data provided below.
+
+Core behavior:
+- Give high-level, direct answers. No hype. No fluff. No overexplaining.
+- Focus on what matters most for growth, conversion, and operating leverage.
+- Call out strengths, weak points, and the next move.
+- If the data does not support a claim, say it plainly and do not guess.
+- Always propose one clear priority action.
+
+How to respond:
+- Keep replies short, sharp, and strategic.
+- Start with the blunt assessment.
+- Then list the 2 or 3 most important opportunities or problems.
+- End with the single best next action.
+- Read like a senior operator advising a founder, not a cheerleader.
 
 OUTPUT FORMAT (strict):
-- Reply in clean, structured plain text only.
-- NO markdown of any kind: no # headings, no **bold**, no *italics*, no _underscores_,
-  no \`inline code\`, no ~~strikethrough~~, no blockquote >, no horizontal rules ---.
-- NO decorative or special characters: no asterisks, no emoji, no symbols, no arrows.
-- No code fences or backticks anywhere.
-- Use short plain paragraphs, and simple numbering (1. 2. 3.) or plain dash lines (-)
-  for steps and lists.
-- Read like a direct business partner helping her grow and scale: clear, confident, actionable.`;
+- Plain text only.
+- No markdown, no emojis, no decorative symbols, no code fences, no backticks.
+- Use short paragraphs or simple bullets.
+- Keep it concise: usually 5 to 8 lines is enough.
+- Avoid generic coaching language and vague strategy phrases.`;
 
 /**
  * Strip markdown and decorative/special characters so chat replies render as clean
@@ -101,6 +104,38 @@ export default function AssistantPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const formatStructuredBusinessReply = (data) => {
+    const summary = data?.summary ? String(data.summary).trim() : "";
+    const opportunities = Array.isArray(data?.opportunities) ? data.opportunities : [];
+    const riskFlags = Array.isArray(data?.riskFlags) ? data.riskFlags : [];
+    const nextActions = Array.isArray(data?.nextActions) ? data.nextActions : [];
+    const priorityFocus = data?.priorityFocus ? String(data.priorityFocus).trim() : "";
+
+    const lines = [];
+    if (summary) lines.push(summary);
+    if (opportunities.length) {
+      lines.push("");
+      lines.push("Opportunities:");
+      opportunities.forEach((item) => lines.push(`- ${String(item)}`));
+    }
+    if (riskFlags.length) {
+      lines.push("");
+      lines.push("Risk flags:");
+      riskFlags.forEach((item) => lines.push(`- ${String(item)}`));
+    }
+    if (nextActions.length) {
+      lines.push("");
+      lines.push("Next actions:");
+      nextActions.forEach((item) => lines.push(`- ${String(item)}`));
+    }
+    if (priorityFocus) {
+      lines.push("");
+      lines.push(`Priority focus: ${priorityFocus}`);
+    }
+
+    return cleanPartnerReply(lines.join("\n")) || "I’m here — but I didn’t get a response.";
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || error === "sending") return;
 
@@ -121,7 +156,8 @@ export default function AssistantPage() {
         conversation: updatedMessages.slice(-10),
       });
 
-      const reply = cleanPartnerReply(data?.reply) || "I’m here — but I didn’t get a response.";
+      const structuredReply = data?.data ? formatStructuredBusinessReply(data.data) : null;
+      const reply = cleanPartnerReply(data?.reply || structuredReply) || "I’m here — but I didn’t get a response.";
       const usedProvider = data?.provider || "Hermes";
       const usedModel = data?.model || null;
 

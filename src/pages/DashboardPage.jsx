@@ -18,6 +18,7 @@ import {
   X,
   ExternalLink,
   Plug,
+  FileText,
 } from "lucide-react";
 import CONFIG from "../config";
 import Logo from "../components/Logo";
@@ -32,11 +33,13 @@ import {
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
 import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
+import NotionTab from "./NotionTab";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
   fetchEmailStats,
   fetchCommunityStats,
+  fetchNotionData,
 } from "../lib/integrations";
 
 const dashboardConfig = CONFIG.dashboard;
@@ -80,7 +83,7 @@ if (!API_KEY) {
 const ASSISTANT_MODEL =
   import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL ||
   dashboardConfig.assistantModel ||
-  "openai/gpt-4o-mini";
+  "gemini-2.5-flash";
 
 const assistantWelcome = {
   role: "assistant",
@@ -96,6 +99,7 @@ const tabIcons = {
   brain: BrainCircuit,
   automations: Workflow,
   integrations: Settings,
+  notion: FileText,
 };
 
 const formatConversion = (value) => {
@@ -682,6 +686,17 @@ const DashboardPage = () => {
   const [openRouterKey, setOpenRouterKey] = useState(
     localStorage.getItem("openRouterKey") || "",
   );
+  const [notionData, setNotionData] = useState({
+    ideas: [],
+    content: [],
+    automations: [],
+    intakeAlerts: [],
+    publishingQueue: [],
+    approvals: [],
+    buyerSignals: [],
+    aiDrafts: [],
+    ideasAlerts: [],
+  });
   const [assistantMessages, setAssistantMessages] = useState([assistantWelcome]);
   const [assistantInput, setAssistantInput] = useState("");
   const [isAssistantThinking, setIsAssistantThinking] = useState(false);
@@ -792,6 +807,10 @@ const DashboardPage = () => {
       community,
       fetchedAt: new Date().toLocaleString(),
     });
+
+    // Pull Notion data as part of the same sync cycle.
+    const notion = await fetchNotionData();
+    setNotionData(notion);
   };
 
   useEffect(() => {
@@ -897,6 +916,7 @@ const DashboardPage = () => {
     if (activeTab === "brain") return <BrainTab aiBrief={data.aiBrief} />;
     if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
     if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} />;
+    if (activeTab === "notion") return <NotionTab data={notionData} />;
     return <CommandTab data={data} stats={stats} />;
   };
 
