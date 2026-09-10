@@ -742,9 +742,17 @@ const DashboardPage = () => {
       }
 
       const payload = await res.json();
+      const metrics = payload?.metrics || payload || {};
 
-      // Validate payload structure
-      if (!payload.revenue && !payload.leads) {
+      // Accept both legacy flat payloads and the live backend contract which nests stats under metrics.
+      const hasUsableData =
+        payload?.status === "ok" ||
+        metrics?.revenue != null ||
+        metrics?.leads != null ||
+        payload?.revenue != null ||
+        payload?.leads != null;
+
+      if (!hasUsableData) {
         throw new Error("Invalid dashboard data received");
       }
 
@@ -771,16 +779,18 @@ const DashboardPage = () => {
       }
 
       setStats({
-        revenue: payload.revenue || "$0",
-        leads: payload.leads || 0,
-        conversionRate: payload.conversionRate
-          ? formatConversion(payload.conversionRate)
-          : "0%",
-        assetValue: formatAssetValue(payload.assetValue),
-        topAsset: payload.topAsset || "N/A",
-        communityGrowth: payload.communityGrowth || "0%",
-        emailGrowth: payload.emailGrowth || "0%",
-        churnRisk: payload.churnRisk || "Low",
+        revenue: metrics.revenue || payload.revenue || "$0",
+        leads: Number(metrics.leads ?? payload.leads ?? 0),
+        conversionRate: metrics.conversionRate
+          ? formatConversion(metrics.conversionRate)
+          : payload.conversionRate
+            ? formatConversion(payload.conversionRate)
+            : "0%",
+        assetValue: formatAssetValue(metrics.assetValue ?? payload.assetValue),
+        topAsset: metrics.topAsset || payload.topAsset || "N/A",
+        communityGrowth: metrics.communityGrowth || payload.communityGrowth || "0%",
+        emailGrowth: metrics.emailGrowth || payload.emailGrowth || "0%",
+        churnRisk: metrics.churnRisk || payload.churnRisk || "Low",
       });
       const syncTime = new Date().toLocaleString();
       localStorage.setItem("lastSync", syncTime);
