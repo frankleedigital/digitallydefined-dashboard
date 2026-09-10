@@ -2,7 +2,7 @@
 // Shared logic for the dashboard integration Connect buttons.
 // Manages a per-card "connecting" state and a lightweight inline notification
 // (success/failure) that the tabs render. Each Connect click invokes the
-// Hermes edge function's integration.<name>.start action via the lib layer.
+// dashboard backend integration.<name>.start action via the lib layer.
 
 import { useCallback, useState } from "react";
 import {

@@ -846,7 +846,6 @@ const DashboardPage = () => {
         integrations,
       });
 
-      // Build a system prompt that grounds Hermes in live dashboard state
       const dashboardSystemPrompt = [
         "You are the DigitallyDefined Operations AI. You have access to the user's live dashboard data.",
         `Last sync: ${snapshot.lastSync}`,
@@ -863,15 +862,15 @@ const DashboardPage = () => {
         "Be concise, specific, and actionable. Use the data above to ground your answers.",
       ].filter(Boolean).join("\n");
 
-      // Send to your Hermes backend
       const res = await fetch(API_URL, {
         method: "POST",
         headers: API_HEADERS,
         body: JSON.stringify({
+          action: "chat",
           message: trimmedMessage,
           messages: nextMessages,
           conversation: nextMessages,
-          systemPrompt: dashboardSystemPrompt, // Hermes chat handler WILL use this
+          systemPrompt: dashboardSystemPrompt,
           context: { snapshot },
         }),
       });
@@ -879,7 +878,7 @@ const DashboardPage = () => {
       const dataRes = await res.json();
 
       if (!res.ok) {
-        const errorMsg = dataRes.error || dataRes.message || 'Hermes request failed';
+        const errorMsg = dataRes.error || dataRes.message || 'AI request failed';
         throw new Error(errorMsg);
       }
 
@@ -889,14 +888,13 @@ const DashboardPage = () => {
       ]);
 
     } catch (error) {
-      console.error("Hermes Dashboard Error:", error);
-      setAssistantError(error.message || "Hermes encountered an error.");
+      console.error("Dashboard agent error:", error);
+      setAssistantError(error.message || "The AI agent encountered an error.");
       setAssistantMessages((currentMessages) => [
         ...currentMessages,
         {
           role: "assistant",
-          content: "I could not reach Hermes. Here is the local dashboard readout instead.\n\n" +
-            createLocalAssistantReply({ stats, data, lastSync }),
+          content: createLocalAssistantReply({ stats, data, lastSync }),
         },
       ]);
     }

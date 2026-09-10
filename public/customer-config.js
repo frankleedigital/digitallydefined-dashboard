@@ -76,12 +76,12 @@ const CUSTOMER_CONFIG = {
   // Get this from: Google Apps Script > Deploy > Web App > URL
   sheetsApiUrl: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
   
-  // Your Backend API URL (if using your own backend)
-  // Leave as is to use DigitallyDefined's backend
-  backendApiUrl: "/api/hermes",
+  // Your dashboard backend API URL
+  // Leave as is to use DigitallyDefined's Gemini-powered backend
+  backendApiUrl: "https://digitallydefined-os-backend.vercel.app/api",
   
-  // Hermes Gateway URL for all API calls
-  hermesGatewayUrl: "/api/hermes",
+  // Dashboard gateway URL for all API calls
+  hermesGatewayUrl: "https://digitallydefined-os-backend.vercel.app/api",
   
   // Your Backend API Key (provided by DigitallyDefined)
   // Get this from your purchase confirmation

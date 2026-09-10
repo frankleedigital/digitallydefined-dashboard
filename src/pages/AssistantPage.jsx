@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { getAnalyticsBrief, formatBriefAsContext } from "../lib/analytics";
 import { callSupabaseEdge } from "../lib/supabase-edge";
 
-const PARTNER_SYSTEM_PROMPT = `You are Hermes, the AI Business Partner inside DigitallyDefined.
+const PARTNER_SYSTEM_PROMPT = `You are the DigitallyDefined AI Business Partner.
 You help Francesca scale the business using the real website data provided below.
 
 Core behavior:
@@ -149,7 +149,7 @@ export default function AssistantPage() {
     setInput("");
 
     try {
-      // Routed through the Hermes edge function — AI provider keys stay server-side.
+      // Routed through the dashboard backend API with the AI provider kept server-side.
       const data = await callSupabaseEdge("chat", {
         message: userMessage.content,
         systemPrompt: `${PARTNER_SYSTEM_PROMPT}\n\n${analyticsContext}`,
@@ -158,7 +158,7 @@ export default function AssistantPage() {
 
       const structuredReply = data?.data ? formatStructuredBusinessReply(data.data) : null;
       const reply = cleanPartnerReply(data?.reply || structuredReply) || "I’m here — but I didn’t get a response.";
-      const usedProvider = data?.provider || "Hermes";
+      const usedProvider = data?.provider || "Gemini";
       const usedModel = data?.model || null;
 
       const assistantMessage = {
@@ -184,7 +184,7 @@ export default function AssistantPage() {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "I couldn’t reach Hermes just now." }
+        { role: "assistant", content: "I couldn’t reach the AI agent right now." }
       ]);
     }
   };

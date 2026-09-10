@@ -25,7 +25,7 @@ export default function IntelligencePage() {
           return;
         }
 
-        // Call the Hermes edge function directly (no Vercel proxy)
+        // Call the dashboard backend API directly for the intelligence payload.
         const result = await callSupabaseEdge("intelligence", {
           userId: quizData.userId || "unknown",
           answers: quizData.answers || {}

@@ -1,15 +1,13 @@
-// src/lib/integrations.js
 // DigitallyDefined Dashboard — Integration data fetchers
-// Each function returns a normalized shape. Connect real API calls here
-// once OAuth tokens are wired. Stubs return { connected: false } so the UI
-// renders gracefully without crashing.
+// These calls go through the shared dashboard backend and no longer assume a
+// legacy Hermes Supabase edge function exists.
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
+const DASHBOARD_API_URL = import.meta.env.VITE_DASHBOARD_API_URL || 'https://digitallydefined-os-backend.vercel.app/api';
 const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || '';
 
-async function callHermes(action, payload = {}) {
+async function callAgentAction(action, payload = {}) {
   try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/hermes`, {
+    const res = await fetch(DASHBOARD_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +16,7 @@ async function callHermes(action, payload = {}) {
       body: JSON.stringify({ action, ...payload }),
       signal: AbortSignal.timeout(12000),
     });
-    if (!res.ok) throw new Error(`Hermes ${action} failed: ${res.status}`);
+    if (!res.ok) throw new Error(`Dashboard ${action} failed: ${res.status}`);
     return res.json();
   } catch (err) {
     console.warn(`[integrations] ${action} unavailable:`, err.message);
@@ -31,9 +29,7 @@ async function callHermes(action, payload = {}) {
  * Replace the body with real GA4 Data API calls once credentials are wired.
  */
 export async function fetchGoogleAnalytics() {
-  // Future: call Hermes with action "integration.googleAnalytics"
-  // For now: return disconnected shape so the UI renders correctly.
-  const result = await callHermes('integration.googleAnalytics');
+  const result = await callAgentAction('integration.googleAnalytics');
 
   if (!result?.data) {
     return { connected: false, error: null };
@@ -56,7 +52,7 @@ export async function fetchGoogleAnalytics() {
  * Replace with real Meta/Instagram Graph API calls.
  */
 export async function fetchSocialStats() {
-  const result = await callHermes('integration.social');
+  const result = await callAgentAction('integration.social');
 
   if (!result?.data) {
     return { connected: false, error: null };
@@ -76,7 +72,7 @@ export async function fetchSocialStats() {
  * Replace with Brevo/Mailchimp API calls.
  */
 export async function fetchEmailStats() {
-  const result = await callHermes('integration.email');
+  const result = await callAgentAction('integration.email');
 
   if (!result?.data) {
     return { connected: false, error: null };
@@ -98,7 +94,7 @@ export async function fetchEmailStats() {
  * Replace with Facebook Groups API or Circle/Skool API calls.
  */
 export async function fetchCommunityStats() {
-  const result = await callHermes('integration.community');
+  const result = await callAgentAction('integration.community');
 
   if (!result?.data) {
     return { connected: false, error: null };

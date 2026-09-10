@@ -58,8 +58,8 @@ export default { fetchGoogleAnalytics, startGoogleAnalytics };
 
 /**
  * Begin the Google Analytics connection flow.
- * For now this invokes the Hermes `integration.google.start` action, which
- * returns a placeholder success envelope. Real OAuth redirect is added later.
+ * For now this invokes the dashboard backend `integration.google.start` action,
+ * which returns a placeholder success envelope. Real OAuth redirect is added later.
  */
 export async function startGoogleAnalytics() {
   const res = await callSupabaseEdge('integration.google.start', { provider: 'google' });

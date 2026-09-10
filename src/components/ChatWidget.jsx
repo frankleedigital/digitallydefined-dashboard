@@ -17,14 +17,15 @@ export default function ChatWidget() {
     setInput("");
 
     try {
-      const API_URL = `${import.meta.env.VITE_SUPABASE_URL || "https://dijjlppdljpcgyoakdnq.supabase.co"}/functions/v1/hermes`;
+      const API_URL = import.meta.env.VITE_DASHBOARD_API_URL || "https://digitallydefined-os-backend.vercel.app/api";
       const res = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-api-key": import.meta.env.VITE_DASHBOARD_API_KEY || "",
         },
-      body: JSON.stringify({
+        body: JSON.stringify({
+          action: "chat",
           message: input.trim(),
           messages: updatedMessages,
           context: {},
@@ -48,10 +49,10 @@ export default function ChatWidget() {
       setMessages((prev) => [...prev, botMessage]);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong while reaching Hermes.");
+      setError(err instanceof Error ? err.message : "Something went wrong while contacting the agent.");
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Error contacting server." },
+        { role: "assistant", content: "Error contacting the AI agent." },
       ]);
     }
   }
