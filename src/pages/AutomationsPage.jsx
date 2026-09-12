@@ -12,9 +12,8 @@ export default function AutomationsPage() {
       method: "POST",
       headers: getSupabaseEdgeHeaders(),
       body: JSON.stringify({
-        message: "automation.list",
-        context: {},
-        conversation: [],
+        action: "automation.list",
+        userId: "anonymous",
       }),
     })
       .then(res => res.json())
