@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -17,19 +18,17 @@ export default function ChatWidget() {
     setInput("");
 
     try {
-      const API_URL = import.meta.env.VITE_DASHBOARD_API_URL || "https://digitallydefined-os-backend.vercel.app/api";
+      const API_URL = getSupabaseEdgeUrl();
       const res = await fetch(API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_DASHBOARD_API_KEY || "",
-        },
+        headers: getSupabaseEdgeHeaders(),
         body: JSON.stringify({
           action: "chat",
           message: input.trim(),
           messages: updatedMessages,
           context: {},
           conversation: updatedMessages,
+          format: "text",
         }),
       });
 
