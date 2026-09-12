@@ -10,15 +10,17 @@ export const getSupabaseEdgeUrl = (functionName = '') => {
 
   const normalized = configuredUrl.replace(/\/+$/, '');
 
-  if (normalized.includes('/functions/v1')) {
-    return functionName ? `${normalized}/functions/v1/${functionName}` : normalized;
+  if (!functionName) {
+    return normalized;
   }
 
-  if (functionName) {
-    return `${normalized}/${functionName.replace(/^\//, '')}`;
-  }
-
-  return normalized;
+  // Strip any leading slashes and a redundant "functions/v1/" segment so a base
+  // that already ends in "/functions/v1" never produces "/functions/v1/functions/v1".
+  const fn = functionName.replace(/^\//, '').replace(/^functions\/v1\//, '');
+  const base = normalized.includes('/functions/v1')
+    ? normalized
+    : `${normalized}/functions/v1`;
+  return `${base}/${fn}`;
 };
 
 export const getSupabaseEdgeHeaders = (extra = {}) => {

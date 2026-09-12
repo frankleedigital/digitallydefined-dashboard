@@ -1,6 +1,7 @@
 import React from "react";
-import { AlertTriangle, ExternalLink } from "lucide-react";
+import { AlertTriangle, ExternalLink, TrendingUp, Clock, DollarSign, Star, FileText, LayoutTemplate } from "lucide-react";
 import { brutalBorder, brutalEyebrow, brutalHeading, theme } from "../theme";
+import { mapNotionPageToView } from "../lib/notionArchitect";
 
 const cardStyle = {
   border: brutalBorder,
@@ -9,6 +10,7 @@ const cardStyle = {
 };
 
 export default function NotionTab({ data }) {
+  const raw = data?.rawNotion || data || {};
   const {
     ideas = [],
     content = [],
@@ -18,11 +20,18 @@ export default function NotionTab({ data }) {
     approvals = [],
     buyerSignals = [],
     aiDrafts = [],
-  } = data || {};
+    // New architect-synced DBs (Phase 5)
+    assets = [],
+    money = [],
+    monthly = [],
+    reputation = [],
+    templates = [],
+  } = raw;
 
   const hasAnyData =
     ideas.length > 0 || content.length > 0 || automations.length > 0 ||
-    publishingQueue.length > 0 || approvals.length > 0 || buyerSignals.length > 0 || aiDrafts.length > 0;
+    publishingQueue.length > 0 || approvals.length > 0 || buyerSignals.length > 0 || aiDrafts.length > 0 ||
+    assets.length > 0 || money.length > 0 || monthly.length > 0 || reputation.length > 0 || templates.length > 0;
 
   if (!hasAnyData) {
     return (
@@ -33,7 +42,8 @@ export default function NotionTab({ data }) {
         <p style={{ margin: 0, color: theme.colors.muted, fontSize: "0.82rem" }}>
           Connect your Notion API key and database IDs, then hit{" "}
           <span style={{ color: theme.colors.accent, fontWeight: 700 }}>Sync Vault</span>{" "}
-          on the dashboard to pull ideas, content, approvals, buyer signals, and AI drafts into view.
+          on the dashboard to pull ideas, content, approvals, buyer signals, AI drafts,
+          assets, money snapshots, monthly reviews, reputation signals, and templates into view.
         </p>
       </div>
     );
@@ -68,49 +78,84 @@ export default function NotionTab({ data }) {
       {ideas.length > 0 && (
         <section>
           <SectionTitle>IDEAS & INTAKE ({ideas.length})</SectionTitle>
-          <GridList items={ideas} />
+          <GridList items={ideas.map((item) => mapNotionPageToView("ideas", item))} />
         </section>
       )}
 
       {content.length > 0 && (
         <section>
           <SectionTitle>CONTENT PIPELINE ({content.length})</SectionTitle>
-          <GridList items={content} />
+          <GridList items={content.map((item) => mapNotionPageToView("content", item))} />
+        </section>
+      )}
+
+      {templates.length > 0 && (
+        <section>
+          <SectionTitle>TEMPLATES LIBRARY ({templates.length})</SectionTitle>
+          <GridList items={templates.map((item) => mapNotionPageToView("templates", item))} />
+        </section>
+      )}
+
+      {assets.length > 0 && (
+        <section>
+          <SectionTitle>DIGITAL ASSETS ({assets.length})</SectionTitle>
+          <GridList items={assets.map((item) => mapNotionPageToView("assets", item))} />
+        </section>
+      )}
+
+      {money.length > 0 && (
+        <section>
+          <SectionTitle>MONEY SNAPSHOTS ({money.length})</SectionTitle>
+          <GridList items={money.map((item) => mapNotionPageToView("money", item))} />
+        </section>
+      )}
+
+      {monthly.length > 0 && (
+        <section>
+          <SectionTitle>MONTHLY REVIEWS ({monthly.length})</SectionTitle>
+          <GridList items={monthly.map((item) => mapNotionPageToView("monthly", item))} />
+        </section>
+      )}
+
+      {reputation.length > 0 && (
+        <section>
+          <SectionTitle>REPUTATION SIGNALS ({reputation.length})</SectionTitle>
+          <GridList items={reputation.map((item) => mapNotionPageToView("reputation", item))} />
         </section>
       )}
 
       {automations.length > 0 && (
         <section>
           <SectionTitle>AUTOMATION LOG ({automations.length})</SectionTitle>
-          <AutomationList items={automations} />
+          <AutomationList items={automations.map((item) => mapNotionPageToView("automations", item))} />
         </section>
       )}
 
       {publishingQueue.length > 0 && (
         <section>
           <SectionTitle>PUBLISHING QUEUE ({publishingQueue.length})</SectionTitle>
-          <GridList items={publishingQueue} />
+          <GridList items={publishingQueue.map((item) => mapNotionPageToView("content", item))} />
         </section>
       )}
 
       {approvals.length > 0 && (
         <section>
           <SectionTitle>CONTENT APPROVALS ({approvals.length})</SectionTitle>
-          <ApprovalList items={approvals} />
+          <GridList items={approvals.map((item) => mapNotionPageToView("content", item))} />
         </section>
       )}
 
       {buyerSignals.length > 0 && (
         <section>
           <SectionTitle>BUYER SIGNALS ({buyerSignals.length})</SectionTitle>
-          <BuyerSignalList items={buyerSignals} />
+          <GridList items={buyerSignals.map((item) => mapNotionPageToView("reputation", item))} />
         </section>
       )}
 
       {aiDrafts.length > 0 && (
         <section>
           <SectionTitle>AI CONTENT DRAFTS ({aiDrafts.length})</SectionTitle>
-          <AiDraftList items={aiDrafts} />
+          <GridList items={aiDrafts.map((item) => mapNotionPageToView("content", item))} />
         </section>
       )}
     </div>
