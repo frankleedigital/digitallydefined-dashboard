@@ -1,6 +1,5 @@
-# digitallydefined-reputation-dashboard
-DigitallyDefined Reputation Management Dashboard - powered by Gumloop automation
-Reinvent Yourself, Digitally.
+# digitallydefined-dashboard
+DigitallyDefined Operations Dashboard - Reinvent Yourself, Digitally.
 
 ## Open the internal dashboard
 
