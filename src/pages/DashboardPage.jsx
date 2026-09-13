@@ -4,6 +4,7 @@ import {
   BarChart3,
   Bot,
   BrainCircuit,
+  Database,
   DollarSign,
   FolderHeart,
   LayoutDashboard,
@@ -34,6 +35,7 @@ import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge
 import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
 import NotionTab from "./NotionTab";
+import AntigravityPage from "./AntigravityPage";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -100,6 +102,7 @@ const tabIcons = {
   automations: Workflow,
   integrations: Settings,
   notion: FileText,
+  antigravity: Database,
 };
 
 const formatConversion = (value) => {
@@ -925,6 +928,7 @@ const DashboardPage = () => {
     if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
     if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} />;
     if (activeTab === "notion") return <NotionTab data={notionData} />;
+    if (activeTab === "antigravity") return <AntigravityPage />;
     return <CommandTab data={data} stats={stats} />;
   };
 

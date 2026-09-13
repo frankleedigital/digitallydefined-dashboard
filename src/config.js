@@ -212,6 +212,10 @@ const CONFIG = {
         id: "notion",
         label: "NOTION",
       },
+      {
+        id: "antigravity",
+        label: "ARCHITECT",
+      },
     ],
     assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-2.5-flash",
     integrationsTitle: "Integrations",

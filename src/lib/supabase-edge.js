@@ -4,11 +4,12 @@
 const DEFAULT_DASHBOARD_API_URL = 'https://api.digitallydefined.online';
 
 export const getSupabaseEdgeUrl = (functionName = '') => {
-  // Canonical backend base. VITE_API_URL is the single source of truth;
-  // legacy names are kept as fallbacks for older builds.
+  // Canonical backend base. VITE_API_URL is the single source of truth.
+  // Do NOT fall back to VITE_SUPABASE_URL — that points to the Supabase project,
+  // not the DigitallyDefined backend, and would route dashboard API calls to the
+  // wrong service.
   const configuredUrl = import.meta.env.VITE_API_URL ||
     import.meta.env.VITE_DASHBOARD_API_URL ||
-    import.meta.env.VITE_SUPABASE_URL ||
     DEFAULT_DASHBOARD_API_URL;
 
   const normalized = configuredUrl.replace(/\/+$/, '');

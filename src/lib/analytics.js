@@ -1,27 +1,18 @@
 // src/lib/analytics.js
 // Dashboard client for the DigitallyDefined analytics pipeline.
-// Reads aggregated website data from the Supabase `analytics` Edge Function.
+// Reads aggregated website data from the DigitallyDefined backend /api.
 
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from './supabase-edge';
-
-const ANALYTICS_URL = getSupabaseEdgeUrl('analytics');
+import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, callSupabaseEdge } from './supabase-edge';
 
 /**
- * Fetch analytics from the edge function.
+ * Fetch analytics from the backend.
  * @param {string} action  overview|traffic|funnels|assets|products|recommend
  * @param {number} days    lookback window
  */
-export async function fetchAnalytics(action = 'overview', days = 30) {
-  const res = await fetch(ANALYTICS_URL, {
-    method: 'POST',
-    headers: getSupabaseEdgeHeaders(),
-    body: JSON.stringify({ action, days }),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Analytics request failed: ${res.status}`);
-  }
-  return res.json();
+export async function fetchAnalytics(action = 'dashboard', days = 30) {
+  // Use the canonical backend client which handles URL construction and headers.
+  const res = await callSupabaseEdge('dashboard', { userId: 'dashboard' });
+  return res;
 }
 
 /** Compact snapshot used to brief the AI Business Partner. */
