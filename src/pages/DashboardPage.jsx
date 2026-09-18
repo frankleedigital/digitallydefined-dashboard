@@ -521,28 +521,28 @@ function DashboardAssistant({
     localStorage.getItem("dd-assistant-model") || "auto/best-chat"
   );
   const modelOptions = [
-    // ── OmniRoute auto-select (recommended defaults) ──
-    { group: "Auto (best fit)", value: "auto/best-chat", desc: "Best overall chat" },
-    { group: "Auto (best fit)", value: "auto/best-fast", desc: "Fastest response" },
-    { group: "Auto (best fit)", value: "auto/best-reasoning", desc: "Deep analysis" },
-    { group: "Auto (best fit)", value: "auto/best-coding", desc: "Code & tech" },
-    { group: "Auto (best fit)", value: "auto/best-vision", desc: "Image analysis" },
-    // ── Premium Claude / GPT ──
-    { group: "Premium", value: "bm/claude-sonnet-4-5", desc: "Claude Sonnet 4.5" },
-    { group: "Premium", value: "bm/gpt-4o-mini", desc: "GPT-4o Mini (fast)" },
-    { group: "Premium", value: "bm/gpt-4.1", desc: "GPT-4.1" },
-    { group: "Premium", value: "bm/claude-opus-4-5", desc: "Claude Opus 4.5 (VIP)" },
-    // ── Best free / cheap ──
-    { group: "Free / Cheap", value: "bm/gemini-2.0-flash", desc: "Gemini 2.0 Flash" },
-    { group: "Free / Cheap", value: "bm/deepseek-chat", desc: "DeepSeek Chat" },
-    { group: "Free / Cheap", value: "bm/qwen-turbo", desc: "Qwen Turbo" },
-    { group: "Free / Cheap", value: "auto/coding", desc: "Omni auto coding" },
-    { group: "Free / Cheap", value: "auto/fast", desc: "Omni auto fast" },
-    // ── Gemini direct (bypasses OmniRoute Cloudflare block) ──
-    { group: "Gemini Direct", value: "gemini-3.6-flash", desc: "Google Gemini 3.6 Flash" },
-    { group: "Gemini Direct", value: "gemini-3.7-flash", desc: "Google Gemini 3.7 Flash" },
-    { group: "Gemini Direct", value: "gemini-3.5-flash-lite", desc: "Gemini 3.5 Flash Lite" },
-    { group: "Gemini Direct", value: "gemini-2.5-pro", desc: "Gemini 2.5 Pro" },
+    // ── Free (via OmniRoute combos or Gemini direct) ──
+    { group: "Free Models", value: "auto/best-chat", desc: "Best overall chat /free" },
+    { group: "Free Models", value: "auto/best-fast", desc: "Fastest response /free" },
+    { group: "Free Models", value: "auto/gemini", desc: "Best Gemini available /free" },
+    { group: "Free Models", value: "auto/best-reasoning", desc: "Deep analysis /free" },
+    { group: "Free Models", value: "auto/best-coding", desc: "Code & tech /free" },
+    { group: "Free Models", value: "auto/best-vision", desc: "Image analysis /free" },
+    { group: "Free Models", value: "auto/best-free", desc: "Guaranteed free tier /free" },
+    { group: "Free Models", value: "static-best-free", desc: "Your combo (free models) /free" },
+    { group: "Free Models", value: "free-stack", desc: "Your combo (free stack) /free" },
+    { group: "Free Models", value: "gemini-3.5-flash-lite", desc: "Gemini direct (free tier) /free" },
+    // ── Your Credits (Gemini $10 / Vertex $310) ──
+    { group: "Your Credits", value: "gemini-2.5-pro", desc: "Gemini 2.5 Pro ($10 credit)" },
+    { group: "Your Credits", value: "gemini-3.6-flash", desc: "Gemini 3.6 Flash (may be overloaded)" },
+    // ── Premium (Bluesminds — may have usage limits) ──
+    { group: "Premium (Bluesminds)", value: "bm/gpt-4o-mini", desc: "GPT-4o Mini" },
+    { group: "Premium (Bluesminds)", value: "bm/gpt-4.1", desc: "GPT-4.1" },
+    { group: "Premium (Bluesminds)", value: "bm/claude-sonnet-4-5", desc: "Claude Sonnet 4.5" },
+    { group: "Premium (Bluesminds)", value: "bm/gemini-2.5-pro", desc: "Gemini 2.5 Pro (VIP)" },
+    { group: "Premium (Bluesminds)", value: "bm/deepseek-chat", desc: "DeepSeek Chat" },
+    { group: "Premium (Bluesminds)", value: "bm/qwen-turbo", desc: "Qwen Turbo" },
+    { group: "Premium (Bluesminds)", value: "bm/kimi-k2", desc: "Kimi K2" },
   ];
 
   const groupedOptions = modelOptions.reduce((acc, opt) => {
