@@ -629,9 +629,8 @@ function DashboardAssistant({
           value={selectedModel}
           onChange={(e) => {
             const v = e.target.value;
-            setSelectedModel(v);
-            localStorage.setItem("dd-assistant-model", v);
             if (onModelChange) onModelChange(v);
+            localStorage.setItem("dd-assistant-model", v);
           }}
           style={{
             border: brutalBorder,
