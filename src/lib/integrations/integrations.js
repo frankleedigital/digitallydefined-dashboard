@@ -2,7 +2,7 @@
 // These calls go through the shared dashboard backend and no longer assume a
 // legacy Hermes Supabase edge function exists.
 
-const DASHBOARD_API_URL = import.meta.env.VITE_DASHBOARD_API_URL || 'https://digitallydefined-os-backend.vercel.app/api';
+const DASHBOARD_API_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_DASHBOARD_API_URL || 'https://digitallydefined-backend-clean.vercel.app/api';
 const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || '';
 
 async function callAgentAction(action, payload = {}) {
