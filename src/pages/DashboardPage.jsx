@@ -506,6 +506,8 @@ function DashboardAssistant({
   onInputChange,
   onSubmit,
   onQuickPrompt,
+  selectedModel,
+  onModelChange,
 }) {
   const quickPrompts = [
     "What needs my attention today?",
@@ -513,13 +515,12 @@ function DashboardAssistant({
     "What is the next best move?",
   ];
 
-  // Model selector options — grouped by use case.
+  // Model selector options — grouped by cost tier.
   // The backend accepts any OmniRoute model ID (bm/*, auto/*, t3chat/*, etc.)
   // or a direct Gemini model. Defaults to "auto/best-chat" which lets OmniRoute
   // pick the best available model for the task.
-  const [selectedModel, setSelectedModel] = useState(
-    localStorage.getItem("dd-assistant-model") || "auto/best-chat"
-  );
+  // NOTE: selectedModel state is now managed in the parent DashboardPage component
+  // and passed down via props.
   const modelOptions = [
     // ── Free (via OmniRoute combos or Gemini direct) ──
     { group: "Free Models", value: "auto/best-chat", desc: "Best overall chat /free" },
@@ -630,6 +631,7 @@ function DashboardAssistant({
             const v = e.target.value;
             setSelectedModel(v);
             localStorage.setItem("dd-assistant-model", v);
+            if (onModelChange) onModelChange(v);
           }}
           style={{
             border: brutalBorder,
@@ -831,6 +833,9 @@ const DashboardPage = () => {
   const [assistantInput, setAssistantInput] = useState("");
   const [isAssistantThinking, setIsAssistantThinking] = useState(false);
   const [assistantError, setAssistantError] = useState("");
+  const [selectedModel, setSelectedModel] = useState(
+    localStorage.getItem("dd-assistant-model") || "auto/best-chat"
+  );
 
   useEffect(() => {
     document.title = `${CONFIG.brand.fullName} Dashboard`;
@@ -1331,6 +1336,8 @@ const DashboardPage = () => {
             onInputChange={setAssistantInput}
             onSubmit={handleAssistantSubmit}
             onQuickPrompt={sendAssistantMessage}
+            selectedModel={selectedModel}
+            onModelChange={setSelectedModel}
           />
         </section>
       </main>
