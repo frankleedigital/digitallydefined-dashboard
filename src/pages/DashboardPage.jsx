@@ -513,6 +513,43 @@ function DashboardAssistant({
     "What is the next best move?",
   ];
 
+  // Model selector options — grouped by use case.
+  // The backend accepts any OmniRoute model ID (bm/*, auto/*, t3chat/*, etc.)
+  // or a direct Gemini model. Defaults to "auto/best-chat" which lets OmniRoute
+  // pick the best available model for the task.
+  const [selectedModel, setSelectedModel] = useState(
+    localStorage.getItem("dd-assistant-model") || "auto/best-chat"
+  );
+  const modelOptions = [
+    // ── OmniRoute auto-select (recommended defaults) ──
+    { group: "Auto (best fit)", value: "auto/best-chat", desc: "Best overall chat" },
+    { group: "Auto (best fit)", value: "auto/best-fast", desc: "Fastest response" },
+    { group: "Auto (best fit)", value: "auto/best-reasoning", desc: "Deep analysis" },
+    { group: "Auto (best fit)", value: "auto/best-coding", desc: "Code & tech" },
+    { group: "Auto (best fit)", value: "auto/best-vision", desc: "Image analysis" },
+    // ── Premium Claude / GPT ──
+    { group: "Premium", value: "bm/claude-sonnet-4-5", desc: "Claude Sonnet 4.5" },
+    { group: "Premium", value: "bm/gpt-4o-mini", desc: "GPT-4o Mini (fast)" },
+    { group: "Premium", value: "bm/gpt-4.1", desc: "GPT-4.1" },
+    { group: "Premium", value: "bm/claude-opus-4-5", desc: "Claude Opus 4.5 (VIP)" },
+    // ── Best free / cheap ──
+    { group: "Free / Cheap", value: "bm/gemini-2.0-flash", desc: "Gemini 2.0 Flash" },
+    { group: "Free / Cheap", value: "bm/deepseek-chat", desc: "DeepSeek Chat" },
+    { group: "Free / Cheap", value: "bm/qwen-turbo", desc: "Qwen Turbo" },
+    { group: "Free / Cheap", value: "auto/coding", desc: "Omni auto coding" },
+    { group: "Free / Cheap", value: "auto/fast", desc: "Omni auto fast" },
+    // ── Gemini direct (bypasses OmniRoute Cloudflare block) ──
+    { group: "Gemini Direct", value: "gemini-3.6-flash", desc: "Google Gemini 3.6 Flash" },
+    { group: "Gemini Direct", value: "gemini-3.7-flash", desc: "Google Gemini 3.7 Flash" },
+    { group: "Gemini Direct", value: "gemini-3.5-flash-lite", desc: "Gemini 3.5 Flash Lite" },
+    { group: "Gemini Direct", value: "gemini-2.5-pro", desc: "Gemini 2.5 Pro" },
+  ];
+
+  const groupedOptions = modelOptions.reduce((acc, opt) => {
+    (acc[opt.group] ??= []).push(opt);
+    return acc;
+  }, {});
+
   const renderStructuredSections = (msg) => {
     if (!msg.structuredSections?.length) return null;
     return (
@@ -587,9 +624,35 @@ function DashboardAssistant({
             Dashboard AI Assistant
           </h2>
         </div>
-        <span style={{ ...brutalEyebrow, color: theme.colors.muted, fontSize: "0.58rem" }}>
-          {ASSISTANT_MODEL}
-        </span>
+        <select
+          value={selectedModel}
+          onChange={(e) => {
+            const v = e.target.value;
+            setSelectedModel(v);
+            localStorage.setItem("dd-assistant-model", v);
+          }}
+          style={{
+            border: brutalBorder,
+            backgroundColor: theme.colors.card,
+            color: theme.colors.textPrimary,
+            padding: "0.3rem 0.5rem",
+            fontSize: "0.72rem",
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: theme.fonts.body,
+            borderRadius: 0,
+          }}
+        >
+          {Object.entries(groupedOptions).map(([group, opts]) => (
+            <optgroup key={group} label={group}>
+              {opts.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.value}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
       </div>
 
       <div
@@ -963,6 +1026,7 @@ const DashboardPage = () => {
           conversation: nextMessages,
           systemPrompt: dashboardSystemPrompt,
           context: { snapshot },
+          model: selectedModel,
         }),
       });
 
