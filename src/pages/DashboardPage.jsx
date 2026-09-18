@@ -513,6 +513,55 @@ function DashboardAssistant({
     "What is the next best move?",
   ];
 
+  const renderStructuredSections = (msg) => {
+    if (!msg.structuredSections?.length) return null;
+    return (
+      <div style={{ marginTop: "0.5rem", display: "grid", gap: "0.4rem" }}>
+        {msg.structuredSections.map((section, si) => (
+          <div
+            key={si}
+            style={{
+              border: `1px solid ${theme.colors.accent}33`,
+              borderRadius: 4,
+              padding: "0.45rem 0.6rem",
+              backgroundColor: "rgba(0,0,0,0.2)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                color: theme.colors.muted,
+                marginBottom: "0.3rem",
+                letterSpacing: "0.05em",
+              }}
+            >
+              {section.title}
+            </div>
+            <ul style={{ margin: 0, paddingLeft: "1rem", fontSize: "0.82rem", lineHeight: 1.5 }}>
+              {section.items.map((item, ii) => (
+                <li key={ii} style={{ marginBottom: "0.15rem" }}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        {msg.priorityFocus && (
+          <div
+            style={{
+              marginTop: "0.4rem",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              color: theme.colors.accent,
+            }}
+          >
+            ⚡ Priority: {msg.priorityFocus}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <section
       style={{
@@ -548,7 +597,7 @@ function DashboardAssistant({
           border: brutalBorder,
           backgroundColor: theme.colors.card,
           minHeight: 180,
-          maxHeight: 280,
+          maxHeight: 340,
           overflowY: "auto",
           padding: "0.75rem",
           display: "grid",
@@ -574,6 +623,21 @@ function DashboardAssistant({
               }}
             >
               {message.content}
+              {!isUser && renderStructuredSections(message)}
+              {!isUser && (message.provider || message.model) && (
+                <div style={{ marginTop: "0.35rem", display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
+                  {message.provider && (
+                    <span style={{ fontSize: "0.65rem", color: theme.colors.muted, border: `1px solid ${theme.colors.muted}44`, borderRadius: 3, padding: "0.1rem 0.35rem" }}>
+                      {message.provider}
+                    </span>
+                  )}
+                  {message.model && (
+                    <span style={{ fontSize: "0.65rem", color: theme.colors.muted, border: `1px solid ${theme.colors.muted}44`, borderRadius: 3, padding: "0.1rem 0.35rem" }}>
+                      {message.model}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
@@ -822,13 +886,28 @@ const DashboardPage = () => {
     });
 
     // Pull Notion data as part of the same sync cycle.
-    const notion = await fetchNotionData();
+    let notion = {};
+    try {
+      notion = await fetchNotionData();
+    } catch (err) {
+      console.error('[Dashboard] fetchNotionData failed:', err && err.message ? err.message : err);
+    }
+
     setNotionData(notion);
   };
 
   useEffect(() => {
     syncEmpireData()
-      .then(syncIntegrations)
+      .then(() => {
+        if (typeof syncIntegrations === 'function') {
+          syncIntegrations().catch((err) => {
+            console.error('[Dashboard] syncIntegrations failed:', err && err.message ? err.message : err);
+          });
+        }
+      })
+      .catch((err) => {
+        console.error('[Dashboard] syncEmpireData failed:', err && err.message ? err.message : err);
+      })
       .finally(() => setInitialLoad(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -881,7 +960,6 @@ const DashboardPage = () => {
         body: JSON.stringify({
           action: "chat",
           message: trimmedMessage,
-          messages: nextMessages,
           conversation: nextMessages,
           systemPrompt: dashboardSystemPrompt,
           context: { snapshot },
@@ -895,10 +973,53 @@ const DashboardPage = () => {
         throw new Error(errorMsg);
       }
 
-      setAssistantMessages((currentMessages) => [
-        ...currentMessages,
-        { role: "assistant", content: dataRes.reply }
-      ]);
+      const provider = dataRes.provider || null;
+      const model = dataRes.model || null;
+      const appliedEdit = dataRes.appliedEdit || null;
+      const structuredData = dataRes.data || null;
+
+      // Build a rich assistant message from structured data
+      let replyContent = dataRes.reply || '';
+      if (appliedEdit && appliedEdit.key) {
+        replyContent = `✏️ Website change saved (${appliedEdit.label || appliedEdit.key}):\n"${appliedEdit.value}"\n\nIt will appear on the site after the next frontend deploy.`;
+      }
+
+      const assistantMessage = {
+        role: "assistant",
+        content: replyContent,
+        provider,
+        model,
+        appliedEdit,
+      };
+
+      // If we got structured data, append it as a secondary section
+      if (structuredData) {
+        const sections = [];
+        if (structuredData.opportunities?.length) {
+          sections.push({
+            title: "Opportunities",
+            items: structuredData.opportunities,
+          });
+        }
+        if (structuredData.riskFlags?.length) {
+          sections.push({
+            title: "Risk Flags",
+            items: structuredData.riskFlags,
+          });
+        }
+        if (structuredData.nextActions?.length) {
+          sections.push({
+            title: "Next Actions",
+            items: structuredData.nextActions,
+          });
+        }
+        if (sections.length) {
+          assistantMessage.structuredSections = sections;
+          assistantMessage.priorityFocus = structuredData.priorityFocus || null;
+        }
+      }
+
+      setAssistantMessages((currentMessages) => [...currentMessages, assistantMessage]);
 
     } catch (error) {
       console.error("Dashboard agent error:", error);
