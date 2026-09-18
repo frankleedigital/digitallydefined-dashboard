@@ -15,7 +15,9 @@ export const getSupabaseEdgeUrl = (functionName = '') => {
   const normalized = configuredUrl.replace(/\/+$/, '');
 
   if (!functionName) {
-    return normalized;
+    // No specific function requested — return base with /api prefix so
+    // requests hit the backend dispatcher (not the bare root which 404s).
+    return `${normalized}/api`;
   }
 
   // Strip any leading slashes and a redundant "functions/v1/" segment so a base
@@ -23,7 +25,7 @@ export const getSupabaseEdgeUrl = (functionName = '') => {
   const fn = functionName.replace(/^\//, '').replace(/^functions\/v1\//, '');
   const base = normalized.includes('/functions/v1')
     ? normalized
-    : `${normalized}/functions/v1`;
+    : `${normalized}/api`;
   return `${base}/${fn}`;
 };
 
