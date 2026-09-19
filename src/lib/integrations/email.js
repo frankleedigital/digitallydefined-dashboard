@@ -3,40 +3,48 @@
 import { callSupabaseEdge } from '../supabase-edge';
 
 export async function fetchEmailStats() {
-  const provider = import.meta.env.VITE_EMAIL_PROVIDER || 'brevo';
-  const brevoApiKey = import.meta.env.VITE_BREVO_API_KEY;
-  const mailchimpApiKey = import.meta.env.VITE_MAILCHIMP_API_KEY;
-
-  const hasBrevo = Boolean(brevoApiKey);
-  const hasMailchimp = Boolean(mailchimpApiKey);
-
-  if (!hasBrevo && !hasMailchimp) {
-    return {
-      connected: false,
-      provider: null,
-      subscribers: null,
-      openRate: null,
-      clickRate: null,
-      campaigns: [],
-      revenuePerCampaign: null,
-      lastUpdated: null,
-      error: 'No email provider configured',
-    };
-  }
-
   try {
     const payload = await callSupabaseEdge('integration.email', {
-      provider,
-      hasBrevo,
-      hasMailchimp,
+      provider: 'email',
     });
+
+    if (!payload || typeof payload !== 'object') {
+      return {
+        connected: false,
+        provider: null,
+        subscribers: null,
+        openRate: null,
+        clickRate: null,
+        campaigns: [],
+        revenuePerCampaign: null,
+        lastUpdated: null,
+        error: 'No email provider configured',
+      };
+    }
+
+    if (payload.error) {
+      return {
+        connected: false,
+        provider: payload.provider || null,
+        subscribers: null,
+        openRate: null,
+        clickRate: null,
+        campaigns: [],
+        revenuePerCampaign: null,
+        lastUpdated: null,
+        error: payload.error,
+      };
+    }
+
+    const subscribers = payload.subscribers ?? payload.totalSubscribers ?? null;
+    const campaigns = Array.isArray(payload.campaigns) ? payload.campaigns.slice(0, 5) : [];
     return {
-      connected: true,
-      provider,
-      subscribers: payload.subscribers ?? null,
+      connected: Boolean(payload.connected ?? (subscribers != null || campaigns.length > 0)),
+      provider: payload.provider || null,
+      subscribers,
       openRate: payload.openRate ?? null,
       clickRate: payload.clickRate ?? null,
-      campaigns: Array.isArray(payload.campaigns) ? payload.campaigns.slice(0, 5) : [],
+      campaigns,
       revenuePerCampaign: payload.revenuePerCampaign ?? null,
       lastUpdated: new Date().toISOString(),
       error: null,
@@ -44,7 +52,7 @@ export async function fetchEmailStats() {
   } catch (error) {
     return {
       connected: false,
-      provider,
+      provider: null,
       subscribers: null,
       openRate: null,
       clickRate: null,

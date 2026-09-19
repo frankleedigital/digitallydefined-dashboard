@@ -3,55 +3,46 @@
 import { callSupabaseEdge } from '../supabase-edge';
 
 export async function fetchSocialStats() {
-  const platforms = {
-    facebook: {
-      enabled: Boolean(import.meta.env.VITE_FACEBOOK_PAGE_ID),
-      pageId: import.meta.env.VITE_FACEBOOK_PAGE_ID || '',
-      accessToken: import.meta.env.VITE_FACEBOOK_ACCESS_TOKEN || '',
-    },
-    instagram: {
-      enabled: Boolean(import.meta.env.VITE_INSTAGRAM_BUSINESS_ID),
-      businessId: import.meta.env.VITE_INSTAGRAM_BUSINESS_ID || '',
-      accessToken: import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN || '',
-    },
-    youtube: {
-      enabled: Boolean(import.meta.env.VITE_YOUTUBE_CHANNEL_ID),
-      channelId: import.meta.env.VITE_YOUTUBE_CHANNEL_ID || '',
-      apiKey: import.meta.env.VITE_YOUTUBE_API_KEY || '',
-    },
-    twitter: {
-      enabled: Boolean(import.meta.env.VITE_TWITTER_BEARER_TOKEN),
-      bearerToken: import.meta.env.VITE_TWITTER_BEARER_TOKEN || '',
-      username: import.meta.env.VITE_TWITTER_USERNAME || '',
-    },
-    linkedin: {
-      enabled: Boolean(import.meta.env.VITE_LINKEDIN_ORG_ID),
-      organizationId: import.meta.env.VITE_LINKEDIN_ORG_ID || '',
-      accessToken: import.meta.env.VITE_LINKEDIN_ACCESS_TOKEN || '',
-    },
+  const fallbackResult = {
+    connected: false,
+    platforms: {},
+    followers: null,
+    engagementRate: null,
+    impressions30d: null,
+    topPosts: [],
+    lastUpdated: null,
+    error: 'No social platforms configured',
   };
-
-  const activePlatforms = Object.entries(platforms).filter(([, config]) => config.enabled);
-
-  if (!activePlatforms.length) {
-    return {
-      connected: false,
-      platforms: {},
-      followers: null,
-      engagementRate: null,
-      impressions30d: null,
-      topPosts: [],
-      lastUpdated: null,
-      error: 'No social platforms configured',
-    };
-  }
 
   try {
     const payload = await callSupabaseEdge('integration.social', {
-      platforms: Object.fromEntries(activePlatforms),
+      provider: 'social',
     });
+
+    if (!payload || typeof payload !== 'object') {
+      return fallbackResult;
+    }
+
+    if (payload.error) {
+      return {
+        connected: false,
+        platforms: {},
+        followers: null,
+        engagementRate: null,
+        impressions30d: null,
+        topPosts: [],
+        lastUpdated: null,
+        error: payload.error,
+      };
+    }
+
+    const platformEntries = Object.entries(payload.platforms || {});
+    const hasPlatforms = platformEntries.length > 0;
+    const hasMetrics =
+      payload.followers != null || payload.engagementRate != null || payload.impressions30d != null;
+
     return {
-      connected: true,
+      connected: Boolean(payload.connected ?? (hasPlatforms || hasMetrics)),
       platforms: payload.platforms || {},
       followers: payload.followers ?? null,
       engagementRate: payload.engagementRate ?? null,

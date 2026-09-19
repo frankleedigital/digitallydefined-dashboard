@@ -3,32 +3,46 @@
 import { callSupabaseEdge } from '../supabase-edge';
 
 export async function fetchGoogleAnalytics() {
-  const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-  const propertyId = import.meta.env.VITE_GA_PROPERTY_ID;
-
-  if (!measurementId || !propertyId) {
-    return {
-      connected: false,
-      propertyId: null,
-      users30d: null,
-      sessions30d: null,
-      bounceRate: null,
-      topPages: [],
-      goalConversions: null,
-      revenue30d: null,
-      lastUpdated: null,
-      error: 'Missing Google Analytics configuration',
-    };
-  }
+  const fallbackBrief = {
+    connected: false,
+    propertyId: null,
+    users30d: null,
+    sessions30d: null,
+    bounceRate: null,
+    topPages: [],
+    goalConversions: null,
+    revenue30d: null,
+    lastUpdated: null,
+    error: 'Missing Google Analytics configuration',
+  };
 
   try {
     const payload = await callSupabaseEdge('integration.googleAnalytics', {
-      measurementId,
-      propertyId,
+      provider: 'googleAnalytics',
     });
+
+    if (!payload || typeof payload !== 'object') {
+      return fallbackBrief;
+    }
+
+    if (payload.error) {
+      return {
+        connected: false,
+        propertyId: payload.propertyId ?? null,
+        users30d: null,
+        sessions30d: null,
+        bounceRate: null,
+        topPages: [],
+        goalConversions: null,
+        revenue30d: null,
+        lastUpdated: null,
+        error: payload.error,
+      };
+    }
+
     return {
       connected: true,
-      propertyId,
+      propertyId: payload.propertyId ?? null,
       users30d: payload.users30d ?? null,
       sessions30d: payload.sessions30d ?? null,
       bounceRate: payload.bounceRate ?? null,
@@ -41,7 +55,7 @@ export async function fetchGoogleAnalytics() {
   } catch (error) {
     return {
       connected: false,
-      propertyId,
+      propertyId: null,
       users30d: null,
       sessions30d: null,
       bounceRate: null,

@@ -3,49 +3,53 @@
 import { callSupabaseEdge } from '../supabase-edge';
 
 export async function fetchCommunityStats() {
-  const platform = import.meta.env.VITE_COMMUNITY_PLATFORM || 'facebook';
-  const facebookGroupId = import.meta.env.VITE_FACEBOOK_GROUP_ID;
-  const discordBotToken = import.meta.env.VITE_DISCORD_BOT_TOKEN;
-  const mightyNetworksApiKey = import.meta.env.VITE_MIGHTY_NETWORKS_API_KEY;
-
-  const hasFacebook = Boolean(facebookGroupId);
-  const hasDiscord = Boolean(discordBotToken);
-  const hasMightyNetworks = Boolean(mightyNetworksApiKey);
-
-  if (!hasFacebook && !hasDiscord && !hasMightyNetworks) {
-    return {
-      connected: false,
-      platform: null,
-      members: null,
-      activeToday: null,
-      growth30d: null,
-      topMembers: [],
-      lastUpdated: null,
-      error: 'No community platform configured',
-    };
-  }
-
   try {
     const payload = await callSupabaseEdge('integration.community', {
-      platform,
-      hasFacebook,
-      hasDiscord,
-      hasMightyNetworks,
+      provider: 'community',
     });
+
+    if (!payload || typeof payload !== 'object') {
+      return {
+        connected: false,
+        platform: null,
+        members: null,
+        activeToday: null,
+        growth30d: null,
+        topMembers: [],
+        lastUpdated: null,
+        error: 'No community platform configured',
+      };
+    }
+
+    if (payload.error) {
+      return {
+        connected: false,
+        platform: payload.platform || null,
+        members: null,
+        activeToday: null,
+        growth30d: null,
+        topMembers: [],
+        lastUpdated: null,
+        error: payload.error,
+      };
+    }
+
+    const members = payload.members ?? payload.memberCount ?? payload.totalMembers ?? null;
+    const topMembers = Array.isArray(payload.topMembers) ? payload.topMembers.slice(0, 5) : [];
     return {
-      connected: true,
-      platform,
-      members: payload.members ?? null,
+      connected: Boolean(payload.connected ?? (members != null || topMembers.length > 0)),
+      platform: payload.platform || null,
+      members,
       activeToday: payload.activeToday ?? null,
       growth30d: payload.growth30d ?? null,
-      topMembers: Array.isArray(payload.topMembers) ? payload.topMembers.slice(0, 5) : [],
+      topMembers,
       lastUpdated: new Date().toISOString(),
       error: null,
     };
   } catch (error) {
     return {
       connected: false,
-      platform,
+      platform: null,
       members: null,
       activeToday: null,
       growth30d: null,
