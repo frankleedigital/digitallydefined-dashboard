@@ -172,13 +172,11 @@ export default function AssistantPage() {
     setInput("");
 
     try {
-      // Routed through the dashboard backend API with the AI provider kept server-side.
-      const data = await callSupabaseEdge("chat", {
+      // Use the new business-partner endpoint for structured JSON intelligence
+      const data = await callSupabaseEdge("business.partner", {
         message: userMessage.content,
-        systemPrompt: `${PARTNER_SYSTEM_PROMPT}\n\n${analyticsContext}`,
-        conversation: updatedMessages.slice(-10),
+        history: updatedMessages.slice(-10),
         includeWebsiteContext: true,
-        mode: "ultraMode",
       });
 
       const structuredReply = data?.data ? formatStructuredBusinessReply(data.data) : null;
@@ -191,6 +189,7 @@ export default function AssistantPage() {
         content: reply,
         provider: usedProvider,
         model: usedModel,
+        businessInsights: data?.businessInsights || null,
         appliedEdit: data?.appliedEdit || null,
       };
 
@@ -245,6 +244,41 @@ export default function AssistantPage() {
               <div className="dd-assistant-meta">
                 {m.provider && <span className="dd-assistant-chip">{m.provider}</span>}
                 {m.model && <span className="dd-assistant-chip">{m.model}</span>}
+              </div>
+            )}
+
+            {/* Display structured business intelligence */}
+            {m.businessInsights && (
+              <div className="dd-business-insights">
+                <div className="dd-business-insights-header">📊 Business Intelligence</div>
+                <div className="dd-business-insights-summary">{m.businessInsights.summary}</div>
+                {m.businessInsights.revenue_signals && (
+                  <div className="dd-business-insights-row">
+                    <strong>Trend:</strong> {m.businessInsights.revenue_signals.trend}
+                    {m.businessInsights.revenue_signals.top_product && <span> | Top Product: {m.businessInsights.revenue_signals.top_product}</span>}
+                    {m.businessInsights.revenue_signals.top_lead_source && <span> | Top Source: {m.businessInsights.revenue_signals.top_lead_source}</span>}
+                  </div>
+                )}
+                {m.businessInsights.growth_opportunities?.length > 0 && (
+                  <div className="dd-business-insights-section">
+                    <strong>Growth Opportunities:</strong>
+                    <ul>{m.businessInsights.growth_opportunities.map((o, j) => <li key={j}>{o}</li>)}</ul>
+                  </div>
+                )}
+                {m.businessInsights.risk_flags?.length > 0 && (
+                  <div className="dd-business-insights-section dd-business-insights-risks">
+                    <strong>Risk Flags:</strong>
+                    <ul>{m.businessInsights.risk_flags.map((r, j) => <li key={j}>{r}</li>)}</ul>
+                  </div>
+                )}
+                {m.businessInsights.recommended_next_action && (
+                  <div className="dd-business-insights-action">
+                    <strong>Next Action:</strong> {m.businessInsights.recommended_next_action}
+                  </div>
+                )}
+                {m.businessInsights.confidence && (
+                  <div className="dd-business-insights-confidence">Confidence: {m.businessInsights.confidence}</div>
+                )}
               </div>
             )}
           </div>
