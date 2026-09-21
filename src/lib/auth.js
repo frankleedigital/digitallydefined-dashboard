@@ -40,9 +40,9 @@ export async function signUpWithEmail(email, password, name) {
   }
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(nextPath = "/dashboard") {
   try {
-    await supabaseSignInWithGoogle();
+    await supabaseSignInWithGoogle(nextPath);
   } catch (error) {
     console.error('Google sign in failed:', error);
     throw error;

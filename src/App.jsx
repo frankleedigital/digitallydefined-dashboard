@@ -11,10 +11,11 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
 import LandingPage from "./pages/LandingPage";
-import ProtectedRoute from "./components/ProtectedRoute";
 import PremiumGate from "./components/PremiumGate";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
+import AuthCallback from "./pages/auth/AuthCallback";
+import DebugAuth from "./pages/DebugAuth"; // TEMPORARY debug route — see /debug-auth
 
 function App() {
   const hostname = window.location.hostname;
@@ -38,50 +39,36 @@ function App() {
         <Route path="/" element={homePage} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
+        {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        {/* TEMPORARY: remove together with src/pages/DebugAuth.jsx */}
+        <Route path="/debug-auth" element={<DebugAuth />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/quiz" element={<DigitalSuperpowerQuiz />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
         <Route
           path="/intelligence"
           element={
-            <ProtectedRoute>
-              <PremiumGate feature="Intelligence">
-                <IntelligencePage />
-              </PremiumGate>
-            </ProtectedRoute>
+            <PremiumGate feature="Intelligence">
+              <IntelligencePage />
+            </PremiumGate>
           }
         />
 
-        {/* ⭐ Live website analytics (AI Business Partner data source) */}
+        {/* Live website analytics (AI Business Partner data source) */}
         {isDashboardDomain && (
-          <Route
-            path="/analytics"
-            element={
-              <ProtectedRoute>
-                <AnalyticsPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         )}
 
-        {/* ⭐ NEW: AI Assistant Page (dashboard only) */}
+        {/* AI Assistant Page (dashboard only) */}
         {isDashboardDomain && (
           <Route
             path="/assistant"
             element={
-              <ProtectedRoute>
-                <PremiumGate feature="AI Business Partner">
-                  <AssistantPage />
-                </PremiumGate>
-              </ProtectedRoute>
+              <PremiumGate feature="AI Business Partner">
+                <AssistantPage />
+              </PremiumGate>
             }
           />
         )}

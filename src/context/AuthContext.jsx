@@ -1,94 +1,93 @@
 // src/context/AuthContext.jsx
-// Supabase authentication context for DigitallyDefined Dashboard
+// Supabase authentication context for the DigitallyDefined dashboard.
+//
+// Auth is disabled for dashboard access — everyone gets in. This provider
+// still exists because some pages read currentUser for API headers. It keeps
+// a live session in the background so that if/when auth is re-enabled, the
+// session is already there.
+//
+// The provider never blocks rendering and never redirects.
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../supabase.js";
-import {
-  getCurrentUser,
-  signInWithEmail,
-  signUpWithEmail,
-  signInWithGoogle,
-  signOut,
-} from "../lib/auth";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { supabase, authLog, authError } from "../supabase.js";
+import { getCurrentUser, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut } from "../lib/auth";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  const [session, setSession] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    async function loadSession() {
-      try {
-        // First: check active session (required for Google OAuth)
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+    let cancelled = false;
 
-        if (session?.user) {
-          setCurrentUser(session.user);
-        } else {
-          // Fallback: check user via getCurrentUser()
-          const user = await getCurrentUser();
-          setCurrentUser(user || null);
+    const applySession = (nextSession, source) => {
+      if (cancelled) return;
+      setSession(nextSession || null);
+      setCurrentUser(nextSession?.user || null);
+      authLog(`session applied (${source})`, {
+        userId: nextSession?.user?.id || null,
+        email: nextSession?.user?.email || null,
+        hasSession: !!nextSession,
+      });
+    };
+
+    async function loadSession() {
+      if (initializedRef.current) {
+        authLog("initialization already ran, skipping duplicate mount");
+        return;
+      }
+      initializedRef.current = true;
+
+      try {
+        authLog("initializing auth state…", { origin: window.location.origin, path: window.location.pathname });
+        const { data, error } = await supabase.auth.getSession();
+        if (error) authError("getSession failed:", error.message);
+        const restored = data?.session || null;
+        if (restored) {
+          applySession(restored, "getSession");
+          setLoading(false);
+          return;
         }
-      } catch (error) {
-        console.error("Auth check failed:", error);
+        authLog("no restored session — dashboard is open to everyone");
         setCurrentUser(null);
+      } catch (error) {
+        authError("auth initialization failed:", error?.message || error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
-    loadSession();
-
-    // Listen for auth state changes (login, logout, Google OAuth callback)
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        setCurrentUser(session.user);
-      } else {
-        setCurrentUser(null);
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      authLog("onAuthStateChange", event, { userId: nextSession?.user?.id || null, hasSession: !!nextSession });
+      if (event === "SIGNED_OUT") { applySession(null, event); return; }
+      if (nextSession?.user) applySession(nextSession, event);
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    loadSession();
+    return () => { cancelled = true; subscription.unsubscribe(); };
   }, []);
 
-  const value = {
-    currentUser,
-
+  const value = useMemo(() => ({
+    session, currentUser, loading,
     login: async (email, password) => {
-      const user = await signInWithEmail(email, password);
-      setCurrentUser(user.user);
-      return user;
+      const result = await signInWithEmail(email, password);
+      const user = result?.user || result?.session?.user || null;
+      setSession(result?.session || null); setCurrentUser(user); return result;
     },
-
     signup: async (email, password, name) => {
-      const user = await signUpWithEmail(email, password, name);
-      setCurrentUser(user.user);
-      return user;
+      const result = await signUpWithEmail(email, password, name);
+      const user = result?.user || result?.session?.user || null;
+      setSession(result?.session || null); setCurrentUser(user); return result;
     },
+    signInWithGoogle: async (nextPath) => { await signInWithGoogle(nextPath); },
+    logout: async () => { await signOut(); setSession(null); setCurrentUser(null); },
+  }), [session, currentUser, loading]);
 
-    signInWithGoogle: async () => {
-      await signInWithGoogle();
-      // OAuth redirects, session will be picked up by getSession() + onAuthStateChange
-    },
-
-    logout: async () => {
-      await signOut();
-      setCurrentUser(null);
-    },
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export function useAuth() { return useContext(AuthContext); }

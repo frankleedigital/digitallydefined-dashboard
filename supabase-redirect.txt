@@ -10,6 +10,8 @@ https://dashboard.digitallydefined.online/*
 https://dashboard.digitallydefined.online/login
 https://dashboard.digitallydefined.online/signup
 https://dashboard.digitallydefined.online/dashboard
+https://dashboard.digitallydefined.online/auth/callback
 
-# After updating, Google OAuth will redirect back to:
-# https://dashboard.digitallydefined.online/dashboard
+# After updating, Google OAuth redirects to /auth/callback, which finalizes the
+# session first and then sends the user to /dashboard:
+# https://dashboard.digitallydefined.online/auth/callback?next=%2Fdashboard

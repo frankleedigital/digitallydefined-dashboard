@@ -1,47 +1,80 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { authLog, authError, authWarn } from "../../supabase.js";
+
+/** Only same-app paths may be used as a post-signup destination. */
+function safeNextPath(raw) {
+  if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  return "/dashboard";
+}
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { signup, signInWithGoogle } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { signup, signInWithGoogle, currentUser, loading } = useAuth();
+
+  const nextPath = safeNextPath(searchParams.get("next"));
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [authError, setAuthError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  // An already-signed-in visitor does not need this page either.
+  useEffect(() => {
+    if (loading) return;
+    if (currentUser) {
+      authLog("signup page: session already present → redirecting", { nextPath });
+      navigate(nextPath, { replace: true });
+    }
+  }, [currentUser, loading, navigate, nextPath]);
 
   const handleEmailSignup = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setAuthError("");
+    setSubmitting(true);
+    setFormError("");
 
     if (password !== confirmPassword) {
-      setAuthError("Passwords do not match.");
-      setLoading(false);
+      setFormError("Passwords do not match.");
+      setSubmitting(false);
       return;
     }
 
+    authLog("email sign-up submitted", { email, nextPath });
+
     try {
-      await signup(email, password);
-      navigate("/dashboard");
+      const result = await signup(email, password);
+      if (!result?.session) {
+        // Email confirmation is on: there is no session yet, so the dashboard
+        // guard would bounce them back here. Say exactly what to do instead.
+        authWarn("sign-up has no session yet (email confirmation?)", { userId: result?.user?.id || null });
+        setFormError("Check your email and click the confirmation link — then come back and sign in.");
+        return;
+      }
+      authLog("email sign-up succeeded → navigating", { nextPath });
+      navigate(nextPath, { replace: true });
     } catch (err) {
-      setAuthError(err.message || "Sign up failed. Please try again.");
+      authError("email sign-up failed:", err?.message || err);
+      setFormError(err.message || "Sign up failed. Please try again.");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   const handleGoogleSignup = async () => {
-    setLoading(true);
-    setAuthError("");
+    setSubmitting(true);
+    setFormError("");
+
+    authLog("google sign-up requested", { nextPath });
 
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(nextPath);
     } catch (err) {
-      setAuthError(err.message || "Google sign up failed.");
-      setLoading(false);
+      authError("google sign-up failed:", err?.message || err);
+      setFormError(err.message || "Google sign up failed.");
+      setSubmitting(false);
     }
   };
 
@@ -66,9 +99,9 @@ export default function Signup() {
             Start owning your digital presence.
           </p>
 
-          {authError && (
+          {formError && (
             <div className="mb-4 border-2 border-[#8B1A0A] px-4 py-3 text-sm text-[#8B1A0A] font-bold uppercase tracking-wide">
-              {authError}
+              {formError}
             </div>
           )}
 
@@ -123,19 +156,19 @@ export default function Signup() {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-[#F18B25] text-[#111111] py-3 font-black uppercase tracking-widest text-sm border-2 border-[#111111] hover:bg-[#111111] hover:text-white transition-colors"
+              disabled={submitting || loading}
+              className="w-full bg-[#F18B25] text-[#111111] py-3 font-black uppercase tracking-widest text-sm border-2 border-[#111111] hover:bg-[#111111] hover:text-white transition-colors disabled:opacity-50"
               style={{ borderRadius: '0' }}
             >
-              {loading ? "Creating account..." : "Create Account"}
+              {submitting || loading ? "Creating account..." : "Create Account"}
             </button>
           </form>
 
           <div className="mt-6">
             <button
               onClick={handleGoogleSignup}
-              disabled={loading}
-              className="w-full bg-white border-2 border-[#111111] py-3 font-black uppercase tracking-widest text-sm text-[#111111] hover:bg-[#FFFCF9] transition-colors"
+              disabled={submitting || loading}
+              className="w-full bg-white border-2 border-[#111111] py-3 font-black uppercase tracking-widest text-sm text-[#111111] hover:bg-[#FFFCF9] transition-colors disabled:opacity-50"
               style={{ borderRadius: '0' }}
             >
               Continue with Google
@@ -144,7 +177,7 @@ export default function Signup() {
 
           <p className="text-center text-sm text-[#5F5F5F] mt-6 font-medium">
             Already have an account?{" "}
-            <Link to="/login" className="text-[#F18B25] font-black uppercase tracking-wider">
+            <Link to={`/login${nextPath !== "/dashboard" ? `?next=${encodeURIComponent(nextPath)}` : ""}`} className="text-[#F18B25] font-black uppercase tracking-wider">
               Sign in
             </Link>
           </p>
