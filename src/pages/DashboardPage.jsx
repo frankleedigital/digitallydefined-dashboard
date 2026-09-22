@@ -508,6 +508,9 @@ function DashboardAssistant({
   onQuickPrompt,
   selectedModel,
   onModelChange,
+  modelGroups,
+  modelSwitching,
+  modelNotice,
 }) {
   const quickPrompts = [
     "What needs my attention today?",
@@ -515,41 +518,57 @@ function DashboardAssistant({
     "What is the next best move?",
   ];
 
-  // Model selector options — grouped by cost tier.
-  // The backend accepts any OmniRoute model ID (bm/*, auto/*, t3chat/*, etc.)
-  // or a direct Gemini model. Defaults to "auto/best-chat" which lets OmniRoute
-  // pick the best available model for the task.
-  // NOTE: selectedModel state is now managed in the parent DashboardPage component
+  // Model selector options — REAL OmniRoute models grouped by cost tier.
+  // Loaded from backend-clean (GET /api/models) when available; a curated
+  // static list is kept as fallback so the dropdown never renders empty.
+  // NOTE: selectedModel state is managed in the parent DashboardPage component
   // and passed down via props.
-  const modelOptions = [
-    // ── Free (via OmniRoute combos or Gemini direct) ──
-    { group: "Free Models", value: "auto/best-chat", desc: "Best overall chat /free" },
-    { group: "Free Models", value: "auto/best-fast", desc: "Fastest response /free" },
-    { group: "Free Models", value: "auto/gemini", desc: "Best Gemini available /free" },
-    { group: "Free Models", value: "auto/best-reasoning", desc: "Deep analysis /free" },
-    { group: "Free Models", value: "auto/best-coding", desc: "Code & tech /free" },
-    { group: "Free Models", value: "auto/best-vision", desc: "Image analysis /free" },
-    { group: "Free Models", value: "auto/best-free", desc: "Guaranteed free tier /free" },
-    { group: "Free Models", value: "static-best-free", desc: "Your combo (free models) /free" },
-    { group: "Free Models", value: "free-stack", desc: "Your combo (free stack) /free" },
-    { group: "Free Models", value: "gemini-3.5-flash-lite", desc: "Gemini direct (free tier) /free" },
-    // ── Your Credits (Gemini $10 / Vertex $310) ──
-    { group: "Your Credits", value: "gemini-2.5-pro", desc: "Gemini 2.5 Pro ($10 credit)" },
-    { group: "Your Credits", value: "gemini-3.6-flash", desc: "Gemini 3.6 Flash (may be overloaded)" },
-    // ── Premium (Bluesminds — may have usage limits) ──
-    { group: "Premium (Bluesminds)", value: "bm/gpt-4o-mini", desc: "GPT-4o Mini" },
-    { group: "Premium (Bluesminds)", value: "bm/gpt-4.1", desc: "GPT-4.1" },
-    { group: "Premium (Bluesminds)", value: "bm/claude-sonnet-4-5", desc: "Claude Sonnet 4.5" },
-    { group: "Premium (Bluesminds)", value: "bm/gemini-2.5-pro", desc: "Gemini 2.5 Pro (VIP)" },
-    { group: "Premium (Bluesminds)", value: "bm/deepseek-chat", desc: "DeepSeek Chat" },
-    { group: "Premium (Bluesminds)", value: "bm/qwen-turbo", desc: "Qwen Turbo" },
-    { group: "Premium (Bluesminds)", value: "bm/kimi-k2", desc: "Kimi K2" },
+  const TIER_LABELS = {
+    free: "Free Models",
+    gemini: "Gemini / Vertex (paid credits)",
+    bluesminds: "Premium (Bluesminds)",
+  };
+  const staticFallback = [
+    { group: "Free Models", value: "auto/best-chat", tier: "free" },
+    { group: "Free Models", value: "auto/best-free", tier: "free" },
+    { group: "Free Models", value: "auto/best-fast", tier: "free" },
+    { group: "Free Models", value: "auto/gemini", tier: "free" },
+    { group: "Free Models", value: "auto/cheap", tier: "free" },
+    { group: "Free Models", value: "auto/best-reasoning", tier: "free" },
+    { group: "Free Models", value: "static-best-free", tier: "free" },
+    { group: "Free Models", value: "free-stack", tier: "free" },
+    { group: "Free Models", value: "gemini-3.5-flash-lite", tier: "free" },
+    { group: "Gemini / Vertex (paid credits)", value: "vertex/gemini-2.5-pro", tier: "gemini" },
+    { group: "Gemini / Vertex (paid credits)", value: "vertex/gemini-2.5-flash", tier: "gemini" },
+    { group: "Gemini / Vertex (paid credits)", value: "gemini-2.5-pro", tier: "gemini" },
+    { group: "Premium (Bluesminds)", value: "bm/gpt-4o-mini", tier: "bluesminds" },
+    { group: "Premium (Bluesminds)", value: "bm/claude-sonnet-4.5", tier: "bluesminds" },
+    { group: "Premium (Bluesminds)", value: "bm/claude-sonnet-4-5", tier: "bluesminds" },
+    { group: "Premium (Bluesminds)", value: "bm/gemini-2.5-pro", tier: "bluesminds" },
+    { group: "Premium (Bluesminds)", value: "bm/deepseek-chat", tier: "bluesminds" },
+    { group: "Premium (Bluesminds)", value: "bm/qwen-turbo", tier: "bluesminds" },
+    { group: "Premium (Bluesminds)", value: "bm/kimi-k2", tier: "bluesminds" },
   ];
 
-  const groupedOptions = modelOptions.reduce((acc, opt) => {
-    (acc[opt.group] ??= []).push(opt);
-    return acc;
-  }, {});
+  const liveGroups = (modelGroups || [])
+    .map((g) => ({
+      group: TIER_LABELS[g.tier] || g.tier,
+      options: (g.models || []).map((m) => ({
+        value: m.value,
+        label: `${m.value}${m.verified === "degraded" ? "  ⚠" : ""}`,
+        title: m.verified === "degraded" && m.issue ? `${m.desc} — ${m.issue}` : (m.desc || m.value),
+      })),
+    }))
+    .filter((g) => g.options.length > 0);
+
+  const groupedOptions =
+    liveGroups.length > 0
+      ? Object.fromEntries(liveGroups.map((g) => [g.group, g.options]))
+      : staticFallback.reduce((acc, opt) => {
+          (acc[opt.group] ??= []).push(opt);
+          return acc;
+        }, {});
+
 
   const renderStructuredSections = (msg) => {
     if (!msg.structuredSections?.length) return null;
@@ -627,11 +646,12 @@ function DashboardAssistant({
         </div>
         <select
           value={selectedModel}
+          disabled={modelSwitching}
           onChange={(e) => {
             const v = e.target.value;
             if (onModelChange) onModelChange(v);
-            localStorage.setItem("dd-assistant-model", v);
           }}
+          title={modelSwitching ? "Switching model…" : "AI model (via OmniRoute)"}
           style={{
             border: brutalBorder,
             backgroundColor: theme.colors.card,
@@ -639,22 +659,42 @@ function DashboardAssistant({
             padding: "0.3rem 0.5rem",
             fontSize: "0.72rem",
             fontWeight: 700,
-            cursor: "pointer",
+            cursor: modelSwitching ? "wait" : "pointer",
             fontFamily: theme.fonts.body,
             borderRadius: 0,
+            opacity: modelSwitching ? 0.6 : 1,
           }}
         >
           {Object.entries(groupedOptions).map(([group, opts]) => (
             <optgroup key={group} label={group}>
               {opts.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.value}
+                <option key={opt.value} value={opt.value} title={opt.title || opt.value}>
+                  {opt.label || opt.value}
                 </option>
               ))}
             </optgroup>
           ))}
         </select>
+        {modelSwitching && (
+          <span style={{ fontSize: "0.7rem", color: theme.colors.muted, fontWeight: 700 }}>
+            switching…
+          </span>
+        )}
       </div>
+      {modelNotice && (
+        <div
+          style={{
+            border: `1px solid ${modelNotice.tone === "warn" ? theme.colors.warning : theme.colors.accent}66`,
+            backgroundColor: "rgba(0,0,0,0.25)",
+            padding: "0.4rem 0.6rem",
+            fontSize: "0.75rem",
+            color: theme.colors.textPrimary,
+            lineHeight: 1.4,
+          }}
+        >
+          {modelNotice.text}
+        </div>
+      )}
 
       <div
         style={{
@@ -835,6 +875,84 @@ const DashboardPage = () => {
   const [selectedModel, setSelectedModel] = useState(
     localStorage.getItem("dd-assistant-model") || "auto/best-chat"
   );
+  const [modelGroups, setModelGroups] = useState([]);
+  const [modelSwitching, setModelSwitching] = useState(false);
+  const [modelNotice, setModelNotice] = useState(null);
+
+  // Restore the stored model + fetch the real model list on first load.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { fetchActiveModel, fetchModelGroups } = await import(
+          "../lib/modelSelector"
+        );
+        const [stored, groups] = await Promise.all([
+          fetchActiveModel().catch(() => null),
+          fetchModelGroups().catch(() => null),
+        ]);
+        if (cancelled) return;
+        if (stored?.model) {
+          setSelectedModel(stored.model);
+          try {
+            localStorage.setItem("dd-assistant-model", stored.model);
+          } catch { /* ignore */ }
+        }
+        if (groups?.groups?.length) setModelGroups(groups.groups);
+      } catch {
+        /* best-effort — static fallback list keeps the dropdown working */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /**
+   * Switch the active model end-to-end:
+   *   backend-clean (validate) -> Hermes runtime -> Supabase persistence.
+   * On success the AI Business Partner reloads with the new model.
+   */
+  const handleModelChange = async (modelId) => {
+    const next = String(modelId || "").trim();
+    if (!next || next === selectedModel) return;
+    const previous = selectedModel;
+    setSelectedModel(next);
+    setModelSwitching(true);
+    setModelNotice({ tone: "info", text: `Switching to ${next}…` });
+    try {
+      const { switchActiveModel } = await import("../lib/modelSelector");
+      const result = await switchActiveModel(next);
+      const warn = result.verified === "degraded" && result.issue;
+      setModelNotice({
+        tone: warn ? "warn" : "info",
+        text: warn
+          ? `Active model: ${result.activeModel} ⚠ ${result.issue}`
+          : `Active model: ${result.activeModel}${result.hermesSync ? " (Hermes synced)" : ""}${result.persisted ? " (saved)" : ""}`,
+      });
+      // Reload the AI Business Partner with the new model.
+      setAssistantMessages([
+        {
+          role: "assistant",
+          content: `Model switched to ${result.activeModel}. Ask me anything — I'm running on the new model now.`,
+          provider: "omniroute",
+          model: result.activeModel,
+        },
+      ]);
+      setAssistantError("");
+    } catch (err) {
+      setSelectedModel(previous);
+      try {
+        localStorage.setItem("dd-assistant-model", previous);
+      } catch { /* ignore */ }
+      setModelNotice({
+        tone: "warn",
+        text: `Could not switch to ${next}: ${err.message || "request failed"}. Reverted to ${previous}.`,
+      });
+    } finally {
+      setModelSwitching(false);
+    }
+  };
 
   useEffect(() => {
     document.title = `${CONFIG.brand.fullName} Dashboard`;
@@ -1336,7 +1454,10 @@ const DashboardPage = () => {
             onSubmit={handleAssistantSubmit}
             onQuickPrompt={sendAssistantMessage}
             selectedModel={selectedModel}
-            onModelChange={setSelectedModel}
+            onModelChange={handleModelChange}
+            modelGroups={modelGroups}
+            modelSwitching={modelSwitching}
+            modelNotice={modelNotice}
           />
         </section>
       </main>
