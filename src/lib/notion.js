@@ -2,6 +2,7 @@
 // Reads Notion databases (ideas, content, automations, buyer signals, AI drafts)
 // via the Hermes /sync endpoint which already aggregates them.
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "./supabase-edge";
+import { normalizeProperties } from "../utils/notionMapper";
 
 const notionConfig = {
   ideasDbId: import.meta.env.VITE_NOTION_IDEAS_DB_ID || "",
@@ -12,6 +13,14 @@ const notionConfig = {
   buyerSignalsDbId: import.meta.env.VITE_NOTION_BUYER_SIGNALS_DB_ID || "",
   aiDraftsDbId: import.meta.env.VITE_NOTION_AI_CONTENT_DRAFTS_DB_ID || "",
 };
+
+/** Apply the property-name mapper to every page in a list. */
+function normalizeNotionItems(list) {
+  return (list || []).map((item) => {
+    if (!item || !item.properties) return item;
+    return { ...item, properties: normalizeProperties(item.properties) };
+  });
+}
 
 // ---- Fetch Notion data from the synchronized dashboard payload ----
 // The Hermes sync endpoint already aggregates all Notion databases.
@@ -37,14 +46,14 @@ export async function fetchNotionData() {
     const notion = payload?.notion || {};
 
     return {
-      ideas: notion.ideas || [],
-      content: notion.content || [],
-      automations: notion.automations || [],
+      ideas: normalizeNotionItems(notion.ideas),
+      content: normalizeNotionItems(notion.content),
+      automations: normalizeNotionItems(notion.automations),
       intakeAlerts: notion.intakeAlerts || [],
-      publishingQueue: notion.publishingQueue || [],
-      approvals: notion.approvals || [],
-      buyerSignals: notion.buyerSignals || [],
-      aiDrafts: notion.aiDrafts || [],
+      publishingQueue: normalizeNotionItems(notion.publishingQueue),
+      approvals: normalizeNotionItems(notion.approvals),
+      buyerSignals: normalizeNotionItems(notion.buyerSignals),
+      aiDrafts: normalizeNotionItems(notion.aiDrafts),
       ideasAlerts: notion.ideasAlerts || [],
       rawNotion: notion,
     };

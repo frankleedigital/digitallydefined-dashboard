@@ -1,7 +1,7 @@
 // Shared helper for calling the campus-wide dashboard backend.
 // The dashboard no longer depends on the legacy Hermes Supabase edge function.
 
-const DEFAULT_DASHBOARD_API_URL = 'https://api.digitallydefined.online';
+const DEFAULT_DASHBOARD_API_URL = 'https://digitallydefined-backend-clean.vercel.app';
 
 export const getSupabaseEdgeUrl = (functionName = '') => {
   // Canonical backend base. VITE_API_URL is the single source of truth.
@@ -51,8 +51,12 @@ export async function callSupabaseEdge(action, payload = {}, extraHeaders = {}) 
   const apiKey = import.meta.env.VITE_DASHBOARD_API_KEY;
   const res = await fetch(getSupabaseEdgeUrl(), {
     method: 'POST',
-    headers: getSupabaseEdgeHeaders(extraHeaders),
-    body: JSON.stringify({ action, ...(apiKey ? { key: apiKey } : {}), ...payload }),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(apiKey ? { 'x-api-key': apiKey } : {}),
+      ...extraHeaders,
+    },
+    body: JSON.stringify({ action, ...payload }),
   });
 
   if (!res.ok) {

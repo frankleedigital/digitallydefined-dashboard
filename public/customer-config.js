@@ -78,10 +78,10 @@ const CUSTOMER_CONFIG = {
   
   // Your dashboard backend API URL
   // Leave as is to use DigitallyDefined's Gemini-powered backend
-  backendApiUrl: "https://digitallydefined-os-backend.vercel.app/api",
-  
+  backendApiUrl: "https://digitallydefined-backend-clean.vercel.app/api",
+
   // Dashboard gateway URL for all API calls
-  hermesGatewayUrl: "https://digitallydefined-os-backend.vercel.app/api",
+  hermesGatewayUrl: "https://digitallydefined-backend-clean.vercel.app/api",
   
   // Your Backend API Key (provided by DigitallyDefined)
   // Get this from your purchase confirmation

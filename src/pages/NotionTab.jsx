@@ -183,11 +183,17 @@ function GridList({ items }) {
     <div style={{ display: "grid", gap: "0.5rem" }}>
       {items.slice(0, 20).map((item, i) => (
         <div key={i} style={{ ...cardStyle, display: "grid", gap: "0.3rem" }}>
-          <ItemHeader title={item.title || item.Name || "Untitled"} status={item.status || item.Stage || "New"} />
-          <Row label="Source" value={item.source || item.Route || ""} />
+          <ItemHeader title={item.name || "Untitled"} status={item.status || item.stage || "New"} />
+          <Row label="Source" value={item.source || ""} />
+          {item.category && <Row label="Category" value={item.category} />}
+          {item.priority != null && <Row label="Priority" value={String(item.priority)} />}
+          {item.type && <Row label="Type" value={item.type} />}
+          {item.niche && <Row label="Niche" value={item.niche} />}
           {item.customerEmail && <Row label="Customer" value={item.customerEmail} />}
           {item.productSlug && <Row label="Product" value={item.productSlug} />}
           {item.url && <OpenNotionLink url={item.url} />}
+          {item.created && <Row label="Created" value={item.created} />}
+          {item.updated && <Row label="Updated" value={item.updated} />}
         </div>
       ))}
     </div>
@@ -251,7 +257,7 @@ function ApprovalList({ items }) {
     <div style={{ display: "grid", gap: "0.5rem" }}>
       {items.slice(0, 20).map((item, i) => (
         <div key={i} style={{ ...cardStyle, display: "grid", gap: "0.3rem" }}>
-          <ItemHeader title={item.title || item.Name || "Untitled"} status={item.status || item.Stage || "pending"} />
+          <ItemHeader title={item.name || item.title || item.Name || "Untitled"} status={item.status || item.stage || "pending"} />
           {item.contentType && <Row label="Type" value={item.contentType} />}
           {item.requestedAt && <Row label="Requested" value={item.requestedAt} />}
           {item.notes && <Row label="Notes" value={item.notes} />}

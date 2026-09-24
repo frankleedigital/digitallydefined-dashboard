@@ -228,6 +228,65 @@ const DigitalSuperpowerQuiz = () => {
     setResultKey(key);
     setSubmitted(true);
     setShowInstructions(false);
+    try {
+      const personaResults = {
+        builder: {
+          title: "The Systems Builder",
+          description: "You think in automations, frameworks, and repeatable processes.",
+          superpowerDescription: "You think in automations, frameworks, and repeatable processes.",
+          assets: ["Automated lead funnels", "Notion templates and dashboards", "SaaS-adjacent workflows", "Content repurposing engines", "Premium process toolkits"],
+          nextStep: "Map your highest-value workflow and turn it into a sellable, repeatable system.",
+        },
+        creator: {
+          title: "The Content Creator",
+          description: "You have a natural gift for storytelling, visuals, and creating content.",
+          superpowerDescription: "You have a natural gift for storytelling, visuals, and creating content.",
+          assets: ["Faceless YouTube / Reels content", "Affiliate marketing funnels", "Pinterest SEO content", "UGC brand partnerships", "Email newsletter"],
+          nextStep: "Start by identifying your niche content pillars and batch-creating 30 days of content.",
+        },
+        educator: {
+          title: "The Expertise Educator",
+          description: "You've spent decades accumulating expertise that others desperately need.",
+          superpowerDescription: "You've spent decades accumulating expertise that others desperately need.",
+          assets: ["Mini-course funnels", "Coaching container templates", "Paid workshop sequels", "Membership lesson libraries", "Signature programs"],
+          nextStep: "Pick one small, high-impact teaching topic and create a short lead magnet that proves your model.",
+        },
+        connector: {
+          title: "The Community Connector",
+          description: "People are drawn to you. You create belonging, safety, and momentum.",
+          superpowerDescription: "People are drawn to you. You create belonging, safety, and momentum.",
+          assets: ["Paid memberships", "Group coaching programs", "Community-led launches", "Membership content roadmaps", "Live event funnels"],
+          nextStep: "Choose a small group format, set a clear outcome, and invite the people who already trust you to join the first cohort.",
+        },
+        strategist: {
+          title: "The Strategy Specialist",
+          description: "You think in positioning, messaging, and market differentiation.",
+          superpowerDescription: "You think in positioning, messaging, and market differentiation.",
+          assets: ["Signature consulting offers", "Premium service packages", "Positioning frameworks", "Brand storytelling systems", "High-ticket launch plans"],
+          nextStep: "Start by clarifying the outcome you deliver, then package it in a premium offer for the clients who need it most.",
+        },
+      };
+      const persona = personaResults[key] || personaResults.creator;
+      const roadmap = {
+        steps: persona.assets,
+        estimatedTime: "30-60 days",
+      };
+      const quizResult = {
+        userId: "",
+        name: "",
+        email: "",
+        superpower: key,
+        superpowerType: key,
+        personaTitle: persona.title,
+        answers,
+        confidence: 1,
+        roadmap,
+        ...persona,
+      };
+      localStorage.setItem("dd-quiz-results", JSON.stringify(quizResult));
+    } catch {
+      /* localStorage unavailable — IntelligencePage will redirect to quiz anyway */
+    }
   };
 
   const handleReset = () => {
