@@ -1,30 +1,35 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import CONFIG from "./config";
 import DashboardPage from "./pages/DashboardPage";
-import DigitalSuperpowerQuiz from "./pages/DigitalSuperpowerQuiz";
 import AssistantPage from "./pages/AssistantPage";
 import ThankYouCalculatorPage from "./pages/ThankYouCalculatorPage";
 import IntelligencePage from "./pages/IntelligencePage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
-import LandingPage from "./pages/LandingPage";
 import PremiumGate from "./components/PremiumGate";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
-import DebugAuth from "./pages/DebugAuth"; // TEMPORARY debug route — see /debug-auth
+
+// The public marketing site and quiz live in digitallydefined-online-local.
+// The dashboard does not duplicate them — it links out. See the workspace
+// audit: online-local is the single production website.
+const PUBLIC_SITE = "https://digitallydefined.online";
+const PUBLIC_QUIZ = `${PUBLIC_SITE}/quiz`;
 
 function App() {
   const hostname = window.location.hostname;
   const isDashboardDomain = hostname === "dashboard.digitallydefined.online";
 
+  // On the dashboard domain "/" is the dashboard. On any other host (Vercel
+  // preview URLs) send the visitor to the real public site rather than
+  // rendering a second, divergent copy of it.
   const homePage = isDashboardDomain ? (
     <Navigate to="/dashboard" replace />
   ) : (
-    <LandingPage />
+    <Navigate to={PUBLIC_SITE} replace />
   );
 
   return (
@@ -41,10 +46,9 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
-        {/* TEMPORARY: remove together with src/pages/DebugAuth.jsx */}
-        <Route path="/debug-auth" element={<DebugAuth />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/quiz" element={<DigitalSuperpowerQuiz />} />
+        {/* Quiz is owned by the public site — redirect, do not reimplement. */}
+        <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
         <Route
