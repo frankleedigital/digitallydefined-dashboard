@@ -5,3 +5,5 @@ dist/
 desktop.ini
 .vercel
 .env*
+dev/
+kilo.json

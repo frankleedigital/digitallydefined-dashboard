@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import { renderBusinessPartnerReply, formatAppliedEdit } from "../lib/businessPartnerReply";
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -18,17 +19,15 @@ export default function ChatWidget() {
     setInput("");
 
     try {
-      const API_URL = getSupabaseEdgeUrl();
+      // Route chat through the Hermes business-partner endpoint so the dashboard
+      // talks to HermesOS directly instead of a bare model call.
+      const API_URL = `${getSupabaseEdgeUrl()}/business-partner`;
       const res = await fetch(API_URL, {
         method: "POST",
         headers: getSupabaseEdgeHeaders(),
         body: JSON.stringify({
-          action: "chat",
           message: input.trim(),
-          messages: updatedMessages,
-          context: {},
-          conversation: updatedMessages,
-          format: "text",
+          action: "business.partner",
         }),
       });
 
@@ -38,11 +37,18 @@ export default function ChatWidget() {
         throw new Error(data?.error || `Request failed with status ${res.status}`);
       }
 
+      const editSummary = formatAppliedEdit(data?.appliedEdit);
+      const content =
+        renderBusinessPartnerReply(data) ||
+        "No response received.";
+
       const botMessage = {
         role: "assistant",
-        content: typeof data?.reply === "string" && data.reply ? data.reply : "No response received.",
-        provider: data?.provider || null,
+        content: editSummary ? `${editSummary}\n\n${content}` : content,
+        provider: data?.provider || "Hermes",
         model: data?.model || null,
+        businessInsights: data?.businessInsights || null,
+        appliedEdit: data?.appliedEdit || null,
       };
 
       setMessages((prev) => [...prev, botMessage]);

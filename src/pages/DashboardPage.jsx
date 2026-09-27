@@ -32,6 +32,7 @@ import {
   theme,
 } from "../theme";
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
 import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
 import NotionTab from "./NotionTab";
@@ -1115,40 +1116,18 @@ const DashboardPage = () => {
     setIsAssistantThinking(true);
 
     try {
-      // Build your dashboard snapshot (you already have this function)
-      const snapshot = buildAssistantSnapshot({
-        stats,
-        data: { ...data, automations },
-        lastSync,
-        integrations,
-      });
-
-      const dashboardSystemPrompt = [
-        "You are the DigitallyDefined Operations AI. You have access to the user's live dashboard data.",
-        `Last sync: ${snapshot.lastSync}`,
-        `Revenue: ${snapshot.stats?.revenue} | Leads: ${snapshot.stats?.leads} | Conversion: ${snapshot.stats?.conversionRate} | Asset Value: ${snapshot.stats?.assetValue}`,
-        snapshot.alerts?.length
-          ? `Active Alerts: ${snapshot.alerts.join(" | ")}`
-          : "No active alerts.",
-        snapshot.automations?.length
-          ? `Automations: ${snapshot.automations.join(" | ")}`
-          : "No automations running.",
-        snapshot.aiBrief?.nextActions?.length
-          ? `AI-Recommended Next Action: ${snapshot.aiBrief.nextActions[0]}`
-          : "",
-        "Be concise, specific, and actionable. Use the data above to ground your answers.",
-      ].filter(Boolean).join("\n");
-
-      const res = await fetch(API_URL, {
+      // Route the dashboard chat through the Hermes business-partner endpoint
+      // so HermesOS (not a bare model call) handles the message.
+      // The business-partner route is self-grounding: it reads live dashboard
+      // and website analytics server-side, so no client system prompt is sent.
+      // `job` tells the backend which model class to use for this work.
+      const res = await fetch(`${API_URL}/business-partner`, {
         method: "POST",
         headers: API_HEADERS,
         body: JSON.stringify({
-          action: "chat",
           message: trimmedMessage,
-          conversation: nextMessages,
-          systemPrompt: dashboardSystemPrompt,
-          context: { snapshot },
-          model: selectedModel,
+          action: "business.partner",
+          job: "reasoning",
         }),
       });
 
@@ -1159,13 +1138,17 @@ const DashboardPage = () => {
         throw new Error(errorMsg);
       }
 
-      const provider = dataRes.provider || null;
+      const provider = dataRes.provider || 'Hermes';
       const model = dataRes.model || null;
       const appliedEdit = dataRes.appliedEdit || null;
-      const structuredData = dataRes.data || null;
+      // The REST route returns `businessInsights`; the edge path returns `data`.
+      const structuredData = dataRes.data ?? dataRes.businessInsights ?? null;
 
       // Build a rich assistant message from structured data
       let replyContent = dataRes.reply || '';
+      if (!replyContent && structuredData) {
+        replyContent = formatStructuredBusinessReply(structuredData);
+      }
       if (appliedEdit && appliedEdit.key) {
         replyContent = `✏️ Website change saved (${appliedEdit.label || appliedEdit.key}):\n"${appliedEdit.value}"\n\nIt will appear on the site after the next frontend deploy.`;
       }
@@ -1178,30 +1161,24 @@ const DashboardPage = () => {
         appliedEdit,
       };
 
-      // If we got structured data, append it as a secondary section
-      if (structuredData) {
+      // If we got structured data, append it as a secondary section.
+      // Normalized first so snake_case (REST route) and camelCase (edge path)
+      // both populate the same UI sections.
+      const insights = normalizeBusinessPayload(structuredData);
+      if (insights) {
         const sections = [];
-        if (structuredData.opportunities?.length) {
-          sections.push({
-            title: "Opportunities",
-            items: structuredData.opportunities,
-          });
+        if (insights.opportunities.length) {
+          sections.push({ title: "Opportunities", items: insights.opportunities });
         }
-        if (structuredData.riskFlags?.length) {
-          sections.push({
-            title: "Risk Flags",
-            items: structuredData.riskFlags,
-          });
+        if (insights.riskFlags.length) {
+          sections.push({ title: "Risk Flags", items: insights.riskFlags });
         }
-        if (structuredData.nextActions?.length) {
-          sections.push({
-            title: "Next Actions",
-            items: structuredData.nextActions,
-          });
+        if (insights.nextActions.length) {
+          sections.push({ title: "Next Actions", items: insights.nextActions });
         }
         if (sections.length) {
           assistantMessage.structuredSections = sections;
-          assistantMessage.priorityFocus = structuredData.priorityFocus || null;
+          assistantMessage.priorityFocus = insights.priorityFocus || null;
         }
       }
 
