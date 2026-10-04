@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, describeNetworkFailure } from "../lib/supabase-edge";
 import { renderBusinessPartnerReply, formatAppliedEdit } from "../lib/businessPartnerReply";
 
 export default function ChatWidget() {
@@ -22,14 +22,21 @@ export default function ChatWidget() {
       // Route chat through the Hermes business-partner endpoint so the dashboard
       // talks to HermesOS directly instead of a bare model call.
       const API_URL = `${getSupabaseEdgeUrl()}/business-partner`;
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: getSupabaseEdgeHeaders(),
-        body: JSON.stringify({
-          message: input.trim(),
-          action: "business.partner",
-        }),
-      });
+      let res;
+      try {
+        res = await fetch(API_URL, {
+          method: "POST",
+          headers: getSupabaseEdgeHeaders(),
+          body: JSON.stringify({
+            message: input.trim(),
+            action: "business.partner",
+          }),
+        });
+      } catch (err) {
+        // Distinguish a dead/unreachable backend from a real API error, so the
+        // user sees the cause instead of a bare "Failed to fetch".
+        throw describeNetworkFailure(API_URL, err);
+      }
 
       const data = await res.json();
 
