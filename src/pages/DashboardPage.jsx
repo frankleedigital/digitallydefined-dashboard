@@ -86,7 +86,7 @@ if (!API_KEY) {
 const ASSISTANT_MODEL =
   import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL ||
   dashboardConfig.assistantModel ||
-  "gemini-2.5-flash";
+  "gemini-3.8-flash";
 
 const assistantWelcome = {
   role: "assistant",
@@ -540,7 +540,7 @@ function DashboardAssistant({
     { group: "Free Models", value: "free-stack", tier: "free" },
     { group: "Free Models", value: "gemini-3.5-flash-lite", tier: "free" },
     { group: "Gemini / Vertex (paid credits)", value: "vertex/gemini-2.5-pro", tier: "gemini" },
-    { group: "Gemini / Vertex (paid credits)", value: "vertex/gemini-2.5-flash", tier: "gemini" },
+    { group: "Gemini / Vertex (paid credits)", value: "vertex/gemini-3.8-flash", tier: "gemini" },
     { group: "Gemini / Vertex (paid credits)", value: "gemini-2.5-pro", tier: "gemini" },
     { group: "Premium (Bluesminds)", value: "bm/gpt-4o-mini", tier: "bluesminds" },
     { group: "Premium (Bluesminds)", value: "bm/claude-sonnet-4.5", tier: "bluesminds" },

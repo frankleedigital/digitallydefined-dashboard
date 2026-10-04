@@ -217,7 +217,7 @@ const CONFIG = {
         label: "ARCHITECT",
       },
     ],
-    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-2.5-flash",
+    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.8-flash",
     integrationsTitle: "Integrations",
     integrationsCta: "Connect Source",
     integrationsDescription: "Connect your growth sources so the dashboard and assistant can read live data.",

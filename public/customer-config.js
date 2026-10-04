@@ -165,7 +165,7 @@ const CUSTOMER_CONFIG = {
   },
   
   // AI Assistant model (Gemini Flash is the preferred low-cost default)
-  assistantModel: "gemini-2.5-flash",
+  assistantModel: "gemini-3.8-flash",
   
   // ============================================
   // 📝 NOTES
