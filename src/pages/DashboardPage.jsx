@@ -20,7 +20,6 @@ import {
   ExternalLink,
   Plug,
   FileText,
-  Cloud,
 } from "lucide-react";
 import CONFIG from "../config";
 import Logo from "../components/Logo";
@@ -45,9 +44,6 @@ import {
   fetchCommunityStats,
   fetchNotionData,
 } from "../lib/integrations";
-import WorkspacePanel from "../components/WorkspacePanel";
-import PuterCloudSync from "../components/ui/PuterCloudSync";
-import { usePuterUserId } from "../lib/usePuterUserId";
 import mergedConfig from "../configMerge";
 
 const dashboardConfig = mergedConfig.dashboard;
@@ -833,10 +829,8 @@ function DashboardAssistant({
 
 const DashboardPage = () => {
   const { currentUser } = useAuth();
-  usePuterUserId(); // sync Supabase user id → localStorage for Puter workspace foldering
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showSettings, setShowSettings] = useState(false);
-  const [showWorkspace, setShowWorkspace] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [lastSync, setLastSync] = useState(
@@ -1055,8 +1049,6 @@ const DashboardPage = () => {
       const syncTime = new Date().toLocaleString();
       localStorage.setItem("lastSync", syncTime);
       setLastSync(syncTime);
-      // Expose AI brief to WorkspacePanel via window global.
-      window.__dd_ai_brief_raw = payload;
     } catch (err) {
       setSyncError(err.message || dashboardConfig.syncError);
     } finally {
@@ -1192,8 +1184,6 @@ const DashboardPage = () => {
       }
 
       setAssistantMessages((currentMessages) => [...currentMessages, assistantMessage]);
-      // Expose chat log to WorkspacePanel via window global.
-      window.__dd_assistant_log = [...currentMessages, assistantMessage];
 
     } catch (error) {
       console.error("Dashboard agent error:", error);
@@ -1291,7 +1281,6 @@ const DashboardPage = () => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
-          <PuterCloudSync variant="minimal" showUserInfo={false} />
           <button
             onClick={syncIntegrations}
             disabled={isSyncing}
@@ -1334,18 +1323,6 @@ const DashboardPage = () => {
           >
             <Settings size={16} />
             <span>{dashboardLabels.settings}</span>
-          </button>
-
-          <button
-            onClick={() => setShowWorkspace(true)}
-            style={{
-              ...brutalButtonPrimary,
-              backgroundColor: theme.colors.card,
-              padding: "0.55rem 0.8rem",
-            }}
-          >
-            <Cloud size={16} />
-            <span>Workspace</span>
           </button>
         </div>
       </header>
@@ -1542,8 +1519,6 @@ const DashboardPage = () => {
           </div>
         </div>
       )}
-
-      <WorkspacePanel open={showWorkspace} onClose={() => setShowWorkspace(false)} />
     </div>
   );
 };

@@ -181,8 +181,11 @@ const CUSTOMER_CONFIG = {
 // ============================================
 // DO NOT EDIT BELOW THIS LINE
 // ============================================
-// This exports the config so the dashboard can use it
+// This exposes the config to the app. The dashboard reads window.DD_CUSTOMER_CONFIG
+// at runtime (see src/configMerge.js), and the ESM export below lets the file be
+// imported/bundled cleanly under Vite without CommonJS syntax.
 if (typeof window !== 'undefined') {
   window.DD_CUSTOMER_CONFIG = CUSTOMER_CONFIG;
 }
-module.exports = CUSTOMER_CONFIG;
+
+export default CUSTOMER_CONFIG;
