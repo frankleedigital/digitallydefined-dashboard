@@ -1,11 +1,11 @@
 import React from "react";
 import { CheckCircle, Calculator, Home, ArrowRight } from "lucide-react";
-import CONFIG from "../config";
+import mergedConfig from "../configMerge";
 import { brutalButtonPrimary, brutalButtonSecondary, brutalCard, brutalHeading } from "../theme";
 
 const ThankYouCalculatorPage = () => {
-  const colors = CONFIG.colors;
-  const tyConfig = CONFIG.thankYouCalculator;
+  const colors = mergedConfig.colors;
+  const tyConfig = mergedConfig.thankYouCalculator;
   
   const container = {
     maxWidth: "1100px",

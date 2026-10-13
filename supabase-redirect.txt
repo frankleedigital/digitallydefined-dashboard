@@ -3,15 +3,15 @@
 # Project Settings → Authentication → Redirect URLs
 
 Site URL:
-https://dashboard.digitallydefined.online
+https://dashboard.digitallydefined.agency
 
 Redirect URLs:
-https://dashboard.digitallydefined.online/*
-https://dashboard.digitallydefined.online/login
-https://dashboard.digitallydefined.online/signup
-https://dashboard.digitallydefined.online/dashboard
-https://dashboard.digitallydefined.online/auth/callback
+https://dashboard.digitallydefined.agency/*
+https://dashboard.digitallydefined.agency/login
+https://dashboard.digitallydefined.agency/signup
+https://dashboard.digitallydefined.agency/dashboard
+https://dashboard.digitallydefined.agency/auth/callback
 
 # After updating, Google OAuth redirects to /auth/callback, which finalizes the
 # session first and then sends the user to /dashboard:
-# https://dashboard.digitallydefined.online/auth/callback?next=%2Fdashboard
+# https://dashboard.digitallydefined.agency/auth/callback?next=%2Fdashboard

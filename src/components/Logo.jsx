@@ -1,8 +1,8 @@
 import React from "react";
-import CONFIG from "../config";
+import mergedConfig from "../configMerge";
 
 const Logo = ({ as: Component = "span", style = {}, className = "" }) => {
-  const logoImage = String(CONFIG.brand.logoImage || "").trim();
+  const logoImage = String(mergedConfig.brand.logoImage || "").trim();
 
   const frameStyle = {
     display: "inline-flex",
@@ -29,19 +29,19 @@ const Logo = ({ as: Component = "span", style = {}, className = "" }) => {
     <Component
       className={className}
       style={{ ...frameStyle, ...style }}
-      aria-label={CONFIG.brand.fullName}
+      aria-label={mergedConfig.brand.fullName}
     >
       {logoImage ? (
-        <img
-          src={`/${logoImage}`}
-          alt={CONFIG.brand.fullName}
-          style={{
-            height: "28px",
-            width: "auto",
-            objectFit: "contain",
-            display: "block",
-          }}
-        />
+          <img
+            src={`/${logoImage}`}
+            alt={mergedConfig.brand.fullName || "DigitallyDefined"}
+            style={{
+              height: "28px",
+              width: "auto",
+              objectFit: "contain",
+              display: "block",
+            }}
+          />
       ) : (
         <>
           <span
@@ -51,7 +51,7 @@ const Logo = ({ as: Component = "span", style = {}, className = "" }) => {
               fontStyle: "normal",
             }}
           >
-            {CONFIG.brand.nameLight || "Digitally"}
+            {mergedConfig.brand.nameLight || "Digitally"}
           </span>
           <span
             style={{
@@ -61,7 +61,7 @@ const Logo = ({ as: Component = "span", style = {}, className = "" }) => {
               marginLeft: "0.05rem",
             }}
           >
-            {CONFIG.brand.nameBold || "Defined"}
+            {mergedConfig.brand.nameBold || "Defined"}
           </span>
         </>
       )}

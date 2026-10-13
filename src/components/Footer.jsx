@@ -1,5 +1,5 @@
 import React from "react";
-import CONFIG from "../config";
+import mergedConfig from "../configMerge";
 import Logo from "./Logo";
 import { theme } from "../theme";
 
@@ -23,7 +23,7 @@ const Footer = ({
           letterSpacing: "-0.05em",
         }}
       />
-      <p style={{ margin: 0, color: colors.textMuted }}>{CONFIG.brand.tagline}</p>
+      <p style={{ margin: 0, color: colors.textMuted }}>{mergedConfig.brand.tagline}</p>
       <div
         style={{
           display: "flex",
@@ -61,7 +61,7 @@ const Footer = ({
         </a>
       </div>
       <p style={{ margin: 0, color: colors.textMuted }}>
-        {`${landing.footerCopyrightPrefix} ${year} ${CONFIG.brand.fullName}. ${landing.footerRights}`}
+        {`${landing.footerCopyrightPrefix} ${year} ${mergedConfig.brand.fullName}. ${landing.footerRights}`}
       </p>
     </div>
   </footer>

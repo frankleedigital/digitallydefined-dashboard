@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { ArrowRight, Calculator, DollarSign, LineChart, PhoneCall } from "lucide-react";
-import CONFIG from "../config";
+import mergedConfig from "../configMerge";
 import {
   brutalBorder,
   brutalButtonPrimary,
@@ -84,7 +84,7 @@ const defaultValues = {
 const RoiCalculator = ({ mode = "free", onFullCalculatorClick }) => {
   const [values, setValues] = useState(defaultValues);
   const isFull = mode === "full";
-  const colors = CONFIG.colors;
+  const colors = mergedConfig.colors;
 
   const results = useMemo(() => {
     const leads = Math.round((values.traffic * values.closeRate) / 100);
@@ -354,7 +354,7 @@ const RoiCalculator = ({ mode = "free", onFullCalculatorClick }) => {
           </div>
           <a
             className="dd-btn dd-btn--secondary"
-            href={`mailto:${CONFIG.contact.email}`}
+            href={`mailto:${mergedConfig.contact.email}`}
             style={brutalButtonSecondary}
           >
             Send me my numbers <ArrowRight size={16} />

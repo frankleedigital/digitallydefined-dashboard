@@ -3,7 +3,7 @@
 // Unauthenticated-style upgrade card is rendered until a valid license is verified.
 
 import { useState } from "react";
-import CONFIG from "../config";
+import mergedConfig from "../configMerge";
 import { getCachedEntitlement, verifyLicense } from "../lib/premium";
 
 const REASONS = {
@@ -43,7 +43,7 @@ export default function PremiumGate({ children, feature = "Premium" }) {
     }
   }
 
-  const buyUrl = CONFIG.contact?.gumroadUrl || CONFIG.contact?.fullCalculatorUrl || "#";
+  const buyUrl = mergedConfig.contact?.gumroadUrl || mergedConfig.contact?.fullCalculatorUrl || "#";
 
   return (
     <div style={{

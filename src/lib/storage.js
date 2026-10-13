@@ -1,16 +1,16 @@
 // src/lib/storage.js
-// Puter.js filesystem storage module
+// Puter.js filesystem storage module — thin wrapper around puter.fs
 
 import { getPuter } from './puter.js';
 
-export async function writeFile(path, content) {
+export async function writeFile(path, content, options = {}) {
   try {
     const puter = await getPuter();
-    await puter.fs.writeFile(path, content);
+    await puter.fs.writeFile(path, content, options);
     return { success: true };
   } catch (error) {
-    console.error('Failed to write file:', error);
-    return { success: false, error };
+    console.error('[storage] writeFile failed:', error);
+    return { success: false, error: error.message };
   }
 }
 
@@ -20,8 +20,8 @@ export async function readFile(path) {
     const content = await puter.fs.readFile(path);
     return { success: true, data: content };
   } catch (error) {
-    console.error('Failed to read file:', error);
-    return { success: false, error, data: null };
+    console.error('[storage] readFile failed:', error);
+    return { success: false, error: error.message, data: null };
   }
 }
 
@@ -31,8 +31,8 @@ export async function listFiles(path = '/') {
     const files = await puter.fs.list(path);
     return { success: true, data: files };
   } catch (error) {
-    console.error('Failed to list files:', error);
-    return { success: false, error, data: [] };
+    console.error('[storage] listFiles failed:', error);
+    return { success: false, error: error.message, data: [] };
   }
 }
 
@@ -42,8 +42,8 @@ export async function deleteFile(path) {
     await puter.fs.delete(path);
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete file:', error);
-    return { success: false, error };
+    console.error('[storage] deleteFile failed:', error);
+    return { success: false, error: error.message };
   }
 }
 
@@ -53,7 +53,8 @@ export async function createDirectory(path) {
     await puter.fs.mkdir(path, { recursive: true });
     return { success: true };
   } catch (error) {
-    console.error('Failed to create directory:', error);
-    return { success: false, error };
+    console.error('[storage] createDirectory failed:', error);
+    return { success: false, error: error.message };
   }
 }
+

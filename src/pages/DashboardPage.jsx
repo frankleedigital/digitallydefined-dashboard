@@ -20,6 +20,7 @@ import {
   ExternalLink,
   Plug,
   FileText,
+  Cloud,
 } from "lucide-react";
 import CONFIG from "../config";
 import Logo from "../components/Logo";
@@ -44,8 +45,11 @@ import {
   fetchCommunityStats,
   fetchNotionData,
 } from "../lib/integrations";
+import WorkspacePanel from "../components/WorkspacePanel";
+import { usePuterUserId } from "../lib/usePuterUserId";
+import mergedConfig from "../configMerge";
 
-const dashboardConfig = CONFIG.dashboard;
+const dashboardConfig = mergedConfig.dashboard;
 
 const dashboardLabels = {
   syncButton: dashboardConfig.syncButtonLabel || "Sync Vault",
@@ -114,7 +118,7 @@ const formatConversion = (value) => {
 const formatAssetValue = (value) => {
   if (typeof value === "number") return `$${value.toLocaleString()}`;
   if (typeof value === "string" && value.trim() !== "") return value;
-  return CONFIG.metrics.assetValue;
+  return mergedConfig.metrics.assetValue;
 };
 
 const cardStyle = {
@@ -440,7 +444,7 @@ function BrainTab({ aiBrief }) {
   }
 
   const sections = [
-    ["What's Working", aiBrief.working, CONFIG.colors.success],
+    ["What's Working", aiBrief.working, mergedConfig.colors.success],
     ["What's Slipping", aiBrief.slipping, theme.colors.darkRed],
     ["Next Actions", aiBrief.nextActions, theme.colors.orange],
   ];
@@ -828,8 +832,10 @@ function DashboardAssistant({
 
 const DashboardPage = () => {
   const { currentUser } = useAuth();
+  usePuterUserId(); // sync Supabase user id → localStorage for Puter workspace foldering
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showSettings, setShowSettings] = useState(false);
+  const [showWorkspace, setShowWorkspace] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [lastSync, setLastSync] = useState(
@@ -841,7 +847,7 @@ const DashboardPage = () => {
     revenue: "$0",
     leads: 0,
     conversionRate: "0%",
-    assetValue: CONFIG.metrics.assetValue,
+    assetValue: mergedConfig.metrics.assetValue,
     topAsset: "N/A",
     communityGrowth: "0%",
     emailGrowth: "0%",
@@ -956,7 +962,7 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
-    document.title = `${CONFIG.brand.fullName} Dashboard`;
+    document.title = `${mergedConfig.brand.fullName} Dashboard`;
   }, []);
 
   const tabs = useMemo(
@@ -1048,6 +1054,8 @@ const DashboardPage = () => {
       const syncTime = new Date().toLocaleString();
       localStorage.setItem("lastSync", syncTime);
       setLastSync(syncTime);
+      // Expose AI brief to WorkspacePanel via window global.
+      window.__dd_ai_brief_raw = payload;
     } catch (err) {
       setSyncError(err.message || dashboardConfig.syncError);
     } finally {
@@ -1183,6 +1191,8 @@ const DashboardPage = () => {
       }
 
       setAssistantMessages((currentMessages) => [...currentMessages, assistantMessage]);
+      // Expose chat log to WorkspacePanel via window global.
+      window.__dd_assistant_log = [...currentMessages, assistantMessage];
 
     } catch (error) {
       console.error("Dashboard agent error:", error);
@@ -1275,7 +1285,7 @@ const DashboardPage = () => {
         <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
           <Logo as="div" />
           <p style={{ margin: 0, fontSize: "0.82rem", color: theme.colors.muted }}>
-            {CONFIG.brand.tagline}
+            {mergedConfig.brand.tagline}
           </p>
         </div>
 
@@ -1322,6 +1332,18 @@ const DashboardPage = () => {
           >
             <Settings size={16} />
             <span>{dashboardLabels.settings}</span>
+          </button>
+
+          <button
+            onClick={() => setShowWorkspace(true)}
+            style={{
+              ...brutalButtonPrimary,
+              backgroundColor: theme.colors.card,
+              padding: "0.55rem 0.8rem",
+            }}
+          >
+            <Cloud size={16} />
+            <span>Workspace</span>
           </button>
         </div>
       </header>
@@ -1518,6 +1540,8 @@ const DashboardPage = () => {
           </div>
         </div>
       )}
+
+      <WorkspacePanel open={showWorkspace} onClose={() => setShowWorkspace(false)} />
     </div>
   );
 };

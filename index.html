@@ -10,8 +10,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="DigitallyDefined — Reputation Dashboard" />
     <meta property="og:description" content="Track your digital real estate and monitor the brand signals that build asset value." />
-    <meta property="og:url" content="https://digitallydefined.online/dashboard" />
-    <meta property="og:image" content="https://digitallydefined.online/og-image.png" />
+    <meta property="og:url" content="https://dashboard.digitallydefined.agency/dashboard" />
+    <meta property="og:image" content="https://digitallydefined.store/og-image.png" />
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="DigitallyDefined — Reputation Dashboard" />
@@ -19,6 +19,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    
+    <!-- White-label config: loaded BEFORE the app so window.DD_CUSTOMER_CONFIG is available -->
+    <script src="/customer-config.js"></script>
+    
     <style>
       /* Inline critical CSS for first-paint — matches global.css theme tokens */
       *{box-sizing:border-box;margin:0;padding:0}
@@ -56,7 +60,7 @@
         <!-- Unified Nav — matches homepage shell and calculator -->
         <nav style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--color-border);padding-bottom:1.5rem;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;max-width:1100px;margin-left:auto;margin-right:auto">
           <div>
-            <a href="https://digitallydefined.online" style="text-decoration:none">
+            <a href="https://digitallydefined.store" style="text-decoration:none">
               <div class="dd-logo">Digitally<em>Defined</em></div>
               <div class="dd-logo-sub">For Gen X Women Reinventing Themselves, Digitally</div>
             </a>
@@ -74,12 +78,12 @@
         <div class="dd-content">
           <p class="dd-orient">
             Your dashboard requires JavaScript to load. Please enable JavaScript or return to the
-            <a href="https://digitallydefined.online" style="color:var(--color-accent)">homepage</a>.
+            <a href="https://digitallydefined.store" style="color:var(--color-accent)">homepage</a>.
           </p>
         </div>
 
         <footer class="dd-footer">
-          &copy; 2026 <a href="https://digitallydefined.online">DigitallyDefined</a> — Digital Real Estate Group — All Rights Reserved
+          &copy; 2026 <a href="https://digitallydefined.store">DigitallyDefined</a> — Digital Real Estate Group — All Rights Reserved
         </footer>
       </div>
 

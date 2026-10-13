@@ -1,10 +1,12 @@
 import CONFIG from "./config";
+import mergedConfig from "./configMerge";
 
-const tokens = CONFIG.aesthetic.tokens;
+// Fall back to base config if no customer overrides loaded
+const tokens = mergedConfig?.aesthetic?.tokens || CONFIG.aesthetic.tokens;
 const tokenColors = tokens.colors;
 
 export const theme = {
-  philosophy: CONFIG.aesthetic.philosophy,
+  philosophy: mergedConfig?.aesthetic?.philosophy || CONFIG.aesthetic.philosophy,
   fonts: {
     heading: `'${tokens.typography.headings.font}', system-ui, sans-serif`,
     body: `'${tokens.typography.body.font}', system-ui, sans-serif`,
@@ -12,7 +14,7 @@ export const theme = {
   },
   colors: {
     background: tokenColors.background,
-    panel: CONFIG.colors.panel,
+    panel: mergedConfig?.colors?.panel || CONFIG.colors.panel,
     card: tokenColors.card,
     textPrimary: tokenColors.text.primary,
     textDark: tokenColors.text.dark,
@@ -20,12 +22,12 @@ export const theme = {
     orange: tokenColors.accents.orange,
     aquaBlue: tokenColors.accents.aquaBlue,
     darkRed: tokenColors.accents.darkRed,
-    muted: CONFIG.colors.textMuted,
+    muted: mergedConfig?.colors?.textMuted || CONFIG.colors.textMuted,
 
-    // ⭐ Added per Claude’s fix
-    success: CONFIG.colors.success,
-    warning: CONFIG.colors.warning,
-    danger: CONFIG.colors.danger,
+    // ⭐ Added per Claude's fix
+    success: mergedConfig?.colors?.success || CONFIG.colors.success,
+    warning: mergedConfig?.colors?.warning || CONFIG.colors.warning,
+    danger: mergedConfig?.colors?.danger || CONFIG.colors.danger,
   },
   geometry: {
     ...tokens.geometry,

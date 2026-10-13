@@ -16,12 +16,12 @@ import AuthCallback from "./pages/auth/AuthCallback";
 // The public marketing site and quiz live in digitallydefined-online-local.
 // The dashboard does not duplicate them — it links out. See the workspace
 // audit: online-local is the single production website.
-const PUBLIC_SITE = "https://digitallydefined.online";
+const PUBLIC_SITE = "https://digitallydefined.store";
 const PUBLIC_QUIZ = `${PUBLIC_SITE}/quiz`;
 
 function App() {
   const hostname = window.location.hostname;
-  const isDashboardDomain = hostname === "dashboard.digitallydefined.online";
+  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency";
 
   // On the dashboard domain "/" is the dashboard. On any other host (Vercel
   // preview URLs) send the visitor to the real public site rather than

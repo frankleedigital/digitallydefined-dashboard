@@ -107,7 +107,7 @@ const CONFIG = {
 
   community: {
     platformName: "DigitallyDefined Collective",
-    platformUrl: "https://digitallydefined.online",
+    platformUrl: "https://digitallydefined.store",
     members: [
       {
         name: "Rena Walker",
@@ -147,7 +147,7 @@ const CONFIG = {
 
   contact: {
     email: "francesca@digitallydefined.online",
-    website: "https://digitallydefined.online",
+    website: "https://digitallydefined.store",
     gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
     fullCalculatorUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
     facebookCommunityUrl: "https://www.facebook.com/groups/digitallydefind",
