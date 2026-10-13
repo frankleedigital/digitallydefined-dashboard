@@ -30,13 +30,13 @@ export default function WorkspacePanel({ open, onClose }) {
   const [saveStatus, setSaveStatus] = useState({});
   const [puterError, setPuterError] = useState(null);
 
-  const refresh = async () => {
+const refresh = async () => {
     setLoading(true);
     setPuterError(null);
     try {
       const result = await listWorkspaceFiles();
-      if (result.success && Array.isArray(result.data)) {
-        setFiles(result.data.map((f) => ({ name: f.name, path: f.path || f.name, size: f.size })));
+      if (result.success && Array.isArray(result.files)) {
+        setFiles(result.files.map((f) => ({ name: f.name, path: f.path || f.name, size: f.size, modified: f.modified })));
       } else {
         setFiles([]);
       }
@@ -52,17 +52,23 @@ export default function WorkspacePanel({ open, onClose }) {
     if (open) refresh();
   }, [open]);
 
-  const handleSaveAiBrief = async () => {
+const handleSaveAiBrief = async () => {
     const raw = window.__dd_ai_brief_raw;
     if (!raw) { alert("No AI brief data available. Sync your Vault first."); return; }
     const filename = `ai-brief-${new Date().toISOString().slice(0, 10)}.json`;
     setSaving(filename);
     try {
-      await saveToWorkspace(filename, JSON.stringify(raw, null, 2), "application/json");
-      setSaveStatus((s) => ({ ...s, [filename]: "saved" }));
-      await refresh();
+      const result = await saveToWorkspace(filename, JSON.stringify(raw, null, 2), "application/json");
+      if (result.success) {
+        setSaveStatus((s) => ({ ...s, [filename]: "saved" }));
+        await refresh();
+      } else {
+        setSaveStatus((s) => ({ ...s, [filename]: "error" }));
+        alert(`Save failed: ${result.message || result.error}`);
+      }
     } catch (err) {
       setSaveStatus((s) => ({ ...s, [filename]: "error" }));
+      alert(`Save failed: ${err.message}`);
     } finally { setSaving(null); }
   };
 
@@ -72,11 +78,17 @@ export default function WorkspacePanel({ open, onClose }) {
     const filename = `assistant-log-${new Date().toISOString().slice(0, 10)}.json`;
     setSaving(filename);
     try {
-      await saveToWorkspace(filename, JSON.stringify(raw, null, 2), "application/json");
-      setSaveStatus((s) => ({ ...s, [filename]: "saved" }));
-      await refresh();
+      const result = await saveToWorkspace(filename, JSON.stringify(raw, null, 2), "application/json");
+      if (result.success) {
+        setSaveStatus((s) => ({ ...s, [filename]: "saved" }));
+        await refresh();
+      } else {
+        setSaveStatus((s) => ({ ...s, [filename]: "error" }));
+        alert(`Save failed: ${result.message || result.error}`);
+      }
     } catch (err) {
       setSaveStatus((s) => ({ ...s, [filename]: "error" }));
+      alert(`Save failed: ${err.message}`);
     } finally { setSaving(null); }
   };
 

@@ -46,6 +46,7 @@ import {
   fetchNotionData,
 } from "../lib/integrations";
 import WorkspacePanel from "../components/WorkspacePanel";
+import PuterCloudSync from "../components/ui/PuterCloudSync";
 import { usePuterUserId } from "../lib/usePuterUserId";
 import mergedConfig from "../configMerge";
 
@@ -1290,6 +1291,7 @@ const DashboardPage = () => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+          <PuterCloudSync variant="minimal" showUserInfo={false} />
           <button
             onClick={syncIntegrations}
             disabled={isSyncing}
