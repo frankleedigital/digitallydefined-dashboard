@@ -14,7 +14,7 @@
 
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "./supabase-edge";
 
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "https://digitallydefined-backend-clean.vercel.app").replace(/\/+$/, "");
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || import.meta.env.VITE_DASHBOARD_API_URL || "https://digitallydefined-os-backend.vercel.app").replace(/\/+$/, "");
 const DASHBOARD_API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "";
 
 export const MODEL_SWITCH_STORAGE_KEY = "dd-assistant-model";

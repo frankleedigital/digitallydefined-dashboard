@@ -1,7 +1,7 @@
 // Shared helper for calling the campus-wide dashboard backend.
 // The dashboard no longer depends on the legacy Hermes Supabase edge function.
 
-const DEFAULT_DASHBOARD_API_URL = 'https://digitallydefined-backend-clean.vercel.app';
+const DEFAULT_DASHBOARD_API_URL = 'https://digitallydefined-os-backend.vercel.app';
 
 // Resolve the configured backend base URL, shared by every call site so the
 // routing logic below only has to think about one value.
@@ -11,9 +11,9 @@ function resolveBackendBase() {
   // not the DigitallyDefined backend, and would route dashboard API calls to the
   // wrong service.
   const configuredUrl =
-    import.meta.env.VITE_API_URL ||
-    import.meta.env.VITE_DASHBOARD_API_URL ||
-    DEFAULT_DASHBOARD_API_URL;
+      import.meta.env.VITE_API_URL ||
+      import.meta.env.VITE_DASHBOARD_API_URL ||
+      DEFAULT_DASHBOARD_API_URL;
 
   return String(configuredUrl).replace(/\/+$/, '');
 }
@@ -48,10 +48,10 @@ export const getSupabaseEdgeUrl = (functionName = '') => {
   const normalized = resolveBackendBase();
 
   if (!functionName) {
-    // No specific function requested — return base with /api prefix so
-    // requests hit the backend dispatcher (not the bare root which 404s).
-    return `${normalized}/api`;
-  }
+      // No specific function requested — return base with /api prefix so
+      // requests hit the backend dispatcher (not the bare root which 404s).
+      return `${normalized}/api`;
+    }
 
   // Strip any leading slashes and a redundant "functions/v1/" segment so a base
   // that already ends in "/functions/v1" never produces "/functions/v1/functions/v1".
