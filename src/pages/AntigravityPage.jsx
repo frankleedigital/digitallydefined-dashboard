@@ -24,7 +24,7 @@ const sectionTitleStyle = {
 
 /**
  * The 8 core Notion OS databases. Mirrors NOTION_OS_DBS in
- * digitallydefined-backend-clean/src/services/antigravity.js — keep in sync.
+ * digitallydefined-os-backend/src/services/antigravity.js — keep in sync.
  */
 const NOTION_DB_KEYS = [
   { key: "assets", label: "Digital Assets" },
