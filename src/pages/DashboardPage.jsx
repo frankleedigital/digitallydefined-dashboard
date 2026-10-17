@@ -73,7 +73,7 @@ const dashboardLabels = {
 
 const API_URL = getSupabaseEdgeUrl();
 
-const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "";
+const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "DigitallyDefined-OS-2026";
 const API_HEADERS = {
   "Content-Type": "application/json",
   "x-api-key": API_KEY,
@@ -92,7 +92,7 @@ const ASSISTANT_MODEL =
 const assistantWelcome = {
   role: "assistant",
   content:
-    "I am ready. Sync the Vault, then ask me what needs attention, what automations look stuck, or what move should come next.",
+    "I am ready. Sync the Vault, then ask what content, workflow, or calculator move should come next.",
 };
 
 const tabIcons = {
@@ -226,7 +226,7 @@ const createLocalAssistantReply = ({ stats, data, lastSync }) => {
     alerts,
     `Automations: ${automationSummary}`,
     `Best next move: ${nextAction}`,
-    "Add your OpenRouter key in Settings when you want me to answer follow-up questions with full AI reasoning.",
+    "Add your OmniRoute backend or settings when you want me to answer follow-up questions through the unified AI layer.",
   ].join("\n\n");
 };
 
@@ -470,7 +470,7 @@ function BrainTab({ aiBrief }) {
 
 function AutomationsTab({ automations }) {
   if (!automations.length) {
-    return <EmptyState>{dashboardConfig.automationsEmpty || "No automations configured yet. Set up workflows in your backend to automate reviews, campaigns, and community tasks."}</EmptyState>;
+    return <EmptyState>{dashboardConfig.automationsEmpty || "No workflows running yet. Start with /tools to launch a content, product, or automation workflow."}</EmptyState>;
   }
 
   return (
@@ -516,7 +516,7 @@ function DashboardAssistant({
 }) {
   const quickPrompts = [
     "What needs my attention today?",
-    "Summarize my automations.",
+    "Summarize my content engines and tools.",
     "What is the next best move?",
   ];
 
@@ -798,7 +798,7 @@ function DashboardAssistant({
         <input
           value={input}
           onChange={(event) => onInputChange(event.target.value)}
-          placeholder="Ask about stats, reviews, automations, or next actions..."
+          placeholder="Ask about content, tools, calculators, or next actions..."
           style={{
             border: brutalBorder,
             flex: 1,
@@ -1131,6 +1131,21 @@ const DashboardPage = () => {
           job: "reasoning",
         }),
       });
+
+      // Send to your Hermes backend
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: API_HEADERS,
+                body: JSON.stringify({
+                  action: "hermes.agent",
+                  message: trimmedMessage,
+                  messages: nextMessages,
+                  snapshot,
+                  context: {},
+                  conversation: nextMessages,
+                }),
+              }
+            );
 
       const dataRes = await res.json();
 

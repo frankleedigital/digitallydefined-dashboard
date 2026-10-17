@@ -19,24 +19,21 @@ export default function ChatWidget() {
     setInput("");
 
     try {
-      // Route chat through the Hermes business-partner endpoint so the dashboard
-      // talks to HermesOS directly instead of a bare model call.
-      const API_URL = `${getSupabaseEdgeUrl()}/business-partner`;
-      let res;
-      try {
-        res = await fetch(API_URL, {
-          method: "POST",
-          headers: getSupabaseEdgeHeaders(),
-          body: JSON.stringify({
-            message: input.trim(),
-            action: "business.partner",
-          }),
-        });
-      } catch (err) {
-        // Distinguish a dead/unreachable backend from a real API error, so the
-        // user sees the cause instead of a bare "Failed to fetch".
-        throw describeNetworkFailure(API_URL, err);
-      }
+      const API_URL = `${import.meta.env.VITE_SUPABASE_URL || "https://dijjlppdljpcgyoakdnq.supabase.co"}/functions/v1/hermes`;
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_DASHBOARD_API_KEY || "",
+        },
+      body: JSON.stringify({
+                action: "public.chat",
+                message: input.trim(),
+                messages: updatedMessages,
+                context: {},
+                conversation: updatedMessages,
+              }),
+      });
 
       const data = await res.json();
 
@@ -51,8 +48,8 @@ export default function ChatWidget() {
 
       const botMessage = {
         role: "assistant",
-        content: editSummary ? `${editSummary}\n\n${content}` : content,
-        provider: data?.provider || "Hermes",
+        content: typeof data?.reply === "string" && data.reply ? data.reply : "No structured response received. Try /gap, /quiz, /scorecard, or /tools.",
+        provider: data?.provider || null,
         model: data?.model || null,
         businessInsights: data?.businessInsights || null,
         appliedEdit: data?.appliedEdit || null,

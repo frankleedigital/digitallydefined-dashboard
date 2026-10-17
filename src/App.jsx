@@ -21,7 +21,7 @@ const PUBLIC_QUIZ = `${PUBLIC_SITE}/quiz`;
 
 function App() {
   const hostname = window.location.hostname;
-  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency";
+  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency" || hostname === "dashboard.digitallydefined.online";
 
   // On the dashboard domain "/" is the dashboard. On any other host (Vercel
   // preview URLs) send the visitor to the real public site rather than
