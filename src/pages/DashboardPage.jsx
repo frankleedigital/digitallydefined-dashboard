@@ -1132,21 +1132,6 @@ const DashboardPage = () => {
         }),
       });
 
-      // Send to your Hermes backend
-            const res = await fetch(API_URL, {
-                method: "POST",
-                headers: API_HEADERS,
-                body: JSON.stringify({
-                  action: "hermes.agent",
-                  message: trimmedMessage,
-                  messages: nextMessages,
-                  snapshot,
-                  context: {},
-                  conversation: nextMessages,
-                }),
-              }
-            );
-
       const dataRes = await res.json();
 
       if (!res.ok) {
