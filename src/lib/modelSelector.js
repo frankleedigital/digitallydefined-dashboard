@@ -12,9 +12,8 @@
 // Everything here is best-effort: switching never blocks the UI.
 // ============================================================================
 
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "./supabase-edge";
+import api from "../services/api";
 
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || import.meta.env.VITE_DASHBOARD_API_URL || "https://digitallydefined-os-backend.vercel.app").replace(/\/+$/, "");
 const DASHBOARD_API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "";
 
 export const MODEL_SWITCH_STORAGE_KEY = "dd-assistant-model";
@@ -39,12 +38,7 @@ export function currentUserId() {
 /** List REAL models grouped by tier (free / gemini / bluesminds). */
 export async function fetchModelGroups() {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/models`, {
-      headers: backendHeaders(),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!res.ok) return null;
-    const body = await res.json().catch(() => null);
+    const body = await api.models.list();
     if (!body?.ok) return null;
     return body;
   } catch {
@@ -68,33 +62,19 @@ export async function fetchActiveModel() {
 
   const userId = currentUserId();
 
-  // 1. backend-clean (Supabase-backed)
+  // 1. Backend — fetch active model
   try {
-    const res = await fetch(
-      `${BACKEND_URL}/api/active-model?user_id=${encodeURIComponent(userId)}`,
-      { headers: backendHeaders(), signal: AbortSignal.timeout(15000) }
-    );
-    if (res.ok) {
-      const body = await res.json().catch(() => null);
-      if (body?.activeModel) {
-        return { model: body.activeModel, source: body.source || "supabase", local };
-      }
+    const body = await api.models.getActive(userId);
+    if (body?.activeModel) {
+      return { model: body.activeModel, source: body.source || "backend", local };
     }
   } catch { /* fall through */ }
 
-  // 2. Hermes edge function (reads the same Supabase row)
+  // 2. Hermes edge function fallback
   try {
-    const res = await fetch(getSupabaseEdgeUrl(), {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({ action: "hermes.getActiveModel", user_id: userId }),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (res.ok) {
-      const body = await res.json().catch(() => null);
-      if (body?.activeModel) {
-        return { model: body.activeModel, source: "hermes", local };
-      }
+    const body = await api.post("hermes.getActiveModel", { user_id: userId });
+    if (body?.activeModel) {
+      return { model: body.activeModel, source: "hermes", local };
     }
   } catch { /* fall through */ }
 
@@ -113,23 +93,16 @@ export async function switchActiveModel(modelId) {
   if (!model) throw new Error("A model id is required.");
   const userId = currentUserId();
 
-  // 1. backend-clean — validates, syncs Hermes, persists, returns verdict.
-  const res = await fetch(`${BACKEND_URL}/api/set-model`, {
-    method: "POST",
-    headers: backendHeaders(),
-    body: JSON.stringify({ model, user_id: userId }),
-    signal: AbortSignal.timeout(45000),
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok || body?.ok === false) {
-    throw new Error(body?.error || `Model switch failed (${res.status}).`);
-  }
-
+  // Backend — validates, syncs Hermes, persists, returns verdict.
   try {
-    localStorage.setItem(MODEL_SWITCH_STORAGE_KEY, body.activeModel || model);
-  } catch { /* ignore */ }
-
-  return { ...body, via: "backend-clean" };
+    const body = await api.models.setActive(model, userId);
+    try {
+      localStorage.setItem(MODEL_SWITCH_STORAGE_KEY, body.activeModel || model);
+    } catch { /* ignore */ }
+    return { ...body, via: "backend" };
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : `Model switch failed.`);
+  }
 }
 
 export default { fetchModelGroups, fetchActiveModel, switchActiveModel, currentUserId, MODEL_SWITCH_STORAGE_KEY, DEFAULT_ASSISTANT_MODEL };

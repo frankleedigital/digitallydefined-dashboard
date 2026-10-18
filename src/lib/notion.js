@@ -1,7 +1,7 @@
 // Notion integration data access for the DigitallyDefined dashboard.
 // Reads Notion databases (ideas, content, automations, buyer signals, AI drafts)
 // via the Hermes /sync endpoint which already aggregates them.
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "./supabase-edge";
+import api from "../services/api";
 import { normalizeProperties } from "../utils/notionMapper";
 
 const notionConfig = {
@@ -26,21 +26,10 @@ function normalizeNotionItems(list) {
 // The Hermes sync endpoint already aggregates all Notion databases.
 // We re-use it so the dashboard stays single-source-of-truth with the backend.
 export async function fetchNotionData() {
-  const API_URL = getSupabaseEdgeUrl();
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({
-        action: "dashboard",
-        context: { includeNotion: true },
-      }),
+    const payload = await api.post("dashboard", {
+      context: { includeNotion: true },
     });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `Notion sync failed: ${res.status}`);
-    }
-    const payload = await res.json();
 
     // The sync response nests notion data under payload.notion
     const notion = payload?.notion || {};
@@ -77,24 +66,13 @@ export async function fetchNotionData() {
 
 // ---- Create a Notion page via the Hermes edge action ----
 export async function createNotionPage(params) {
-  const API_URL = getSupabaseEdgeUrl();
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({
-        action: "notion.page.create",
-        database_id: params.databaseId,
-        title: params.title,
-        status: params.status,
-        content: params.content,
-      }),
+    return await api.post("notion.page.create", {
+      database_id: params.databaseId,
+      title: params.title,
+      status: params.status,
+      content: params.content,
     });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `Notion page create failed: ${res.status}`);
-    }
-    return await res.json();
   } catch (error) {
     console.error("[Notion] createNotionPage error:", error);
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
@@ -103,28 +81,17 @@ export async function createNotionPage(params) {
 
 // ---- Report an intake item (quiz result, buyer signal, idea) to Notion ----
 export async function reportIntakeItem(params) {
-  const API_URL = getSupabaseEdgeUrl();
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({
-        action: "notion.intake.report",
-        intake_db_id: params.intakeDbId,
-        title: params.title,
-        source: params.source,
-        status: params.status,
-        score: params.score,
-        route: params.route,
-        customerEmail: params.customerEmail,
-        productSlug: params.productSlug,
-      }),
+    return await api.post("notion.intake.report", {
+      intake_db_id: params.intakeDbId,
+      title: params.title,
+      source: params.source,
+      status: params.status,
+      score: params.score,
+      route: params.route,
+      customerEmail: params.customerEmail,
+      productSlug: params.productSlug,
     });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `Notion intake report failed: ${res.status}`);
-    }
-    return await res.json();
   } catch (error) {
     console.error("[Notion] reportIntakeItem error:", error);
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
@@ -133,26 +100,15 @@ export async function reportIntakeItem(params) {
 
 // ---- Log an automation execution to Notion ----
 export async function logAutomationExecution(params) {
-  const API_URL = getSupabaseEdgeUrl();
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({
-        action: "automation.log",
-        log_db_id: params.logDbId,
-        name: params.name,
-        action: params.actionName,
-        status: params.status,
-        source: params.source,
-        description: params.description,
-      }),
+    return await api.post("automation.log", {
+      log_db_id: params.logDbId,
+      name: params.name,
+      action: params.actionName,
+      status: params.status,
+      source: params.source,
+      description: params.description,
     });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `Automation log failed: ${res.status}`);
-    }
-    return await res.json();
   } catch (error) {
     console.error("[Notion] logAutomationExecution error:", error);
     return { ok: false, error: error instanceof Error ? error.message : String(error) };

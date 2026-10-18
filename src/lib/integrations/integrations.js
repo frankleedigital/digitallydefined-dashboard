@@ -1,25 +1,13 @@
 // DigitallyDefined Dashboard — Integration data fetchers
-// These calls go through the shared dashboard backend and no longer assume a
-// legacy Hermes Supabase edge function exists.
+// These calls go through the shared dashboard backend via ApiService.
 
-const DASHBOARD_API_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_DASHBOARD_API_URL || 'https://digitallydefined-os-backend.vercel.app/api';
-const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || '';
+import api from "../../services/api";
 
 async function callAgentAction(action, payload = {}) {
   try {
-    const res = await fetch(DASHBOARD_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-      },
-      body: JSON.stringify({ action, ...payload }),
-      signal: AbortSignal.timeout(12000),
-    });
-    if (!res.ok) throw new Error(`Dashboard ${action} failed: ${res.status}`);
-    return res.json();
+    return await api.post(action, payload);
   } catch (err) {
-    console.warn(`[integrations] ${action} unavailable:`, err.message);
+    console.warn(`[integrations] ${action} unavailable:`, err instanceof Error ? err.message : String(err));
     return null;
   }
 }

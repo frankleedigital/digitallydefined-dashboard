@@ -31,7 +31,7 @@ import {
   brutalHeading,
   theme,
 } from "../theme";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import api from "../services/api";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
 import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
@@ -70,19 +70,6 @@ const dashboardLabels = {
       "Asset Value",
   },
 };
-
-const API_URL = getSupabaseEdgeUrl();
-
-const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "DigitallyDefined-OS-2026";
-const API_HEADERS = {
-  "Content-Type": "application/json",
-  "x-api-key": API_KEY,
-};
-
-// Validate API_KEY is set
-if (!API_KEY) {
-  console.warn("[Dashboard] VITE_DASHBOARD_API_KEY not configured");
-}
 
 const ASSISTANT_MODEL =
   import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL ||
@@ -976,26 +963,9 @@ const DashboardPage = () => {
     setSyncError("");
 
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          ...API_HEADERS,
-          "x-user-id": currentUser?.id || "anonymous",
-        },
-        body: JSON.stringify({
-          action: "dashboard",
-          userId: currentUser?.id,
-        }),
+      const payload = await api.post("dashboard", {
+        userId: currentUser?.id,
       });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(
-          errData.error || `${dashboardConfig.syncFailurePrefix} ${res.status}`,
-        );
-      }
-
-      const payload = await res.json();
       const metrics = payload?.metrics || payload || {};
 
       // Accept both legacy flat payloads and the live backend contract which nests stats under metrics.
@@ -1014,22 +984,13 @@ const DashboardPage = () => {
 
       setData(nextData);
 
-      const automationsRes = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          ...API_HEADERS,
-          "x-user-id": currentUser?.id || "anonymous",
-        },
-        body: JSON.stringify({
-          action: "automation.list",
+      try {
+        const automationsPayload = await api.post("automation.list", {
           userId: currentUser?.id,
-        }),
-      });
-      if (!automationsRes.ok) {
-        setAutomations([]);
-      } else {
-        const automationsPayload = await automationsRes.json();
+        });
         setAutomations(automationsPayload.automations || []);
+      } catch {
+        setAutomations([]);
       }
 
       setStats({
@@ -1119,25 +1080,11 @@ const DashboardPage = () => {
     try {
       // Route the dashboard chat through the Hermes business-partner endpoint
       // so HermesOS (not a bare model call) handles the message.
-      // The business-partner route is self-grounding: it reads live dashboard
-      // and website analytics server-side, so no client system prompt is sent.
-      // `job` tells the backend which model class to use for this work.
-      const res = await fetch(`${API_URL}/business-partner`, {
-        method: "POST",
-        headers: API_HEADERS,
-        body: JSON.stringify({
-          message: trimmedMessage,
-          action: "business.partner",
-          job: "reasoning",
-        }),
+      const dataRes = await api.postRaw("business-partner", {
+        message: trimmedMessage,
+        action: "business.partner",
+        job: "reasoning",
       });
-
-      const dataRes = await res.json();
-
-      if (!res.ok) {
-        const errorMsg = dataRes.error || dataRes.message || 'AI request failed';
-        throw new Error(errorMsg);
-      }
 
       const provider = dataRes.provider || 'Hermes';
       const model = dataRes.model || null;
