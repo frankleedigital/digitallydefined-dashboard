@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, describeNetworkFailure } from "../lib/supabase-edge";
+import api from "../services/api";
 import { renderBusinessPartnerReply, formatAppliedEdit } from "../lib/businessPartnerReply";
 
 export default function ChatWidget() {
@@ -19,27 +19,12 @@ export default function ChatWidget() {
     setInput("");
 
     try {
-      const API_URL = `${import.meta.env.VITE_SUPABASE_URL || "https://dijjlppdljpcgyoakdnq.supabase.co"}/functions/v1/hermes`;
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_DASHBOARD_API_KEY || "",
-        },
-      body: JSON.stringify({
-                action: "public.chat",
-                message: input.trim(),
-                messages: updatedMessages,
-                context: {},
-                conversation: updatedMessages,
-              }),
+      const data = await api.post("public.chat", {
+        message: input.trim(),
+        messages: updatedMessages,
+        context: {},
+        conversation: updatedMessages,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.error || `Request failed with status ${res.status}`);
-      }
 
       const editSummary = formatAppliedEdit(data?.appliedEdit);
       const content =

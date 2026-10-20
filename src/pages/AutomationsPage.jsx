@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import api from "../services/api";
 
 export default function AutomationsPage() {
   const [automations, setAutomations] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const API_URL = getSupabaseEdgeUrl();
-
-    fetch(API_URL, {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({
-        action: "automation.list",
-        userId: "anonymous",
-      }),
-    })
-      .then(res => res.json())
+    api.dashboard.automations("anonymous")
       .then(data => {
         if (data?.automations) {
           setAutomations(data.automations);
