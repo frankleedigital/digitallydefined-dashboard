@@ -8,13 +8,31 @@ export const DEFAULT_BASE_URL = 'https://digitallydefined-os-backend.vercel.app'
 export const DEFAULT_TIMEOUT_MS = 30000;
 export const DEFAULT_RETRIES = 2;
 
+export const CANONICAL_BASE_URL = 'https://digitallydefined-os-backend.vercel.app';
+// Retired alias — the os-backend project was renamed. Any stale VITE_* value
+// or cached bundle pointing here is rewritten to the canonical host so old
+// deployments keep working instead of "Failed to fetch".
+export const LEGACY_BASE_URLS = ['https://digitallydefined-backend-clean.vercel.app'];
+
+function normalizeBaseUrl(raw) {
+  let base = String(raw || '').trim().replace(/\/+$/, '');
+  for (const legacy of LEGACY_BASE_URLS) {
+    if (base.toLowerCase().startsWith(legacy.toLowerCase())) {
+      try { console.warn('[api-client] Rewriting retired backend host to canonical:', base, '->', CANONICAL_BASE_URL); } catch { /* noop */ }
+      base = CANONICAL_BASE_URL + base.slice(legacy.length);
+      break;
+    }
+  }
+  return base.replace(/\/+$/, '') || CANONICAL_BASE_URL;
+}
+
 export function resolveBaseUrl() {
   const base =
     import.meta.env.VITE_API_URL ||
     import.meta.env.VITE_BACKEND_URL ||
     import.meta.env.VITE_DASHBOARD_API_URL ||
     DEFAULT_BASE_URL;
-  return String(base).replace(/\/+$/, '');
+  return normalizeBaseUrl(base);
 }
 
 export function getApiKey() {
@@ -87,8 +105,8 @@ export async function apiRequest(path, opts = {}) {
   const timeoutMs = opts.timeoutMs || DEFAULT_TIMEOUT_MS;
   const retries = opts.retries ?? DEFAULT_RETRIES;
   const action = opts.action || null;
-  const base = String(opts.base || resolveBaseUrl()).replace(/\/+$/, '');
-  const url = /^https?:\/\//i.test(path) ? path : base + (path.startsWith('/') ? path : '/' + path);
+  const base = normalizeBaseUrl(opts.base || resolveBaseUrl());
+  let url = /^https?:\/\//i.test(path) ? normalizeBaseUrl(path) : base + (path.startsWith('/') ? path : '/' + path);
   let attempt = 0;
   let last = null;
   while (attempt <= retries) {
