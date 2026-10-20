@@ -55,7 +55,7 @@ export async function fetchCommunityStats() {
       growth30d: null,
       topMembers: [],
       lastUpdated: null,
-      error: error.message || 'Failed to fetch community data',
+      error: error.message || 'Backend unreachable: could not load community data',
     };
   }
 }
@@ -73,3 +73,4 @@ export async function startCommunity() {
     message: res?.message || 'Community connection started',
   };
 }
+

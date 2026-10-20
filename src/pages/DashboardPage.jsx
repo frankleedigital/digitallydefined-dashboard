@@ -31,7 +31,9 @@ import {
   brutalHeading,
   theme,
 } from "../theme";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, callSupabaseEdge } from "../lib/supabase-edge";
+import { postAction as ddPost, rest as ddRest } from "../lib/api-client";
+import { captureClientError } from "../lib/error-monitor";
 import { getActiveModelId, fetchActiveModel, fetchModelGroups, switchActiveModel } from "../lib/modelSelector";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
 import GrowthTab from "./GrowthTab";
@@ -74,16 +76,8 @@ const dashboardLabels = {
 
 const API_URL = getSupabaseEdgeUrl();
 
-const API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "DigitallyDefined-OS-2026";
-const API_HEADERS = {
-  "Content-Type": "application/json",
-  "x-api-key": API_KEY,
-};
-
-// Validate API_KEY is set
-if (!API_KEY) {
-  console.warn("[Dashboard] VITE_DASHBOARD_API_KEY not configured");
-}
+const apiHeaders = () => getSupabaseEdgeHeaders();
+const API_HEADERS = { "Content-Type": "application/json", "x-api-key": import.meta.env.VITE_DASHBOARD_API_KEY || "DigitallyDefined-OS-2026" };
 
 const ASSISTANT_MODEL =
   import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL ||
@@ -973,26 +967,7 @@ const DashboardPage = () => {
     setSyncError("");
 
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          ...API_HEADERS,
-          "x-user-id": currentUser?.id || "anonymous",
-        },
-        body: JSON.stringify({
-          action: "dashboard",
-          userId: currentUser?.id,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(
-          errData.error || `${dashboardConfig.syncFailurePrefix} ${res.status}`,
-        );
-      }
-
-      const payload = await res.json();
+      const payload = await ddPost("dashboard", { userId: currentUser?.id }, { timeoutMs: 45000, headers: { "x-user-id": currentUser?.id || "anonymous" } });
       const metrics = payload?.metrics || payload || {};
 
       // Accept both legacy flat payloads and the live backend contract which nests stats under metrics.
@@ -1004,29 +979,20 @@ const DashboardPage = () => {
         payload?.leads != null;
 
       if (!hasUsableData) {
-        throw new Error("Invalid dashboard data received");
+        throw new Error("Backend returned no dashboard metrics (status=" + (payload?.status || "unknown") + "). Check OmniRoute/Notion wiring server-side.");
       }
 
       const nextData = normalizeData(payload);
 
       setData(nextData);
 
-      const automationsRes = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          ...API_HEADERS,
-          "x-user-id": currentUser?.id || "anonymous",
-        },
-        body: JSON.stringify({
-          action: "automation.list",
-          userId: currentUser?.id,
-        }),
-      });
-      if (!automationsRes.ok) {
-        setAutomations([]);
-      } else {
-        const automationsPayload = await automationsRes.json();
+      let automationsPayload = null;
+      try {
+        automationsPayload = await ddPost("automation.list", { userId: currentUser?.id }, { timeoutMs: 30000, headers: { "x-user-id": currentUser?.id || "anonymous" } });
         setAutomations(automationsPayload.automations || []);
+      } catch (autoErr) {
+        try { captureClientError(autoErr, { where: 'automation.list' }); } catch { /* noop */ }
+        setAutomations([]);
       }
 
       setStats({
@@ -1123,23 +1089,10 @@ const DashboardPage = () => {
       // backend honours it over the job class. Without it the selector had no
       // effect on the model actually used.
       const activeModel = getActiveModelId() || ASSISTANT_MODEL;
-      const res = await fetch(`${API_URL}/business-partner`, {
-        method: "POST",
-        headers: API_HEADERS,
-        body: JSON.stringify({
-          message: trimmedMessage,
-          action: "business.partner",
-          job: "reasoning",
-          model: activeModel,
-        }),
+      const dataRes = await ddRest('business-partner', {
+        method: 'POST', timeoutMs: 60000, retries: 1,
+        body: { message: trimmedMessage, action: "business.partner", job: "reasoning", model: activeModel },
       });
-
-      const dataRes = await res.json();
-
-      if (!res.ok) {
-        const errorMsg = dataRes.error || dataRes.message || 'AI request failed';
-        throw new Error(errorMsg);
-      }
 
       const provider = dataRes.provider || 'Hermes';
       const model = dataRes.model || null;

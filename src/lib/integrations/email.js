@@ -59,7 +59,7 @@ export async function fetchEmailStats() {
       campaigns: [],
       revenuePerCampaign: null,
       lastUpdated: null,
-      error: error.message || 'Failed to fetch email data',
+      error: error.message || 'Backend unreachable: could not load email data',
     };
   }
 }
@@ -77,3 +77,4 @@ export async function startEmail() {
     message: res?.message || 'Email List connection started',
   };
 }
+

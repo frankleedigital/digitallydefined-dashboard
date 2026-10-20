@@ -60,7 +60,7 @@ export async function fetchSocialStats() {
       impressions30d: null,
       topPosts: [],
       lastUpdated: null,
-      error: error.message || 'Failed to fetch social data',
+      error: error.message || 'Backend unreachable: could not load social data',
     };
   }
 }
@@ -78,3 +78,4 @@ export async function startSocial() {
     message: res?.message || 'Social Pages connection started',
   };
 }
+

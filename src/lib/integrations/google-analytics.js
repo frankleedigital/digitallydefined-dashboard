@@ -63,7 +63,7 @@ export async function fetchGoogleAnalytics() {
       goalConversions: null,
       revenue30d: null,
       lastUpdated: null,
-      error: error.message || 'Failed to fetch Google Analytics data',
+      error: error.message || 'Backend unreachable: could not load Google Analytics data',
     };
   }
 }
@@ -82,3 +82,4 @@ export async function startGoogleAnalytics() {
     message: res?.message || 'Google Analytics connection started',
   };
 }
+
