@@ -32,6 +32,7 @@ import {
   theme,
 } from "../theme";
 import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "../lib/supabase-edge";
+import { getActiveModelId, fetchActiveModel, fetchModelGroups, switchActiveModel } from "../lib/modelSelector";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
 import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
@@ -886,9 +887,6 @@ const DashboardPage = () => {
     let cancelled = false;
     (async () => {
       try {
-        const { fetchActiveModel, fetchModelGroups } = await import(
-          "../lib/modelSelector"
-        );
         const [stored, groups] = await Promise.all([
           fetchActiveModel().catch(() => null),
           fetchModelGroups().catch(() => null),
@@ -912,7 +910,7 @@ const DashboardPage = () => {
 
   /**
    * Switch the active model end-to-end:
-   *   backend-clean (validate) -> Hermes runtime -> Supabase persistence.
+   *   backend (validate) -> Supabase persistence -> localStorage mirror.
    * On success the AI Business Partner reloads with the new model.
    */
   const handleModelChange = async (modelId) => {
@@ -923,14 +921,13 @@ const DashboardPage = () => {
     setModelSwitching(true);
     setModelNotice({ tone: "info", text: `Switching to ${next}…` });
     try {
-      const { switchActiveModel } = await import("../lib/modelSelector");
       const result = await switchActiveModel(next);
       const warn = result.verified === "degraded" && result.issue;
       setModelNotice({
         tone: warn ? "warn" : "info",
         text: warn
           ? `Active model: ${result.activeModel} ⚠ ${result.issue}`
-          : `Active model: ${result.activeModel}${result.hermesSync ? " (Hermes synced)" : ""}${result.persisted ? " (saved)" : ""}`,
+          : `Active model: ${result.activeModel}${result.persisted ? " (saved)" : ""}`,
       });
       // Reload the AI Business Partner with the new model.
       setAssistantMessages([
@@ -1122,6 +1119,10 @@ const DashboardPage = () => {
       // The business-partner route is self-grounding: it reads live dashboard
       // and website analytics server-side, so no client system prompt is sent.
       // `job` tells the backend which model class to use for this work.
+      // `model` is the user's explicit choice from the model selector — the
+      // backend honours it over the job class. Without it the selector had no
+      // effect on the model actually used.
+      const activeModel = getActiveModelId() || ASSISTANT_MODEL;
       const res = await fetch(`${API_URL}/business-partner`, {
         method: "POST",
         headers: API_HEADERS,
@@ -1129,6 +1130,7 @@ const DashboardPage = () => {
           message: trimmedMessage,
           action: "business.partner",
           job: "reasoning",
+          model: activeModel,
         }),
       });
 

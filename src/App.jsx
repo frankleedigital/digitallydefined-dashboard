@@ -13,9 +13,12 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
 
-// The public marketing site and quiz live in digitallydefined-online-local.
-// The dashboard does not duplicate them — it links out. See the workspace
-// audit: online-local is the single production website.
+// Quiz flow: the canonical quiz lives on the production public site at
+// https://digitallydefined.store/quiz (NOT in this repo —
+// digitallydefined-online-local was removed as legacy).
+// The dashboard never reimplements the quiz; IntelligencePage reads the
+// quiz result (`dd-quiz-results` in localStorage) and calls the backend
+// `intelligence` action via digitallydefined-os-backend.
 const PUBLIC_SITE = "https://digitallydefined.store";
 const PUBLIC_QUIZ = `${PUBLIC_SITE}/quiz`;
 
@@ -47,7 +50,8 @@ function App() {
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        {/* Quiz is owned by the public site — redirect, do not reimplement. */}
+        {/* Quiz is owned by the production public site (https://digitallydefined.store/quiz).
+            Redirect, do not reimplement. Replacement route documented in POST_CLEANUP_ARCHITECTURE.md. */}
         <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />

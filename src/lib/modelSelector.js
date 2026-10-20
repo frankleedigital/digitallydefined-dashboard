@@ -1,18 +1,18 @@
 // src/lib/modelSelector.js
 // ============================================================================
-// Dashboard <-> backend-clean model-switch wiring.
-// ============================================================================
-// Calls:
+// Dashboard <-> backend model-switch wiring.
+//
+// Calls the dedicated backend functions (digitallydefined-os-backend):
 //   POST {backend}/api/set-model         { model, user_id? }
 //   GET  {backend}/api/active-model?user_id=
 //   GET  {backend}/api/models
 //
-// Falls back to the Hermes edge function (hermes.setActiveModel /
-// hermes.getActiveModel) when backend-clean is unreachable.
+// The selected model is persisted server-side in Supabase
+// (`user_model_preferences`) and mirrored into localStorage so the chat
+// paths can attach it to every request without a network round-trip.
+//
 // Everything here is best-effort: switching never blocks the UI.
 // ============================================================================
-
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders } from "./supabase-edge";
 
 const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || import.meta.env.VITE_DASHBOARD_API_URL || "https://digitallydefined-os-backend.vercel.app").replace(/\/+$/, "");
 const DASHBOARD_API_KEY = import.meta.env.VITE_DASHBOARD_API_KEY || "";
@@ -54,21 +54,14 @@ export async function fetchModelGroups() {
 
 /**
  * Restore the stored model for this user.
- * Order: Supabase row -> localStorage -> backend default.
+ * Order: backend (Supabase-backed) -> localStorage -> backend default.
  */
 export async function fetchActiveModel() {
-  const local = (() => {
-    try {
-      const v = localStorage.getItem(MODEL_SWITCH_STORAGE_KEY);
-      return v && v.trim() ? v.trim() : null;
-    } catch {
-      return null;
-    }
-  })();
+  const local = getActiveModelId();
 
   const userId = currentUserId();
 
-  // 1. backend-clean (Supabase-backed)
+  // 1. backend (Supabase-backed) — GET /api/active-model
   try {
     const res = await fetch(
       `${BACKEND_URL}/api/active-model?user_id=${encodeURIComponent(userId)}`,
@@ -82,25 +75,32 @@ export async function fetchActiveModel() {
     }
   } catch { /* fall through */ }
 
-  // 2. Hermes edge function (reads the same Supabase row)
-  try {
-    const res = await fetch(getSupabaseEdgeUrl(), {
-      method: "POST",
-      headers: getSupabaseEdgeHeaders(),
-      body: JSON.stringify({ action: "hermes.getActiveModel", user_id: userId }),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (res.ok) {
-      const body = await res.json().catch(() => null);
-      if (body?.activeModel) {
-        return { model: body.activeModel, source: "hermes", local };
-      }
-    }
-  } catch { /* fall through */ }
-
-  // 3. Local fallback
+  // 2. Local fallback.
+  //
+  // NOTE: the previous step 2 posted { action: "hermes.getActiveModel" } to the
+  // Vercel dispatcher. That action was never implemented there and always
+  // returned 404, so the fallback silently failed and the dropdown reset to
+  // the default model on every reload. The authoritative read is the
+  // /api/active-model function above, which reads the same Supabase row.
   if (local) return { model: local, source: "local", local };
   return { model: DEFAULT_ASSISTANT_MODEL, source: "default", local: null };
+}
+
+/**
+ * Synchronous read of the model the user selected.
+ *
+ * The chat paths need the active model id on every request (so the backend can
+ * route to it), but they cannot await a network round-trip just to learn which
+ * model is selected. localStorage is written by switchActiveModel() and kept in
+ * sync with the Supabase row, so it is the right fast path here.
+ */
+export function getActiveModelId() {
+  try {
+    const v = localStorage.getItem(MODEL_SWITCH_STORAGE_KEY);
+    return v && v.trim() ? v.trim() : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -132,4 +132,4 @@ export async function switchActiveModel(modelId) {
   return { ...body, via: "backend-clean" };
 }
 
-export default { fetchModelGroups, fetchActiveModel, switchActiveModel, currentUserId, MODEL_SWITCH_STORAGE_KEY, DEFAULT_ASSISTANT_MODEL };
+export default { fetchModelGroups, fetchActiveModel, getActiveModelId, switchActiveModel, currentUserId, MODEL_SWITCH_STORAGE_KEY, DEFAULT_ASSISTANT_MODEL };

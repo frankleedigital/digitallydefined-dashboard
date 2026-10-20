@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getAnalyticsBrief, formatBriefAsContext } from "../lib/analytics";
 import { callSupabaseEdge } from "../lib/supabase-edge";
+import { getActiveModelId, DEFAULT_ASSISTANT_MODEL } from "../lib/modelSelector";
 
 const PARTNER_SYSTEM_PROMPT = `You are Hermes — Francesca's AI business partner at DigitallyDefined. You've known her for months. You know her business inside out.
 
@@ -172,11 +173,15 @@ export default function AssistantPage() {
     setInput("");
 
     try {
-      // Use the new business-partner endpoint for structured JSON intelligence
+      // Use the business-partner endpoint for structured JSON intelligence.
+      // `model` carries the user's explicit model-selector choice so the
+      // backend routes to it instead of the default job-class model.
+      const activeModel = getActiveModelId() || DEFAULT_ASSISTANT_MODEL;
       const data = await callSupabaseEdge("business.partner", {
         message: userMessage.content,
         history: updatedMessages.slice(-10),
         includeWebsiteContext: true,
+        model: activeModel,
       });
 
       const structuredReply = data?.data ? formatStructuredBusinessReply(data.data) : null;
