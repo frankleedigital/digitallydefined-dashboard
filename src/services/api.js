@@ -105,9 +105,11 @@ async function checkHealth() {
 
 async function hermesStatus() {
   try {
-    const res = await fetch('/api/hermes/status', {
-      headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(9000),
+    const res = await fetch(`${_baseUrl}/api`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ action: 'hermes.status' }),
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return { online: false, status: res.status };
     const data = await res.json();
