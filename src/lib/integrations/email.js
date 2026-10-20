@@ -18,7 +18,8 @@ export async function fetchEmailStats() {
         campaigns: [],
         revenuePerCampaign: null,
         lastUpdated: null,
-        error: 'No email provider configured',
+        error: 'Backend returned no data for email integration',
+        configured: false,
       };
     }
 
@@ -33,13 +34,19 @@ export async function fetchEmailStats() {
         revenuePerCampaign: null,
         lastUpdated: null,
         error: payload.error,
+        configured: payload.configured ?? false,
       };
     }
 
     const subscribers = payload.subscribers ?? payload.totalSubscribers ?? null;
     const campaigns = Array.isArray(payload.campaigns) ? payload.campaigns.slice(0, 5) : [];
+    const connected = Boolean(
+      payload.connected ?? (subscribers != null || campaigns.length > 0),
+    );
+
     return {
-      connected: Boolean(payload.connected ?? (subscribers != null || campaigns.length > 0)),
+      connected,
+      configured: payload.configured ?? connected,
       provider: payload.provider || null,
       subscribers,
       openRate: payload.openRate ?? null,
@@ -60,6 +67,7 @@ export async function fetchEmailStats() {
       revenuePerCampaign: null,
       lastUpdated: null,
       error: error.message || 'Backend unreachable: could not load email data',
+      configured: false,
     };
   }
 }

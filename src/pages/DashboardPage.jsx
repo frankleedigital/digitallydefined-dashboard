@@ -40,6 +40,7 @@ import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
 import NotionTab from "./NotionTab";
 import AntigravityPage from "./AntigravityPage";
+import AIStatusPanel from "./AIStatusPanel";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -1281,6 +1282,8 @@ const DashboardPage = () => {
           </button>
         </div>
       </header>
+
+      <AIStatusPanel />
 
       <main
         className="dd-dashboard-shell"

@@ -12,6 +12,7 @@ export async function fetchSocialStats() {
     topPosts: [],
     lastUpdated: null,
     error: 'No social platforms configured',
+    configured: false,
   };
 
   try {
@@ -20,18 +21,14 @@ export async function fetchSocialStats() {
     });
 
     if (!payload || typeof payload !== 'object') {
-      return fallbackResult;
+      return { ...fallbackResult, error: 'Backend returned no data for social integrations' };
     }
 
     if (payload.error) {
       return {
-        connected: false,
+        ...fallbackResult,
         platforms: {},
-        followers: null,
-        engagementRate: null,
-        impressions30d: null,
-        topPosts: [],
-        lastUpdated: null,
+        configured: payload.configured ?? false,
         error: payload.error,
       };
     }
@@ -40,9 +37,11 @@ export async function fetchSocialStats() {
     const hasPlatforms = platformEntries.length > 0;
     const hasMetrics =
       payload.followers != null || payload.engagementRate != null || payload.impressions30d != null;
+    const connected = Boolean(payload.connected ?? (hasPlatforms || hasMetrics));
 
     return {
-      connected: Boolean(payload.connected ?? (hasPlatforms || hasMetrics)),
+      connected,
+      configured: payload.configured ?? connected,
       platforms: payload.platforms || {},
       followers: payload.followers ?? null,
       engagementRate: payload.engagementRate ?? null,
@@ -53,13 +52,8 @@ export async function fetchSocialStats() {
     };
   } catch (error) {
     return {
-      connected: false,
-      platforms: {},
-      followers: null,
-      engagementRate: null,
-      impressions30d: null,
-      topPosts: [],
-      lastUpdated: null,
+      ...fallbackResult,
+      configured: false,
       error: error.message || 'Backend unreachable: could not load social data',
     };
   }

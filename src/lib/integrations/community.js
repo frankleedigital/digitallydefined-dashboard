@@ -17,7 +17,8 @@ export async function fetchCommunityStats() {
         growth30d: null,
         topMembers: [],
         lastUpdated: null,
-        error: 'No community platform configured',
+        error: 'Backend returned no data for community integration',
+        configured: false,
       };
     }
 
@@ -31,13 +32,19 @@ export async function fetchCommunityStats() {
         topMembers: [],
         lastUpdated: null,
         error: payload.error,
+        configured: payload.configured ?? false,
       };
     }
 
     const members = payload.members ?? payload.memberCount ?? payload.totalMembers ?? null;
     const topMembers = Array.isArray(payload.topMembers) ? payload.topMembers.slice(0, 5) : [];
+    const connected = Boolean(
+      payload.connected ?? (members != null || topMembers.length > 0),
+    );
+
     return {
-      connected: Boolean(payload.connected ?? (members != null || topMembers.length > 0)),
+      connected,
+      configured: payload.configured ?? connected,
       platform: payload.platform || null,
       members,
       activeToday: payload.activeToday ?? null,
@@ -56,6 +63,7 @@ export async function fetchCommunityStats() {
       topMembers: [],
       lastUpdated: null,
       error: error.message || 'Backend unreachable: could not load community data',
+      configured: false,
     };
   }
 }

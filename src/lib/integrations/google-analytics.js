@@ -14,6 +14,7 @@ export async function fetchGoogleAnalytics() {
     revenue30d: null,
     lastUpdated: null,
     error: 'Missing Google Analytics configuration',
+    configured: false,
   };
 
   try {
@@ -22,26 +23,25 @@ export async function fetchGoogleAnalytics() {
     });
 
     if (!payload || typeof payload !== 'object') {
-      return fallbackBrief;
+      return { ...fallbackBrief, error: 'Backend returned no data for Google Analytics' };
     }
 
     if (payload.error) {
       return {
-        connected: false,
+        ...fallbackBrief,
         propertyId: payload.propertyId ?? null,
-        users30d: null,
-        sessions30d: null,
-        bounceRate: null,
-        topPages: [],
-        goalConversions: null,
-        revenue30d: null,
-        lastUpdated: null,
+        configured: payload.configured ?? false,
         error: payload.error,
       };
     }
 
+    const connected = Boolean(
+      payload.connected ??
+        (payload.users30d != null || payload.sessions30d != null || Array.isArray(payload.topPages) && payload.topPages.length > 0),
+    );
     return {
-      connected: true,
+      connected,
+      configured: payload.configured ?? connected,
       propertyId: payload.propertyId ?? null,
       users30d: payload.users30d ?? null,
       sessions30d: payload.sessions30d ?? null,
@@ -54,15 +54,8 @@ export async function fetchGoogleAnalytics() {
     };
   } catch (error) {
     return {
-      connected: false,
-      propertyId: null,
-      users30d: null,
-      sessions30d: null,
-      bounceRate: null,
-      topPages: [],
-      goalConversions: null,
-      revenue30d: null,
-      lastUpdated: null,
+      ...fallbackBrief,
+      configured: false,
       error: error.message || 'Backend unreachable: could not load Google Analytics data',
     };
   }
