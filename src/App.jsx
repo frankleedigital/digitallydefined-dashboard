@@ -9,18 +9,18 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
 import PremiumGate from "./components/PremiumGate";
+import NewsletterSignup from "./components/NewsletterSignup";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
 
-// Quiz flow: the canonical quiz lives on the production public site at
-// https://digitallydefined.store/quiz (NOT in this repo —
-// digitallydefined-online-local was removed as legacy).
-// The dashboard never reimplements the quiz; IntelligencePage reads the
-// quiz result (`dd-quiz-results` in localStorage) and calls the backend
-// `intelligence` action via digitallydefined-os-backend.
-const PUBLIC_SITE = "https://digitallydefined.store";
-const PUBLIC_QUIZ = `${PUBLIC_SITE}/quiz`;
+// Quiz flow: the canonical quiz lives on the production public site.
+// digitallydefined.store is currently unreachable (Cloudflare 522 — the origin
+// deployment is gone and no Vercel project serves it), so the public-site and
+// quiz routes point at the live Gumroad product page instead. Restore
+// https://digitallydefined.store/quiz once that origin is redeployed.
+const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
+const PUBLIC_QUIZ = PUBLIC_SITE;
 
 function App() {
   const hostname = window.location.hostname;
@@ -92,6 +92,13 @@ function App() {
           }
         />
       </Routes>
+
+      {/* Email capture — available on every dashboard page. */}
+      {isDashboardDomain && (
+        <div style={{ width: "min(1100px, 100%)", margin: "0 auto", padding: "0 clamp(1.25rem, 5vw, 2.5rem) 2.5rem" }}>
+          <NewsletterSignup />
+        </div>
+      )}
     </>
   );
 }

@@ -1368,11 +1368,23 @@ const DashboardPage = () => {
               backgroundColor: theme.colors.panel,
             }}
           >
-            <MetricCard icon={DollarSign} label={dashboardLabels.metrics.revenue} value={stats.revenue} />
-            <MetricCard icon={Users} label={dashboardLabels.metrics.leads} value={stats.leads} />
-            <MetricCard icon={TrendingUp} label={dashboardLabels.metrics.conversion} value={stats.conversionRate} />
-            <MetricCard icon={FolderHeart} label={dashboardLabels.metrics.assetValue} value={stats.assetValue} />
-          </div>
+  <MetricCard icon={DollarSign} label={dashboardLabels.metrics.revenue} value={stats.revenue} />
+  <MetricCard icon={Users} label={dashboardLabels.metrics.leads} value={stats.leads} />
+  <MetricCard icon={TrendingUp} label={dashboardLabels.metrics.conversion} value={stats.conversionRate} />
+  <MetricCard icon={FolderHeart} label={dashboardLabels.metrics.assetValue} value={stats.assetValue} />
+  </div>
+  <p
+    style={{
+      fontSize: "0.68rem",
+      fontWeight: 800,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase",
+      color: theme.colors.muted,
+      margin: "-0.35rem 0 0",
+    }}
+  >
+    Demo metrics — connect your accounts in Integrations for live data
+  </p>
 
           <div style={{ ...cardStyle, padding: "1rem", minHeight: 220 }}>
             <h1 style={{ ...brutalHeading, margin: "0 0 0.5rem", fontSize: "1.3rem" }}>

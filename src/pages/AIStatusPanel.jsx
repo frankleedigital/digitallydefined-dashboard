@@ -1,9 +1,10 @@
 // src/pages/AIStatusPanel.jsx
 // AI Infrastructure Status panel — live provider health for Hermes fallback chain.
-// Fetches GET /api?action=hermes.status and displays provider, model, latency, health, fallback rank.
+// Fetches hermes.status via the shared API service and displays provider, model, latency, health, fallback rank.
 import React, { useEffect, useState } from 'react';
 import { refreshCw, database } from 'lucide-react';
 import { brutalBorder, brutalHeading, theme } from '../theme';
+import api from '../services/api';
 
 const STATUS_COLOR = {
   healthy: theme.colors.success,
@@ -61,24 +62,15 @@ export default function AIStatusPanel() {
   const fetchHealth = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api?action=hermes.status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': import.meta.env.VITE_DASHBOARD_API_KEY || 'DigitallyDefined-OS-2026',
-        },
-        body: JSON.stringify({ action: 'hermes.status' }),
-        signal: AbortSignal.timeout(15000),
-      });
-      const data = await res.json();
-      if (data.success) {
+      const data = await api.hermesStatus();
+      if (data?.success) {
         setHealth(data);
         setError(null);
       } else {
-        setError(data.error || 'Health check failed');
+        setError(data?.error || 'Health check failed');
       }
     } catch (err) {
-      setError(err.message || 'Backend unreachable');
+      setError(err?.message || 'Backend unreachable');
     } finally {
       setLoading(false);
     }

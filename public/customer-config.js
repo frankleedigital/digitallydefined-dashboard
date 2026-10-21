@@ -1,11 +1,11 @@
 /**
  * DigitallyDefined Dashboard - Customer Configuration
- * 
+ *
  * THIS IS YOUR CUSTOM CONFIGURATION FILE
  * Edit ONLY the values on the RIGHT side of the colons (:
  * Do NOT edit the left side (the variable names)
- * 
- * After editing, your dashboard will automatically use your settings!
+ *
+ * After editing this file, your dashboard will automatically use your settings!
  */
 
 // ============================================
@@ -14,147 +14,149 @@
 
 const CUSTOMER_CONFIG = {
   // Your business name - appears in header and emails
-  businessName: "My Business Name",
-  
+  businessName: "DigitallyDefined",
+
   // Your name - used in signatures and messages
-  yourName: "Your Name",
-  
+  yourName: "Francesca",
+
   // Your tagline/slogan
-  tagline: "Digital Real Estate for Gen X Women",
-  
+  tagline: "The Reputation OS for Women Who Mean Business.",
+
   // Your website URL
-  websiteUrl: "https://mybusiness.com",
-  
+  websiteUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
+
   // Your email for support
-  supportEmail: "support@mybusiness.com",
-  
+  supportEmail: "francesca@digitallydefined.online",
+
   // ============================================
   // 🎨 COLORS & STYLING
   // ============================================
-  
+
   // Primary brand color (used for buttons, accents)
   // Format: Hex code like "#F18B25" or color name like "orange"
   primaryColor: "#F18B25",
-  
+
   // Secondary brand color
   secondaryColor: "#47B7D4",
-  
+
   // Background color for dashboard
   backgroundColor: "#FFFCF9",
-  
+
   // Text color
   textColor: "#111111",
-  
+
   // Border color
   borderColor: "#111111",
-  
+
   // ============================================
   // 📊 DASHBOARD SETTINGS
   // ============================================
-  
+
   // Your dashboard title (appears at top)
-  dashboardTitle: "My Command Center",
-  
+  dashboardTitle: "DigitallyDefined Command Center",
+
   // Subtitle/eyebrow text
-  dashboardSubtitle: "Proprietary OS",
-  
+  dashboardSubtitle: "The Reputation OS for Women Who Mean Business.",
+
   // Customize tab names
   tabs: {
     dashboard: "COMMAND",
-    reputation: "REPUTATION", 
+    reputation: "REPUTATION",
     intel: "INTEL",
     brain: "THE BRAIN",
     automations: "AUTOMATIONS",
     notion: "NOTION DB"
   },
-  
+
   // ============================================
   // 🔑 API & INTEGRATIONS
   // ============================================
-  
+
   // Your Google Sheets API URL
   // Get this from: Google Apps Script > Deploy > Web App > URL
-  sheetsApiUrl: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
-  
+  // Leave blank until you deploy your own Apps Script.
+  sheetsApiUrl: "",
+
   // Your dashboard backend API URL
   // Leave as is to use DigitallyDefined's Gemini-powered backend
   backendApiUrl: "https://digitallydefined-os-backend.vercel.app/api",
 
   // Dashboard gateway URL for all API calls
   hermesGatewayUrl: "https://digitallydefined-os-backend.vercel.app/api",
-  
+
   // Your Backend API Key (provided by DigitallyDefined)
   // Get this from your purchase confirmation
-  backendApiKey: "YOUR-API-KEY-HERE",
-  
+  backendApiKey: "DigitallyDefined-OS-2026",
+
   // OpenRouter AI Key (for AI features)
   // Get free key at: https://openrouter.ai/keys
-  openRouterApiKey: "sk-or-v1-YOUR-KEY",
-  
+  // Leave blank to use the built-in Gemini-backed assistant.
+  openRouterApiKey: "",
+
   // ============================================
   // 📋 DEFAULT VALUES
   // ============================================
-  
+
   // Default asset value to display
-  defaultAssetValue: "$0",
-  
+  defaultAssetValue: "$48,000",
+
   // Default community count
-  defaultCommunityCount: "0",
-  
+  defaultCommunityCount: "1,284",
+
   // Default system health status
-  defaultSystemHealth: "Stable",
-  
+  defaultSystemHealth: "100%",
+
   // ============================================
   // 📧 COMMUNITY & SOCIAL
   // ============================================
-  
+
   // Your Facebook Group URL
-  facebookGroupUrl: "https://facebook.com/groups/yourgroup",
-  
+  facebookGroupUrl: "https://www.facebook.com/groups/digitallydefind",
+
   // Your LinkedIn URL
-  linkedInUrl: "https://linkedin.com/in/yourprofile",
-  
+  linkedInUrl: "",
+
   // Your Instagram URL
-  instagramUrl: "https://instagram.com/yourhandle",
-  
+  instagramUrl: "",
+
   // ============================================
   // 💬 MESSAGING & COPY
   // ============================================
-  
+
   // Welcome message on dashboard
   welcomeMessage: "Own Your Power.",
-  
+
   // Sync button label
   syncButtonLabel: "Sync Vault",
-  
+
   // Settings button label
-  settingsLabel: "System Keys",
-  
+  settingsLabel: "Settings",
+
   // Save settings button label
-  saveSettingsLabel: "Save System Keys",
-  
+  saveSettingsLabel: "Save Settings",
+
   // No sync yet message
   noSyncLabel: "No sync yet",
-  
+
   // Sync error message
   syncError: "Sync interrupted. Check the Sheets URL or Apps Script permissions.",
-  
+
   // Community feed title
   communityFeedTitle: "Live Community Feed",
-  
+
   // Intel section title
   intelTitle: "Strategic Intel",
-  
+
   // Reputation section title
   reputationTitle: "Reputation Triage",
-  
+
   // ============================================
   // 🔧 ADVANCED SETTINGS (Optional)
   // ============================================
-  
+
   // Custom domain for CORS (if hosting on your own domain)
   customDomain: "",
-  
+
   // Enable/disable features
   features: {
     enableChat: true,
@@ -163,18 +165,18 @@ const CUSTOMER_CONFIG = {
     enableIntel: true,
     enableNotion: true
   },
-  
+
   // AI Assistant model (Gemini Flash is the preferred low-cost default)
   assistantModel: "gemini-3.8-flash",
-  
+
   // ============================================
   // 📝 NOTES
   // ============================================
-  // 
+  //
   // 1. After editing this file, your changes will take effect immediately
   // 2. For API keys, you MUST have valid keys from each service
   // 3. Keep this file private - it contains your sensitive keys
-  // 4. For support, contact: support@digitallydefined.online
+  // 4. For support, contact: francesca@digitallydefined.online
   //
 };
 
