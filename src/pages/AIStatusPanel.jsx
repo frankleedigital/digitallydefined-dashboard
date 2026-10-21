@@ -177,7 +177,7 @@ export default function AIStatusPanel() {
                 borderLeft: isActive ? `3px solid ${theme.colors.success}` : 'none',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 180px', minWidth: 0, flexWrap: 'wrap' }}>
                 <statusDot status={status} />
                 <span style={{ fontSize: '0.85rem', fontWeight: 700, color: theme.colors.textPrimary }}>
                   {provider.replace('-', ' ')}
@@ -189,7 +189,7 @@ export default function AIStatusPanel() {
                   </span>
                 )}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: theme.colors.muted }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: theme.colors.muted, flexWrap: 'wrap', justifyContent: 'flex-end', minWidth: 0, textAlign: 'right' }}>
                 <span>{statusDot(status)}{STATUS_LABEL[status]}</span>
                 <span>• {latency}</span>
                 <span>• {authenticated}</span>
