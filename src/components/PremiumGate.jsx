@@ -14,6 +14,12 @@ const REASONS = {
   verification_error: "Verification failed. Please try again in a moment.",
 };
 
+// Gumroad returns its own message (e.g. "That license does not exist for the
+// provided product."). Show it so a customer knows what went wrong instead of
+// a generic failure.
+const reasonText = (reason) =>
+  REASONS[reason] || (reason && reason.length < 160 ? reason : "Could not verify this license key.");
+
 export default function PremiumGate({ children, feature = "Premium" }) {
   const [entitlement] = useState(() => getCachedEntitlement());
   const [key, setKey] = useState("");
@@ -33,7 +39,7 @@ export default function PremiumGate({ children, feature = "Premium" }) {
       }
       setStatus({
         state: "error",
-        message: REASONS[result.reason] || "Could not verify this license key.",
+        message: reasonText(result.reason),
       });
     } catch (err) {
       setStatus({
