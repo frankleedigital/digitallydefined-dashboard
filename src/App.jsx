@@ -13,26 +13,24 @@ import NewsletterSignup from "./components/NewsletterSignup";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
+import QuizPage from "./pages/quiz/QuizPage";
+import QuizResultsPage from "./pages/quiz/QuizResultsPage";
+import StorePage from "./pages/StorePage";
 
-// Quiz flow: the canonical quiz lives on the production public site.
-// digitallydefined.store is currently unreachable (Cloudflare 522 — the origin
-// deployment is gone and no Vercel project serves it), so the public-site and
-// quiz routes point at the live Gumroad product page instead. Restore
-// https://digitallydefined.store/quiz once that origin is redeployed.
+// Where a visitor who lands on a non-dashboard host should go.
 const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
-const PUBLIC_QUIZ = PUBLIC_SITE;
 
 function App() {
   const hostname = window.location.hostname;
   const isDashboardDomain = hostname === "dashboard.digitallydefined.agency" || hostname === "dashboard.digitallydefined.online";
 
   // On the dashboard domain "/" is the dashboard. On any other host (Vercel
-  // preview URLs) send the visitor to the real public site rather than
-  // rendering a second, divergent copy of it.
+  // preview URLs) serve the public storefront instead, so a shared link goes
+  // to the funnel rather than bouncing off to a checkout page.
   const homePage = isDashboardDomain ? (
     <Navigate to="/dashboard" replace />
   ) : (
-    <Navigate to={PUBLIC_SITE} replace />
+    <Navigate to="/store" replace />
   );
 
   return (
@@ -50,9 +48,17 @@ function App() {
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        {/* Quiz is owned by the production public site (https://digitallydefined.store/quiz).
-            Redirect, do not reimplement. Replacement route documented in POST_CLEANUP_ARCHITECTURE.md. */}
-        <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
+        {/* The Digital Superpower Quiz — the funnel's lead magnet.
+            Served by this app so it works the moment the domain is pointed
+            here; the result is scored on-device and delivered on screen, and
+            the email opt-in is best-effort (it can never block the result).
+            Move to store.digitallydefined.agency by adding that domain to
+            this Vercel project and updating the CNAME. */}
+        <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/quiz/results" element={<QuizResultsPage />} />
+        {/* The storefront. The Gumroad profile shows no products, so this page
+            is the shelf: what each product is, who it is for, and the price. */}
+        <Route path="/store" element={<StorePage />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
         <Route
