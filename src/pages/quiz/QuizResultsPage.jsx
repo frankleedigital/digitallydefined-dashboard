@@ -33,7 +33,7 @@ export default function QuizResultsPage() {
     const base = getPersona(payload.persona);
     return {
       ...base,
-      steps: base.recommendedPathways || [],
+      steps: base.roadmapSteps || base.recommendedPathways || [],
     };
   }, [payload]);
 
