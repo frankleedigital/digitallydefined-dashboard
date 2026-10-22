@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import IntelligenceDashboard from "../components/intelligence/IntelligenceDashboard";
 import { callSupabaseEdge } from "../lib/supabase-edge";
+import FeedbackWidget from "../components/FeedbackWidget";
 
 export default function IntelligencePage() {
   const [data, setData] = useState(null);
@@ -86,5 +87,5 @@ export default function IntelligencePage() {
     fontFamily: 'Inter, sans-serif'
   }}>Error: {error}</div>;
 
-  return <IntelligenceDashboard data={data} />;
+  return <><IntelligenceDashboard data={data} /><FeedbackWidget context="intelligence" /></>;
 }

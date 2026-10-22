@@ -10,7 +10,7 @@ import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
 import PremiumGate from "./components/PremiumGate";
 import NewsletterSignup from "./components/NewsletterSignup";
-import Login from "./pages/auth/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
 import QuizPage from "./pages/quiz/QuizPage";
@@ -47,7 +47,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         {/* The Digital Superpower Quiz — the funnel's lead magnet.
             Served by this app so it works the moment the domain is pointed
             here; the result is scored on-device and delivered on screen, and
@@ -63,27 +63,31 @@ function App() {
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
         <Route
           path="/intelligence"
-          element={
-            <PremiumGate feature="Intelligence">
-              <IntelligencePage />
-            </PremiumGate>
-          }
+element={
+    <ProtectedRoute>
+      <PremiumGate feature="Intelligence">
+        <IntelligencePage />
+      </PremiumGate>
+    </ProtectedRoute>
+  }
         />
 
         {/* Live website analytics (AI Business Partner data source) */}
         {isDashboardDomain && (
-          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
         )}
 
         {/* AI Assistant Page (dashboard only) */}
         {isDashboardDomain && (
           <Route
             path="/assistant"
-            element={
-              <PremiumGate feature="AI Business Partner">
-                <AssistantPage />
-              </PremiumGate>
-            }
+element={
+      <ProtectedRoute>
+        <PremiumGate feature="AI Business Partner">
+          <AssistantPage />
+        </PremiumGate>
+      </ProtectedRoute>
+    }
           />
         )}
 

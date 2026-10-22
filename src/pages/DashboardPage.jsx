@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import FeedbackWidget from "../components/FeedbackWidget";
 import {
   BarChart3,
   Bot,
