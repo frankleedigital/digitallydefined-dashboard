@@ -54,7 +54,7 @@ function App() {
             Served by this app so it works the moment the domain is pointed
             here; the result is scored on-device and delivered on screen, and
             the email opt-in is best-effort (it can never block the result).
-            Move to store.digitallydefined.agency by adding that domain to
+            Move to digitallydefined.store by adding that domain to
             this Vercel project and updating the CNAME. */}
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/quiz/results" element={<QuizResultsPage />} />
