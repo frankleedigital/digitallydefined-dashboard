@@ -16,6 +16,7 @@ import AuthCallback from "./pages/auth/AuthCallback";
 import QuizPage from "./pages/quiz/QuizPage";
 import QuizResultsPage from "./pages/quiz/QuizResultsPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import IntakeWizard from "./pages/IntakeWizard";
 
 // Where a visitor who lands on a non-dashboard host should go.
 const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
@@ -59,6 +60,7 @@ function App() {
         {/* The storefront. The Gumroad profile shows no products, so this page
             is the shelf: what each product is, who it is for, and the price. */}
         <Route path="/onboarding" element={<OnboardingPage />} />
+<Route path="/intake" element={<IntakeWizard />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
         <Route
