@@ -26,7 +26,7 @@ const CUSTOMER_CONFIG = {
   websiteUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
 
   // Your email for support
-  supportEmail: "francesca@digitallydefined.online",
+  supportEmail: "francesca@digitallydefined.agency",
 
   // ============================================
   // 🎨 COLORS & STYLING
@@ -176,7 +176,7 @@ const CUSTOMER_CONFIG = {
   // 1. After editing this file, your changes will take effect immediately
   // 2. For API keys, you MUST have valid keys from each service
   // 3. Keep this file private - it contains your sensitive keys
-  // 4. For support, contact: francesca@digitallydefined.online
+  // 4. For support, contact: francesca@digitallydefined.agency
   //
 };
 

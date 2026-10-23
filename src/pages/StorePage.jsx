@@ -194,8 +194,8 @@ export default function StorePage() {
       <p style={styles.note}>
         Buying the OS gives you a Gumroad license key. Paste it into the
         dashboard and the premium features unlock. Need help?{" "}
-        <a href="mailto:francesca@digitallydefined.online" style={{ color: theme.colors.orange, fontWeight: 700 }}>
-          francesca@digitallydefined.online
+        <a href="mailto:francesca@digitallydefined.agency" style={{ color: theme.colors.orange, fontWeight: 700 }}>
+          francesca@digitallydefined.agency
         </a>
       </p>
     </div>

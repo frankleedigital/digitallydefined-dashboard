@@ -146,7 +146,7 @@ const CONFIG = {
   },
 
   contact: {
-    email: "francesca@digitallydefined.online",
+    email: "francesca@digitallydefined.agency",
     website: "https://francescaonline.gumroad.com/l/digital-business-os",
     gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
     fullCalculatorUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
@@ -155,7 +155,7 @@ const CONFIG = {
 
   owner: {
     title: "Certified Digital Marketer & Keyword Researcher",
-    email: "francesca@digitallydefined.online",
+    email: "francesca@digitallydefined.agency",
   },
 
   integrations: {
