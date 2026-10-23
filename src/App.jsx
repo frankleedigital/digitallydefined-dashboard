@@ -17,6 +17,7 @@ import QuizPage from "./pages/quiz/QuizPage";
 import QuizResultsPage from "./pages/quiz/QuizResultsPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import IntakeWizard from "./pages/IntakeWizard";
+import ReviewCenter from "./pages/ReviewCenter";
 
 // Where a visitor who lands on a non-dashboard host should go.
 const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
@@ -61,6 +62,7 @@ function App() {
             is the shelf: what each product is, who it is for, and the price. */}
         <Route path="/onboarding" element={<OnboardingPage />} />
 <Route path="/intake" element={<IntakeWizard />} />
+<Route path="/review" element={<ReviewCenter />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
         <Route
