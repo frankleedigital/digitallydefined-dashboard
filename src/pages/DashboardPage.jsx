@@ -41,6 +41,7 @@ import IntegrationsTab from "./IntegrationsTab";
 import NotionTab from "./NotionTab";
 import AntigravityPage from "./AntigravityPage";
 import AIStatusPanel from "./AIStatusPanel";
+import NextActionEngine from "./NextActionEngine";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -1214,6 +1215,9 @@ const DashboardPage = () => {
           .dd-dashboard-shell {
             grid-template-columns: 1fr !important;
           }
+          .dd-dashboard-inner {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
 
@@ -1292,10 +1296,25 @@ const DashboardPage = () => {
           maxWidth: 1200,
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "260px 1fr",
           gap: "1rem",
         }}
       >
+        {/* NEXT ACTION ENGINE — Priority #1: the primary output of the OS */}
+        <NextActionEngine
+          stats={stats}
+          data={data}
+          integrations={integrations}
+          automations={automations}
+        />
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "260px 1fr",
+            gap: "1rem",
+          }}
+          className="dd-dashboard-inner"
+        >
         <aside
           style={{
             ...cardStyle,
@@ -1396,6 +1415,7 @@ const DashboardPage = () => {
             modelNotice={modelNotice}
           />
         </section>
+        </div>
       </main>
 
       {showSettings && (
