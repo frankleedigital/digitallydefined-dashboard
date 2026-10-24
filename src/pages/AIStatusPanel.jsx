@@ -17,6 +17,7 @@ const STATUS_LABEL = {
   healthy: 'Healthy',
   degraded: 'Degraded',
   unhealthy: 'Down',
+  not_configured: 'Local Only / Not Enabled',
 };
 
 function statusDot(status) {
@@ -160,7 +161,8 @@ export default function AIStatusPanel() {
           const h = healthByName[provider];
           const rank = idx + 1;
           const isActive = provider === activeProvider;
-          const status = h?.status || 'unhealthy';
+          const isNotConfigured = (h?.error || '').includes('not configured');
+          const status = isNotConfigured ? 'not_configured' : (h?.status || 'unhealthy');
           const latency = h?.latency != null ? `${h.latency}ms` : '—';
           const models = (h?.availableModels || []).slice(0, 3).join(', ') || '—';
           const authenticated = h?.authenticated ? 'authenticated' : 'not authenticated';
@@ -176,8 +178,8 @@ export default function AIStatusPanel() {
                 gap: '0.6rem',
                 padding: '0.5rem',
                 border: brutalBorder,
-                backgroundColor: isActive ? '#e7f8e7' : theme.colors.background,
-                borderLeft: isActive ? `3px solid ${theme.colors.success}` : 'none',
+                backgroundColor: isActive ? '#e7f8e7' : (isNotConfigured ? `${theme.colors.muted}10` : theme.colors.background),
+                borderLeft: isActive ? `3px solid ${theme.colors.success}` : (isNotConfigured ? `3px solid ${theme.colors.muted}` : 'none'),
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
@@ -195,10 +197,16 @@ export default function AIStatusPanel() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: theme.colors.muted }}>
                 <span>{statusDot(status)}{STATUS_LABEL[status]}</span>
                 <span>• {latency}</span>
-                <span>• {authenticated}</span>
-                <span>• {reachable}</span>
-                <span>• models: {models}</span>
-                {h?.error && (
+                {isNotConfigured ? (
+                  <span style={{ color: theme.colors.muted }}>• Not applicable in production</span>
+                ) : (
+                  <>
+                    <span>• {authenticated}</span>
+                    <span>• {reachable}</span>
+                    <span>• models: {models}</span>
+                  </>
+                )}
+                {h?.error && !isNotConfigured && (
                   <span style={{ color: theme.colors.darkRed, fontSize: '0.7rem' }}>error: {h.error}</span>
                 )}
               </div>
