@@ -12,6 +12,7 @@ import PremiumGate from "./components/PremiumGate";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Quiz flow: the canonical quiz lives on the production public site at
 // https://digitallydefined.store/quiz (NOT in this repo —
@@ -49,7 +50,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         {/* Quiz is owned by the production public site (https://digitallydefined.store/quiz).
             Redirect, do not reimplement. Replacement route documented in POST_CLEANUP_ARCHITECTURE.md. */}
         <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
