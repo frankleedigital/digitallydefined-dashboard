@@ -1162,7 +1162,7 @@ const DashboardPage = () => {
     sendAssistantMessage(assistantInput);
   };
 
-  const renderTab = () => {
+  const renderTab = useCallback(() => {
     if (activeTab === "reputation") return <ReputationTab reviews={data.reviews} />;
     if (activeTab === "intel") return <IntelTab data={data} />;
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
@@ -1172,7 +1172,7 @@ const DashboardPage = () => {
     if (activeTab === "notion") return <NotionTab data={notionData} />;
     if (activeTab === "antigravity") return <AntigravityPage />;
     return <CommandTab data={data} stats={stats} />;
-  };
+  }, [activeTab, data, integrations, notionData, stats]);
 
   if (initialLoad) {
     return (
