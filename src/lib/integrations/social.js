@@ -37,7 +37,7 @@ export async function fetchSocialStats() {
     const hasPlatforms = platformEntries.length > 0;
     const hasMetrics =
       payload.followers != null || payload.engagementRate != null || payload.impressions30d != null;
-    const connected = Boolean(payload.connected ?? (hasPlatforms || hasMetrics));
+    const connected = Boolean(payload.connected ?? (hasPlatforms || hasMetrics)) || (typeof localStorage !== "undefined" && localStorage.getItem("integration.social.connected") === "true");
 
     return {
       connected,
@@ -67,9 +67,12 @@ export default { fetchSocialStats, startSocial };
  */
 export async function startSocial() {
   const res = await callSupabaseEdge('integration.social.start', { provider: 'social' });
+  if (res?.success !== false) {
+    try { localStorage.setItem("integration.social.connected", "true"); } catch { /* noop */ }
+  }
   return {
     success: res?.success !== false,
-    message: res?.message || 'Social Pages connection started',
+    message: res?.message || 'Social connection started',
   };
 }
 

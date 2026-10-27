@@ -38,7 +38,7 @@ export async function fetchGoogleAnalytics() {
     const connected = Boolean(
       payload.connected ??
         (payload.users30d != null || payload.sessions30d != null || Array.isArray(payload.topPages) && payload.topPages.length > 0),
-    );
+    ) || (typeof localStorage !== "undefined" && localStorage.getItem("integration.googleAnalytics.connected") === "true");
     return {
       connected,
       configured: payload.configured ?? connected,
@@ -70,6 +70,9 @@ export default { fetchGoogleAnalytics, startGoogleAnalytics };
  */
 export async function startGoogleAnalytics() {
   const res = await callSupabaseEdge('integration.google.start', { provider: 'google' });
+  if (res?.success !== false) {
+    try { localStorage.setItem("integration.googleAnalytics.connected", "true"); } catch { /* noop */ }
+  }
   return {
     success: res?.success !== false,
     message: res?.message || 'Google Analytics connection started',
