@@ -2,7 +2,7 @@
 // AI Infrastructure Status panel — live provider health for Hermes fallback chain.
 // Fetches hermes.status via the shared API service and displays provider, model, latency, health, fallback rank.
 import React, { useEffect, useState } from 'react';
-import { refreshCw, database } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { brutalBorder, brutalHeading, theme } from '../theme';
 import api from '../services/api';
 
@@ -86,7 +86,7 @@ export default function AIStatusPanel() {
     return (
       <div style={{ border: brutalBorder, backgroundColor: theme.colors.card, padding: '1rem', margin: '1rem 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-          <refreshCw size={16} style={{ color: theme.colors.muted }} />
+          <RefreshCw size={16} style={{ color: theme.colors.muted }} />
           <h3 style={{ ...brutalHeading, fontSize: '0.95rem', margin: 0 }}>AI Infrastructure Status</h3>
           {loading && <span style={{ fontSize: '0.75rem', color: theme.colors.muted }}>Loading…</span>}
           {error && <span style={{ fontSize: '0.75rem', color: theme.colors.darkRed }}>Error: {error}</span>}
@@ -132,9 +132,9 @@ export default function AIStatusPanel() {
           }}
         >
           {loading ? (
-            <refreshCw size={14} className="spin" style={{ color: theme.colors.muted }} />
+            <RefreshCw size={14} className="spin" style={{ color: theme.colors.muted }} />
           ) : (
-            <refreshCw size={14} style={{ color: theme.colors.muted }} />
+            <RefreshCw size={14} style={{ color: theme.colors.muted }} />
           )}
           {loading ? 'Refreshing…' : 'Refresh'}
         </button>
