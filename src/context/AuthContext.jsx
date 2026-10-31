@@ -67,6 +67,12 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
+     if (!supabase) {
+       authWarn('Supabase not configured — running in open-dashboard mode, auth disabled.');
+       if (!cancelled) setLoading(false);
+       return () => { cancelled = true; };
+     }
+
     loadSession();
     return () => { cancelled = true; subscription.unsubscribe(); };
   }, []);

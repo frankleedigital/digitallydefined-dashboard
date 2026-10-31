@@ -76,17 +76,17 @@ const configProblems = assertSupabaseConfig();
 
 export const supabaseConfigIssues = configProblems;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    // Detect ?code= (PKCE) and #access_token= (implicit) on load.
-    detectSessionInUrl: true,
-    flowType: 'pkce',
-    // Stable storage key so /debug-auth can show exactly what the client sees.
-    storageKey: 'dd-dashboard-auth',
-  },
-});
+export const supabase = configProblems.length === 0
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+        storageKey: 'dd-dashboard-auth',
+      },
+    })
+  : null;
 
 /** Human-readable config summary (never logs the full key). */
 export function describeSupabaseConfig() {
