@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import { OnboardingProvider } from "./context/OnboardingContext";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import { installGlobalHandlers } from "./lib/error-monitor";
 import { validateEnvironment } from "./config/environment";
 
