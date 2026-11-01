@@ -8,7 +8,6 @@ import IntelligencePage from "./pages/IntelligencePage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
-import PremiumGate from "./components/PremiumGate";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthCallback from "./pages/auth/AuthCallback";
@@ -56,14 +55,8 @@ function App() {
         <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
-        <Route
-          path="/intelligence"
-          element={
-            <PremiumGate feature="Intelligence">
-              <IntelligencePage />
-            </PremiumGate>
-          }
-        />
+        {/* Control-center feature: no paywall. Purchase gating lives on Gumroad. */}
+        <Route path="/intelligence" element={<IntelligencePage />} />
 
         {/* Live website analytics (AI Business Partner data source) */}
         {isDashboardDomain && (
@@ -72,15 +65,8 @@ function App() {
 
         {/* AI Assistant Page (dashboard only) */}
         {isDashboardDomain && (
-          <Route
-            path="/assistant"
-            element={
-              <PremiumGate feature="AI Business Partner">
-                <AssistantPage />
-              </PremiumGate>
-            }
-          />
-        )}
+                  <Route path="/assistant" element={<AssistantPage />} />
+                )}
 
         <Route
           path="*"
