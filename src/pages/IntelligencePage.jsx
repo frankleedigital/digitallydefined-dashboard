@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import IntelligenceDashboard from "../components/intelligence/IntelligenceDashboard";
-import { callSupabaseEdge } from "../lib/supabase-edge";
+import { callSupabaseEdge } from "../services/api";
 
 export default function IntelligencePage() {
   const [data, setData] = useState(null);

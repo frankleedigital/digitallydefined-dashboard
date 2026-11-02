@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { getAnalyticsBrief, formatBriefAsContext } from "../lib/analytics";
-import { callSupabaseEdge } from "../lib/supabase-edge";
+import { callSupabaseEdge } from "../services/api";
 import { getActiveModelId, DEFAULT_ASSISTANT_MODEL } from "../lib/modelSelector";
 
 const PARTNER_SYSTEM_PROMPT = `You are Hermes — Francesca's AI business partner at DigitallyDefined. You've known her for months. You know her business inside out.

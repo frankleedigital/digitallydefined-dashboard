@@ -1,6 +1,6 @@
 // Google Analytics integration service
 // Requires VITE_GA_MEASUREMENT_ID / VITE_GA_PROPERTY_ID and OAuth credentials in a real backend context.
-import { callSupabaseEdge } from '../supabase-edge';
+import { callSupabaseEdge } from '../../services/api';
 
 export async function fetchGoogleAnalytics() {
   const fallbackBrief = {

@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { refreshCw, database } from 'lucide-react';
 import { brutalBorder, brutalHeading, theme } from '../theme';
-import { postAction } from '../lib/api-client';
+import { postAction } from '../services/api';
 
 const STATUS_COLOR = {
   healthy: theme.colors.success,

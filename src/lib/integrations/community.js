@@ -1,6 +1,6 @@
 // Community integration service
 // Supports Facebook Groups, Discord, Mighty Networks through the Hermes edge function.
-import { callSupabaseEdge } from '../supabase-edge';
+import { callSupabaseEdge } from '../../services/api';
 
 export async function fetchCommunityStats() {
   try {

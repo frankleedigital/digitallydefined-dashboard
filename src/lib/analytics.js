@@ -2,7 +2,7 @@
 // Dashboard client for the DigitallyDefined analytics pipeline.
 // Reads aggregated website data from the DigitallyDefined backend /api.
 
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, callSupabaseEdge } from './supabase-edge';
+import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, callSupabaseEdge } from '../services/api';
 
 /**
  * Fetch analytics from the backend.

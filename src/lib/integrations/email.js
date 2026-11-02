@@ -1,6 +1,6 @@
 // Email list integration service
 // Supports Brevo, Mailchimp through the Hermes edge function.
-import { callSupabaseEdge } from '../supabase-edge';
+import { callSupabaseEdge } from '../../services/api';
 
 export async function fetchEmailStats() {
   try {

@@ -31,8 +31,13 @@ import {
   brutalHeading,
   theme,
 } from "../theme";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, callSupabaseEdge } from "../lib/supabase-edge";
-import { postAction as ddPost, rest as ddRest } from "../lib/api-client";
+import {
+  getSupabaseEdgeUrl,
+  getSupabaseEdgeHeaders,
+  callSupabaseEdge,
+  postAction as ddPost,
+  rest as ddRest,
+} from "../services/api";
 import { captureClientError } from "../lib/error-monitor";
 import { getActiveModelId, fetchActiveModel, fetchModelGroups, switchActiveModel } from "../lib/modelSelector";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
