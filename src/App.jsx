@@ -12,6 +12,7 @@ import PremiumGate from "./components/PremiumGate";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SignUp from "./pages/auth/SignUp";
+import Login from "./pages/auth/Login";
 import AuthCallback from "./pages/auth/AuthCallback";
 import QuizPage from "./pages/quiz/QuizPage";
 import QuizResultsPage from "./pages/quiz/QuizResultsPage";
