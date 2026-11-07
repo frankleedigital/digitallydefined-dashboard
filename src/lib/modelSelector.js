@@ -32,16 +32,93 @@ export function currentUserId() {
   return "default";
 }
 
-/** List REAL models grouped by tier (free / gemini / bluesminds). */
+/* ------------------------------------------------------------------ */
+/*  Model list sources — Gemini first, OmniRoute secondary            */
+/* ------------------------------------------------------------------ */
+
+/** Static Gemini model list — the default source for the model picker. */
+export const GEMINI_MODELS = {
+  flash: "gemini-2.5-flash-preview-04-17",
+  pro: "gemini-2.5-pro-preview-06-05",
+};
+
+/**
+ * Static fallback groups so the model dropdown keeps working when the
+ * backend / OmniRoute are unreachable. Mirrors the shape of GET /api/models
+ * ({ ok, groups: [{ tier, models: [{ id, name, ... }] }] }).
+ */
+export function staticGeminiModelGroups() {
+  return {
+    ok: true,
+    source: "static-gemini",
+    groups: [
+      {
+        tier: "gemini",
+        label: "Google Gemini (direct)",
+        models: [
+          { id: GEMINI_MODELS.flash, name: "Gemini 2.5 Flash (preview)", tier: "gemini", provider: "gemini" },
+          { id: GEMINI_MODELS.pro, name: "Gemini 2.5 Pro (preview)", tier: "gemini", provider: "gemini" },
+        ],
+      },
+    ],
+  };
+}
+
+/**
+ * Secondary source: OmniRoute's live model list. Used ONLY when
+ * VITE_OMNIROUTE_BASE_URL is configured. Never throws — an offline
+ * gateway simply returns null so the caller can fall back.
+ */
+async function fetchOmniRouteModelGroups() {
+  const base = String(import.meta.env.VITE_OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
+  if (!base) return null;
+  try {
+    const key = import.meta.env.VITE_OMNIROUTE_API_KEY || "";
+    const res = await fetch(base + "/models", {
+      method: "GET",
+      headers: key ? { Authorization: "Bearer " + key } : undefined,
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : data.data || [];
+    if (!list.length) return null;
+    return {
+      ok: true,
+      source: "omniroute",
+      groups: [
+        {
+          tier: "omniroute",
+          label: "OmniRoute (secondary)",
+          models: list.map((m) => ({
+            id: m.id || m,
+            name: m.name || m.id || m,
+            tier: "omniroute",
+            provider: "omniroute",
+          })),
+        },
+      ],
+    };
+  } catch {
+    return null; // OmniRoute offline — never crash the model picker.
+  }
+}
+
+/**
+ * List REAL models grouped by tier (free / gemini / bluesminds).
+ * Order: backend GET /api/models -> OmniRoute (only when
+ * VITE_OMNIROUTE_BASE_URL is set) -> static Gemini list.
+ */
 export async function fetchModelGroups() {
   try {
     const body = await rest('models', { method: 'GET', timeoutMs: 15000, retries: 1 });
-    if (!body?.ok) return null;
-    return body;
+    if (body?.ok) return { ...body, source: body.source || "backend" };
   } catch (err) {
     try { recordRequestFailure({ message: err.message, url: BACKEND_URL + '/api/models', action: 'models.list', code: err.code, status: err.status }); } catch { /* noop */ }
-    return null;
   }
+  const omni = await fetchOmniRouteModelGroups();
+  if (omni) return omni;
+  return staticGeminiModelGroups();
 }
 
 /**
@@ -114,4 +191,4 @@ export async function switchActiveModel(modelId) {
   return { ...body, via: "backend-clean" };
 }
 
-export default { fetchModelGroups, fetchActiveModel, getActiveModelId, switchActiveModel, currentUserId, MODEL_SWITCH_STORAGE_KEY, DEFAULT_ASSISTANT_MODEL };
+export default { fetchModelGroups, fetchActiveModel, getActiveModelId, switchActiveModel, currentUserId, MODEL_SWITCH_STORAGE_KEY, DEFAULT_ASSISTANT_MODEL, GEMINI_MODELS, staticGeminiModelGroups };

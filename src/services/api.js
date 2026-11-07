@@ -237,3 +237,28 @@ const ApiService = {
 };
 
 export default ApiService;
+
+/**
+ * Named export used by the AI provider layer (src/lib/aiProvider.js).
+ * Same wire format as post() — POST { action, ...payload } to /api — but with
+ * an optional { timeoutMs } so long-running AI calls can be bounded.
+ */
+export function postAction(action, payload = {}, { timeoutMs } = {}) {
+  const controller = new AbortController();
+  const timer = timeoutMs ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  const url = `${_baseUrl}/api`;
+  const finish = (fn) => (timer ? fn().finally(() => clearTimeout(timer)) : fn());
+  return finish(async () => {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ action, ...payload }),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || body.message || `Request failed: ${res.status}`);
+    }
+    return res.json();
+  });
+}
