@@ -3,7 +3,7 @@
 // Posts action=hermes.status via api-client (resolves VITE_API_URL) and displays
 // provider, model, latency, health, fallback rank.
 import React, { useEffect, useState } from 'react';
-import { refreshCw, database } from 'lucide-react';
+import { RefreshCw, Database } from 'lucide-react';
 import { brutalBorder, brutalHeading, theme } from '../theme';
 import { postAction } from '../services/api';
 
@@ -90,7 +90,7 @@ export default function AIStatusPanel() {
     return (
       <div style={{ border: brutalBorder, backgroundColor: theme.colors.card, padding: '1rem', margin: '1rem 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-          <refreshCw size={16} style={{ color: theme.colors.muted }} />
+          <RefreshCw size={16} style={{ color: theme.colors.muted }} />
           <h3 style={{ ...brutalHeading, fontSize: '0.95rem', margin: 0 }}>AI Infrastructure Status</h3>
           {loading && <span style={{ fontSize: '0.75rem', color: theme.colors.muted }}>Loading…</span>}
           {error && <span style={{ fontSize: '0.75rem', color: theme.colors.darkRed }}>Error: {error}</span>}
@@ -115,7 +115,7 @@ export default function AIStatusPanel() {
     <div style={{ border: brutalBorder, backgroundColor: theme.colors.card, padding: '1rem', margin: '1rem 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '0.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <database size={18} style={{ color: theme.colors.muted }} />
+          <Database size={18} style={{ color: theme.colors.muted }} />
           <h3 style={{ ...brutalHeading, fontSize: '0.95rem', margin: 0 }}>AI Infrastructure Status</h3>
         </div>
         <button
@@ -136,9 +136,9 @@ export default function AIStatusPanel() {
           }}
         >
           {loading ? (
-            <refreshCw size={14} className="spin" style={{ color: theme.colors.muted }} />
+            <RefreshCw size={14} className="spin" style={{ color: theme.colors.muted }} />
           ) : (
-            <refreshCw size={14} style={{ color: theme.colors.muted }} />
+            <RefreshCw size={14} style={{ color: theme.colors.muted }} />
           )}
           {loading ? 'Refreshing…' : 'Refresh'}
         </button>
