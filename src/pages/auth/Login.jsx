@@ -19,18 +19,18 @@ export default function Login() {
             DIGITALLY<span className="text-[#F18B25]">DEFINED</span>
           </h1>
           <h2 className="text-xl font-black text-[#111111] mb-3 uppercase tracking-wider">
-            Login disabled
+            Dashboard Access Open
           </h2>
           <p className="text-sm text-[#5F5F5F] mb-6 font-medium">
-            Dashboard access is open to everyone. No sign-in required.
+            Authentication is disabled. Click below to enter the dashboard directly.
           </p>
-          <Link
-            to="/dashboard"
-            className="inline-block bg-[#F18B25] border-2 border-[#111111] px-6 py-3 text-sm font-black uppercase tracking-widest text-[#111111]"
+          <a
+            href="/dashboard"
+            className="inline-block bg-[#F18B25] border-2 border-[#111111] px-6 py-3 text-sm font-black uppercase tracking-widest text-[#111111] no-underline"
             style={{ borderRadius: 0 }}
           >
             Go to dashboard →
-          </Link>
+          </a>
         </div>
       </div>
     </div>
