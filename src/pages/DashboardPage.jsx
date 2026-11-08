@@ -41,7 +41,6 @@ import GrowthTab from "./GrowthTab";
 import IntegrationsTab from "./IntegrationsTab";
 import NotionTab from "./NotionTab";
 import AntigravityPage from "./AntigravityPage";
-import AIStatusPanel from "./AIStatusPanel";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -650,7 +649,7 @@ function DashboardAssistant({
             const v = e.target.value;
             if (onModelChange) onModelChange(v);
           }}
-          title={modelSwitching ? "Switching model…" : "AI model (via OmniRoute)"}
+          title={modelSwitching ? "Switching model…" : "AI model"}
           style={{
             border: brutalBorder,
             backgroundColor: theme.colors.card,
@@ -1283,8 +1282,6 @@ const DashboardPage = () => {
           </button>
         </div>
       </header>
-
-      <AIStatusPanel />
 
       <main
         className="dd-dashboard-shell"
