@@ -19,6 +19,7 @@ import QuizResultsPage from "./pages/quiz/QuizResultsPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import IntakeWizard from "./pages/IntakeWizard";
 import ReviewCenter from "./pages/ReviewCenter";
+import StorePage from "./pages/StorePage";
 
 // Where a visitor who lands on a non-dashboard host should go.
 const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
@@ -59,6 +60,9 @@ function App() {
             this Vercel project and updating the CNAME. */}
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/quiz/results" element={<QuizResultsPage />} />
+        {/* The storefront shelf — products, prices, quiz entry point.
+            Non-dashboard domains land here (see homePage above). */}
+        <Route path="/store" element={<StorePage />} />
         {/* The storefront. The Gumroad profile shows no products, so this page
             is the shelf: what each product is, who it is for, and the price. */}
         <Route path="/onboarding" element={<OnboardingPage />} />
