@@ -74,11 +74,11 @@ export default { fetchCommunityStats, startCommunity };
  */
 export async function startCommunity() {
   const res = await callSupabaseEdge('integration.community.start', { provider: 'community' });
-  if (res?.success !== false) {
+  if (res?.success === true) {
     try { localStorage.setItem("integration.community.connected", "true"); } catch { /* noop */ }
   }
   return {
-    success: res?.success !== false,
+    success: res?.success === true,
     message: res?.message || 'Community connection started',
   };
 }

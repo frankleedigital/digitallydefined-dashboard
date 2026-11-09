@@ -78,11 +78,11 @@ export default { fetchEmailStats, startEmail };
  */
 export async function startEmail() {
   const res = await callSupabaseEdge('integration.email.start', { provider: 'email' });
-  if (res?.success !== false) {
+  if (res?.success === true) {
     try { localStorage.setItem("integration.email.connected", "true"); } catch { /* noop */ }
   }
   return {
-    success: res?.success !== false,
+    success: res?.success === true,
     message: res?.message || 'Email List connection started',
   };
 }

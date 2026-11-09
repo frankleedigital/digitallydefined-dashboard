@@ -51,7 +51,7 @@ const TOOLS = [
     defaultParams: { dbKey: "ideas", diffOnly: true, verbose: true } },
   { id: "queryDatabase", label: "Query Database", icon: Search, group: "diagnose",
     description: "Read rows back from a Notion database.",
-    defaultParams: { limit: 20 } },
+    defaultParams: { dbKey: "ideas", limit: 20 } },
   { id: "getPage", label: "Get Page", icon: Eye, group: "diagnose",
     description: "Fetch a single Notion page by ID.",
     defaultParams: { pageId: "" } },

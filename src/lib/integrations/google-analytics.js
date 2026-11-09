@@ -70,11 +70,11 @@ export default { fetchGoogleAnalytics, startGoogleAnalytics };
  */
 export async function startGoogleAnalytics() {
   const res = await callSupabaseEdge('integration.google.start', { provider: 'google' });
-  if (res?.success !== false) {
+  if (res?.success === true) {
     try { localStorage.setItem("integration.googleAnalytics.connected", "true"); } catch { /* noop */ }
   }
   return {
-    success: res?.success !== false,
+    success: res?.success === true,
     message: res?.message || 'Google Analytics connection started',
   };
 }

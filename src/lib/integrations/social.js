@@ -67,11 +67,11 @@ export default { fetchSocialStats, startSocial };
  */
 export async function startSocial() {
   const res = await callSupabaseEdge('integration.social.start', { provider: 'social' });
-  if (res?.success !== false) {
+  if (res?.success === true) {
     try { localStorage.setItem("integration.social.connected", "true"); } catch { /* noop */ }
   }
   return {
-    success: res?.success !== false,
+    success: res?.success === true,
     message: res?.message || 'Social connection started',
   };
 }
