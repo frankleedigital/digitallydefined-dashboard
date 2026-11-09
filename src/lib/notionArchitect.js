@@ -233,6 +233,23 @@ export function mapNotionPageToView(dbKey, page) {
     created: readDate("Created"),
   };
 
+  // Robust fallbacks: Notion databases use different title/status property
+  // names, so if the canonical keys are empty, use the first title-typed
+  // property, then the backend's flattened title/status/url fields.
+  if (!base.name) {
+    for (const pv of Object.values(props)) {
+      const arr = pv?.title;
+      if (Array.isArray(arr) && arr.length && arr[0]?.plain_text) {
+        base.name = String(arr[0].plain_text).trim();
+        break;
+      }
+    }
+  }
+  if (!base.name && typeof page.title === "string") base.name = page.title.trim();
+  if (!base.status && typeof page.status === "string" && page.status !== "ok") base.status = page.status;
+  if (!base.url && page.url) base.url = page.url;
+  if (!base.created && (page.created || page.last_edited_time)) base.created = page.created || page.last_edited_time;
+
   switch (dbKey) {
     case "money":
       return { ...base, month: readDate("Month"), revenue: readNumber("Revenue"), expenses: readNumber("Expenses"), net: readNumber("Net") };
