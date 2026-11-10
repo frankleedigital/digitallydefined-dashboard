@@ -7,6 +7,7 @@ import { OnboardingProvider } from "./context/OnboardingContext";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { installGlobalHandlers } from "./lib/error-monitor";
 import { validateEnvironment } from "./config/environment";
+import RouteTracker from "./components/RouteTracker";
 
 installGlobalHandlers();
 try { validateEnvironment(); } catch { /* diagnostics only */ }
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <OnboardingProvider>
         <BrowserRouter>
+          <RouteTracker />
           <App />
         </BrowserRouter>
       </OnboardingProvider>
