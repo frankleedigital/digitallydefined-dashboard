@@ -185,6 +185,10 @@ const CONFIG = {
         label: "COMMAND",
       },
       {
+        id: "products",
+        label: "PRODUCTS & GUMROAD",
+      },
+      {
         id: "growth",
         label: "GROWTH & SIGNALS",
       },

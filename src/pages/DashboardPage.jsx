@@ -21,6 +21,7 @@ import {
   ExternalLink,
   Plug,
   FileText,
+  ShoppingBag,
 } from "lucide-react";
 import CONFIG from "../config";
 import Logo from "../components/Logo";
@@ -38,6 +39,7 @@ import { captureClientError } from "../lib/error-monitor";
 import { getActiveModelId, fetchActiveModel, fetchModelGroups, switchActiveModel } from "../lib/modelSelector";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
 import GrowthTab from "./GrowthTab";
+import ProductsTab from "./ProductsTab";
 import IntegrationsTab from "./IntegrationsTab";
 import NotionTab from "./NotionTab";
 import AntigravityPage from "./AntigravityPage";
@@ -93,6 +95,7 @@ const assistantWelcome = {
 
 const tabIcons = {
   dashboard: LayoutDashboard,
+  products: ShoppingBag,
   growth: TrendingUp,
   notion: FileText,
   automations: Workflow,
@@ -546,9 +549,9 @@ function DashboardAssistant({
   modelNotice,
 }) {
   const quickPrompts = [
+    "Which digital product is most profitable to post next for women over 50?",
     "What needs my attention today?",
-    "Summarize my content engines and tools.",
-    "What is the next best move?",
+    "Summarize my revenue engines and top conversion moves.",
   ];
 
   // Model selector options — REAL OmniRoute models grouped by cost tier.
@@ -1197,6 +1200,7 @@ const DashboardPage = () => {
   };
 
   const renderTab = () => {
+    if (activeTab === "products") return <ProductsTab onAskHermes={(prompt) => sendAssistantMessage(prompt)} />;
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
     if (activeTab === "notion") return <NotionTab data={notionData} />;
     if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
