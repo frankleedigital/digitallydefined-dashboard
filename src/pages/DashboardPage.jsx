@@ -93,14 +93,9 @@ const assistantWelcome = {
 
 const tabIcons = {
   dashboard: LayoutDashboard,
-  reputation: ShieldCheck,
-  intel: BarChart3,
   growth: TrendingUp,
-  brain: BrainCircuit,
-  automations: Workflow,
-  integrations: Settings,
   notion: FileText,
-  antigravity: Database,
+  automations: Workflow,
 };
 
 const formatConversion = (value) => {
@@ -261,6 +256,13 @@ const EmptyState = ({ children }) => (
 );
 
 function CommandTab({ data, stats }) {
+  const aiBrief = data.aiBrief;
+  const sections = aiBrief ? [
+    ["What's Working", aiBrief.working, theme.colors.success || "#10b981"],
+    ["What's Slipping", aiBrief.slipping, theme.colors.darkRed || "#ef4444"],
+    ["Next Actions", aiBrief.nextActions, theme.colors.orange || "#f59e0b"],
+  ] : [];
+
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
       <div style={compactGrid}>
@@ -269,6 +271,39 @@ function CommandTab({ data, stats }) {
         <InfoBlock label="Email Growth" value={stats.emailGrowth} />
         <InfoBlock label="Churn Risk" value={stats.churnRisk} />
       </div>
+
+      {sections.length > 0 && (
+        <section style={{ display: "grid", gap: "0.6rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 style={{ ...brutalHeading, margin: 0, fontSize: "0.95rem" }}>
+              Hermes AI Strategic Brief
+            </h3>
+            {aiBrief?.provider && (
+              <span style={{ ...brutalEyebrow, fontSize: "0.62rem", color: theme.colors.muted }}>
+                {aiBrief.provider}
+              </span>
+            )}
+          </div>
+          <div style={{ display: "grid", gap: "0.65rem" }}>
+            {sections.map(([title, items, color]) =>
+              items?.length ? (
+                <section key={title} style={{ ...cardStyle, padding: "0.9rem" }}>
+                  <h4 style={{ ...brutalHeading, margin: "0 0 0.5rem", color, fontSize: "0.9rem" }}>
+                    {title}
+                  </h4>
+                  <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+                    {items.map((item, index) => (
+                      <li key={`${title}-${index}`} style={{ marginBottom: "0.35rem", fontSize: "0.88rem" }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null,
+            )}
+          </div>
+        </section>
+      )}
 
       {data.alerts.length > 0 && (
         <section style={{ display: "grid", gap: "0.5rem" }}>
@@ -1162,14 +1197,9 @@ const DashboardPage = () => {
   };
 
   const renderTab = () => {
-    if (activeTab === "reputation") return <ReputationTab reviews={data.reviews} />;
-    if (activeTab === "intel") return <IntelTab data={data} />;
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
-    if (activeTab === "brain") return <BrainTab aiBrief={data.aiBrief} />;
-    if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
-    if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} />;
     if (activeTab === "notion") return <NotionTab data={notionData} />;
-    if (activeTab === "antigravity") return <AntigravityPage />;
+    if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
     return <CommandTab data={data} stats={stats} />;
   };
 

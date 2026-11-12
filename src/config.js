@@ -185,36 +185,16 @@ const CONFIG = {
         label: "COMMAND",
       },
       {
-        id: "reputation",
-        label: "REPUTATION",
-      },
-      {
-        id: "intel",
-        label: "INTEL",
-      },
-      {
         id: "growth",
-        label: "GROWTH",
+        label: "GROWTH & SIGNALS",
       },
       {
-        id: "brain",
-        label: "THE BRAIN",
+        id: "notion",
+        label: "NOTION OS",
       },
       {
         id: "automations",
         label: "AUTOMATIONS",
-      },
-      {
-        id: "integrations",
-        label: "INTEGRATIONS",
-      },
-      {
-        id: "notion",
-        label: "NOTION",
-      },
-      {
-        id: "antigravity",
-        label: "ARCHITECT",
       },
     ],
     assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.8-flash",
