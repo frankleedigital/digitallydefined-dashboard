@@ -256,13 +256,22 @@ const EmptyState = ({ children }) => (
   </p>
 );
 
-function CommandTab({ data, stats }) {
+function CommandTab({ data, stats, latestBrief }) {
   const aiBrief = data.aiBrief;
+  const morning = latestBrief;
   const sections = aiBrief ? [
     ["What's Working", aiBrief.working, theme.colors.success || "#10b981"],
     ["What's Slipping", aiBrief.slipping, theme.colors.darkRed || "#ef4444"],
     ["Next Actions", aiBrief.nextActions, theme.colors.orange || "#f59e0b"],
   ] : [];
+
+  const morningSections = morning
+    ? [
+        ["What's Working", morning.working, theme.colors.success || "#10b981"],
+        ["What's Slipping", morning.slipping, theme.colors.darkRed || "#ef4444"],
+        ["Next Actions", morning.nextActions, theme.colors.orange || "#f59e0b"],
+      ]
+    : [];
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
@@ -272,6 +281,37 @@ function CommandTab({ data, stats }) {
         <InfoBlock label="Email Growth" value={stats.emailGrowth} />
         <InfoBlock label="Churn Risk" value={stats.churnRisk} />
       </div>
+
+      {morningSections.length > 0 && (
+        <section style={{ display: "grid", gap: "0.6rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 style={{ ...brutalHeading, margin: 0, fontSize: "0.95rem" }}>
+              This Morning's Brief
+            </h3>
+            <span style={{ ...brutalEyebrow, fontSize: "0.62rem", color: theme.colors.muted }}>
+              {String(morning.brief_date || "").slice(0, 10)}
+            </span>
+          </div>
+          <div style={{ display: "grid", gap: "0.65rem" }}>
+            {morningSections.map(([title, items, color]) =>
+              Array.isArray(items) && items.length ? (
+                <section key={title} style={{ ...cardStyle, padding: "0.9rem" }}>
+                  <h4 style={{ ...brutalHeading, margin: "0 0 0.5rem", color, fontSize: "0.9rem" }}>
+                    {title}
+                  </h4>
+                  <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+                    {items.map((item, index) => (
+                      <li key={`${title}-${index}`} style={{ marginBottom: "0.35rem", fontSize: "0.88rem" }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null,
+            )}
+          </div>
+        </section>
+      )}
 
       {sections.length > 0 && (
         <section style={{ display: "grid", gap: "0.6rem" }}>
@@ -849,6 +889,7 @@ const DashboardPage = () => {
     churnRisk: "Low",
   });
   const [automations, setAutomations] = useState([]);
+  const [latestBrief, setLatestBrief] = useState(null);
   const [integrations, setIntegrations] = useState({
     googleAnalytics: { connected: false, error: null },
     social: { connected: false, error: null },
@@ -988,6 +1029,16 @@ const DashboardPage = () => {
         try { captureClientError(autoErr, { where: 'automation.list' }); } catch { /* noop */ }
         setAutomations([]);
       }
+
+      // "This Morning's Brief" — the last brief the daily job stored.
+      let morningBrief = null;
+      try {
+        const mbPayload = await ddPost("brain.latest-brief", {}, { timeoutMs: 20000 });
+        morningBrief = mbPayload?.brief || null;
+      } catch {
+        morningBrief = null;
+      }
+      setLatestBrief(morningBrief);
 
       setStats({
         revenue: metrics.revenue || payload.revenue || "$0",
@@ -1147,7 +1198,7 @@ const DashboardPage = () => {
   const renderTab = () => {
     if (activeTab === "products") return <ProductsTab onAskHermes={(prompt) => sendAssistantMessage(prompt)} />;
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
-    return <CommandTab data={data} stats={stats} />;
+    return <CommandTab data={data} stats={stats} latestBrief={latestBrief} />;
   };
 
   if (initialLoad) {
