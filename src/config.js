@@ -192,14 +192,6 @@ const CONFIG = {
         id: "growth",
         label: "GROWTH & SIGNALS",
       },
-      {
-        id: "notion",
-        label: "NOTION OS",
-      },
-      {
-        id: "automations",
-        label: "AUTOMATIONS",
-      },
     ],
     assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.8-flash",
     integrationsTitle: "Integrations",

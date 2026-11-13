@@ -41,14 +41,12 @@ import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/
 import GrowthTab from "./GrowthTab";
 import ProductsTab from "./ProductsTab";
 import IntegrationsTab from "./IntegrationsTab";
-import NotionTab from "./NotionTab";
 import AntigravityPage from "./AntigravityPage";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
   fetchEmailStats,
   fetchCommunityStats,
-  fetchNotionData,
 } from "../lib/integrations";
 import mergedConfig from "../configMerge";
 
@@ -502,38 +500,6 @@ function BrainTab({ aiBrief }) {
   );
 }
 
-function AutomationsTab({ automations }) {
-  if (!automations.length) {
-    return <EmptyState>{dashboardConfig.automationsEmpty || "No workflows running yet. Start with /tools to launch a content, product, or automation workflow."}</EmptyState>;
-  }
-
-  return (
-    <div style={{ display: "grid", gap: "0.75rem" }}>
-      {automations.map((automation, index) => (
-        <div
-          key={`${automation.id || automation.name || index}`}
-          style={{ ...cardStyle, padding: "0.9rem" }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
-            <strong>{automation.name || "Automation"}</strong>
-            <span style={{ color: theme.colors.muted, fontSize: "0.78rem" }}>
-              {automation.status || "unknown"}
-            </span>
-          </div>
-          {automation.lastRun && (
-            <p style={{ margin: "0.25rem 0 0", fontSize: "0.85rem", color: theme.colors.muted }}>
-              Last run: {automation.lastRun}
-            </p>
-          )}
-          {automation.details && (
-            <p style={{ margin: "0.5rem 0 0", fontSize: "0.85rem" }}>{automation.details}</p>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function DashboardAssistant({
   messages,
   input,
@@ -893,17 +859,6 @@ const DashboardPage = () => {
   const [openRouterKey, setOpenRouterKey] = useState(
     localStorage.getItem("openRouterKey") || "",
   );
-  const [notionData, setNotionData] = useState({
-    ideas: [],
-    content: [],
-    automations: [],
-    intakeAlerts: [],
-    publishingQueue: [],
-    approvals: [],
-    buyerSignals: [],
-    aiDrafts: [],
-    ideasAlerts: [],
-  });
   const [assistantMessages, setAssistantMessages] = useState([assistantWelcome]);
   const [assistantInput, setAssistantInput] = useState("");
   const [isAssistantThinking, setIsAssistantThinking] = useState(false);
@@ -1073,16 +1028,6 @@ const DashboardPage = () => {
       community,
       fetchedAt: new Date().toLocaleString(),
     });
-
-    // Pull Notion data as part of the same sync cycle.
-    let notion = {};
-    try {
-      notion = await fetchNotionData();
-    } catch (err) {
-      console.error('[Dashboard] fetchNotionData failed:', err && err.message ? err.message : err);
-    }
-
-    setNotionData(notion);
   };
 
   useEffect(() => {
@@ -1202,8 +1147,6 @@ const DashboardPage = () => {
   const renderTab = () => {
     if (activeTab === "products") return <ProductsTab onAskHermes={(prompt) => sendAssistantMessage(prompt)} />;
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
-    if (activeTab === "notion") return <NotionTab data={notionData} />;
-    if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
     return <CommandTab data={data} stats={stats} />;
   };
 

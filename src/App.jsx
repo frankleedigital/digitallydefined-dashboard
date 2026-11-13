@@ -4,8 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import DashboardPage from "./pages/DashboardPage";
 import AssistantPage from "./pages/AssistantPage";
 import ThankYouCalculatorPage from "./pages/ThankYouCalculatorPage";
-import IntelligencePage from "./pages/IntelligencePage";
-import AnalyticsPage from "./pages/AnalyticsPage";
+import MyRoadmapPage from "./pages/MyRoadmapPage";
 import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
 import PremiumGate from "./components/PremiumGate";
@@ -70,20 +69,21 @@ function App() {
 <Route path="/review" element={<ReviewCenter />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
+        {/* Customer journey: Notion OS roadmap + automations, outside the owner dashboard bar */}
         <Route
-          path="/intelligence"
-element={
-    <ProtectedRoute>
-      <PremiumGate feature="Intelligence">
-        <IntelligencePage />
-      </PremiumGate>
-    </ProtectedRoute>
-  }
+          path="/roadmap"
+          element={
+            <ProtectedRoute>
+              <MyRoadmapPage />
+            </ProtectedRoute>
+          }
         />
+        {/* /intelligence now lives inside the COMMAND tab — redirect, do not 404 */}
+        <Route path="/intelligence" element={<Navigate to="/dashboard" replace />} />
 
-        {/* Live website analytics (AI Business Partner data source) */}
+        {/* Analytics signals now live inside GROWTH & SIGNALS — redirect, do not 404 */}
         {isDashboardDomain && (
-          <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
+          <Route path="/analytics" element={<Navigate to="/dashboard" replace />} />
         )}
 
         {/* AI Assistant Page (dashboard only) */}
