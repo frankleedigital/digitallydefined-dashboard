@@ -88,7 +88,7 @@ const ASSISTANT_MODEL =
 const assistantWelcome = {
   role: "assistant",
   content:
-    "I am ready. Sync the Vault, then ask what content, workflow, or calculator move should come next.",
+    "Let's get real. I am your DigitallyDefined AI Business Partner. Ask me what digital product move to make next, review our live conversion numbers, or diagnose our revenue bottlenecks.",
 };
 
 const tabIcons = {
@@ -555,9 +555,9 @@ function DashboardAssistant({
   modelNotice,
 }) {
   const quickPrompts = [
-    "Which digital product is most profitable to post next for women over 50?",
-    "What needs my attention today?",
-    "Summarize my revenue engines and top conversion moves.",
+    "Which digital product is most profitable to post next for Gen X women?",
+    "What needs our immediate attention today to close the gap?",
+    "Give me a direct read on our traffic, leads, and conversion engine.",
   ];
 
   // Model selector options — REAL OmniRoute models grouped by cost tier.
@@ -621,7 +621,7 @@ function DashboardAssistant({
             key={si}
             style={{
               border: `1px solid ${theme.colors.accent}33`,
-              borderRadius: 4,
+              borderRadius: 0,
               padding: "0.45rem 0.6rem",
               backgroundColor: "rgba(0,0,0,0.2)",
             }}
@@ -683,7 +683,7 @@ function DashboardAssistant({
         <div style={{ display: "flex", alignItems: "center", gap: "0.55rem" }}>
           <Bot size={19} color={theme.colors.aquaBlue} />
           <h2 style={{ ...brutalHeading, fontSize: "1rem", margin: 0 }}>
-            Dashboard AI Assistant
+            AI Business Partner (Hermes)
           </h2>
         </div>
         <select
