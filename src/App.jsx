@@ -49,7 +49,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         {/* Quiz is owned by the production public site (https://digitallydefined.store/quiz).
             Redirect, do not reimplement. Replacement route documented in POST_CLEANUP_ARCHITECTURE.md. */}
         <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
