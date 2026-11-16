@@ -19,6 +19,7 @@ import OnboardingPage from "./pages/OnboardingPage";
 import IntakeWizard from "./pages/IntakeWizard";
 import ReviewCenter from "./pages/ReviewCenter";
 import StorePage from "./pages/StorePage";
+import FinancialHubPage from "./pages/FinancialHubPage";
 
 // Where a visitor who lands on a non-dashboard host should go.
 const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
@@ -26,12 +27,16 @@ const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
 function App() {
   const hostname = window.location.hostname;
   const isDashboardDomain = hostname === "dashboard.digitallydefined.agency" || hostname === "dashboard.digitallydefined.online";
+  const isLegacyOsDomain = hostname === "legacyos.digitallydefined.store";
 
-  // On the dashboard domain "/" is the dashboard. On any other host (Vercel
-  // preview URLs) serve the public storefront instead, so a shared link goes
-  // to the funnel rather than bouncing off to a checkout page.
+  // On the dashboard domain "/" is the dashboard. On the legacyos store
+  // domain "/" is the Legacy OS Bundle offer page. On any other host
+  // (Vercel preview URLs, digitallydefined.store) serve the public storefront
+  // instead, so a shared link goes to the funnel rather than bouncing off.
   const homePage = isDashboardDomain ? (
     <Navigate to="/dashboard" replace />
+  ) : isLegacyOsDomain ? (
+    <Navigate to="/legacy-os-bundle.html" replace />
   ) : (
     <Navigate to="/store" replace />
   );
@@ -65,6 +70,7 @@ function App() {
         {/* The storefront. The Gumroad profile shows no products, so this page
             is the shelf: what each product is, who it is for, and the price. */}
         <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/financial-hub" element={<FinancialHubPage />} />
 <Route path="/intake" element={<IntakeWizard />} />
 <Route path="/review" element={<ReviewCenter />} />
         <Route path="/automations" element={<AssistantPage />} />
