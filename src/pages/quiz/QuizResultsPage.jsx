@@ -9,6 +9,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import QuizResultCard from "../../components/quiz/QuizResultCard.jsx";
+import QuizPersonaOfferCard from "../../components/quiz/QuizPersonaOfferCard.jsx";
 import QuizEmailCapture from "../../components/quiz/QuizEmailCapture.jsx";
 import { getPersona } from "../../lib/quiz/personas.js";
 import api from "../../services/api";
@@ -78,6 +79,10 @@ export default function QuizResultsPage() {
   return (
     <div>
       <QuizResultCard persona={persona} confidence={payload.confidence} />
+
+      <div id="recommended-offer">
+        <QuizPersonaOfferCard personaKey={payload.persona} />
+      </div>
 
       <div
         style={{

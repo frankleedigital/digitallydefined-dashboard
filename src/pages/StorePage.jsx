@@ -13,32 +13,42 @@ import { brutalBorder, brutalHeading, theme } from "../theme";
 
 const PRODUCTS = [
   {
-    id: "digital-business-os",
-    name: "Digital Business OS",
-    price: "$27",
+    id: "legacy-os",
+    name: "The Legacy OS Bundle",
+    price: "$297",
     blurb:
-      "The full AI business partner: a plan built from your quiz result, a 90-day roadmap, and your next three moves every morning.",
-    forWho: "You know what you want to sell but not what to do next.",
-    href: "https://francescaonline.gumroad.com/l/digital-business-os",
-    badge: "Most popular",
+      "Financial Autonomy Planner, Caregiver's Survival Kit & Legacy Command Center. The complete setup for Gen X women building permanent digital wealth.",
+    forWho: "You want the flagship suite for long-term legacy and financial security.",
+    href: "https://legacyos.digitallydefined.store",
+    badge: "Flagship",
   },
   {
-    id: "annual-financial-dashboard",
+    id: "unfiltered-balance-sheet",
+    name: "The Unfiltered Balance Sheet",
+    price: "$97",
+    blurb:
+      "4 Calculators + Masterclass for Divorce, Caregiving, Career Re-Entry & Spousal Dependency. Get real about your net position.",
+    forWho: "You are in a life transition and need total financial truth.",
+    href: "https://shop.digitallydefined.store/l/viedn",
+  },
+  {
+    id: "financial-dashboard",
     name: "Annual Financial Dashboard",
     price: "$17",
     blurb:
-      "Track what your business actually earns, what it costs to run, and what your net position is — for the next 12 months.",
-    forWho: "You are making money and cannot see the whole picture.",
-    href: "https://lavignefrancesca.gumroad.com/l/ycaru",
+      "12-Month Budget + Debt + Net Worth tracking. Find your Freedom Number and bridge the gap to your retirement goals.",
+    forWho: "You need the daily math to stay on track toward your number.",
+    href: "https://shop.digitallydefined.store/l/ycaru",
+    badge: "Best Seller",
   },
   {
-    id: "free-starter",
-    name: "Free Starter",
+    id: "superpower-quiz",
+    name: "Digital Superpower Quiz",
     price: "$0",
     blurb:
-      "The Digital Business OS free tier: the quiz, your business model, your first three moves, and one useful email a week.",
-    forWho: "You are not ready to buy anything, and you should not have to be.",
-    href: "https://lavignefrancesca.gumroad.com/l/noodsi",
+      "Find your unfair advantage. Discover your persona, get your personalized roadmap, and unlock your first three moves.",
+    forWho: "You are at the start and need to know where you fit in the digital economy.",
+    href: "/quiz",
     badge: "Start here",
   },
 ];

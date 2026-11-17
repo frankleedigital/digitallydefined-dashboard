@@ -5,12 +5,12 @@ const CONFIG = {
     nameLight: "Digitally",
     nameBold: "Defined",
     fullName: "DigitallyDefined",
-    tagline: "The Reputation OS for Women Who Mean Business.",
-    version: "2.0",
+    tagline: "The Operating System for Gen X women building digital income assets.",
+    version: "3.0",
   },
 
   aesthetic: {
-    philosophy: "Soft Brutalism",
+    philosophy: "Flat Soft Brutalism",
     tokens: {
       colors: {
         background: "#FFFCF9",

@@ -4,6 +4,7 @@
 
 import React from "react";
 import { brutalBorder, brutalHeading, theme } from "../../theme";
+import { Link } from "react-router-dom";
 
 const styles = {
   wrap: { maxWidth: "680px", margin: "0 auto", padding: "1.5rem 1.25rem 2.5rem" },
@@ -168,16 +169,18 @@ export default function QuizResultCard({ persona, confidence, onRestart }) {
 
       <div style={styles.ctaRow}>
         <a
-          href="https://francescaonline.gumroad.com/l/digital-business-os"
+          href="#recommended-offer"
           style={styles.cta}
         >
-          Get the full Digital Business OS
+          View Your Persona Starter Offer ↓
         </a>
         <a
-          href="https://dashboard.digitallydefined.agency/dashboard"
+          href="/10x-roi-calculator.html"
+          target="_blank"
+          rel="noopener noreferrer"
           style={styles.ctaSecondary}
         >
-          Open my dashboard
+          Launch 10X Asset ROI Calculator ↗
         </a>
         {onRestart && (
           <a href="/quiz" onClick={onRestart} style={styles.ctaSecondary}>
