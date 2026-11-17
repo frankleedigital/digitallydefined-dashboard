@@ -465,8 +465,8 @@
             </p>
             <div class="hero-actions">
               <a class="btn btn--primary" href="#planCalc">Start with Plan</a>
-              <a class="btn btn--outline" href="#protectSteps">Jump to Protect</a>
-              <a class="btn btn--secondary" href="#operate">Jump to Operate</a>
+              <a class="btn btn--outline" href="#" data-goto="protect">Jump to Protect</a>
+              <a class="btn btn--secondary" href="#" data-goto="operate">Jump to Operate</a>
             </div>
           </div>
           <div class="hero-meta">
@@ -1563,7 +1563,8 @@
        TAB SWITCHING
     ===================== */
     document.querySelectorAll("[data-goto]").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
         const target = btn.dataset.goto;
         document.querySelectorAll(".tab-btn").forEach(tab => {
           tab.classList.toggle("active", tab.dataset.tab === target);
