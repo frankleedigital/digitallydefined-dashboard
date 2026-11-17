@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ShoppingBag,
   ExternalLink,
@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
   TrendingUp,
   Tag,
+  RefreshCw,
 } from "lucide-react";
 import {
   brutalBorder,
@@ -18,6 +19,7 @@ import {
   brutalHeading,
   theme,
 } from "../theme";
+import { postAction as ddPost } from "../lib/api-client";
 
 const cardStyle = {
   border: brutalBorder,
@@ -228,8 +230,49 @@ const PRODUCT_CATALOG = [
 export default function ProductsTab({ onAskHermes }) {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [gumroadProducts, setGumroadProducts] = useState([]);
+  const [loadingGumroad, setLoadingGumroad] = useState(false);
 
-  const filteredProducts = PRODUCT_CATALOG.filter((p) => {
+  useEffect(() => {
+    let isMounted = true;
+    setLoadingGumroad(true);
+    ddPost("gumroad.products", {})
+      .then((res) => {
+        if (isMounted && res && res.success && Array.isArray(res.products)) {
+          setGumroadProducts(res.products);
+        }
+      })
+      .catch((err) => console.warn("[ProductsTab] Live Gumroad fetch:", err))
+      .finally(() => {
+        if (isMounted) setLoadingGumroad(false);
+      });
+    return () => { isMounted = false; };
+  }, []);
+
+  const mergedCatalog = PRODUCT_CATALOG.map((p) => {
+    const realGumroad = gumroadProducts.find(
+      (gp) =>
+        (gp.short_url && p.gumroadUrl && gp.short_url.toLowerCase().includes(p.gumroadUrl.toLowerCase())) ||
+        (gp.name && p.name && gp.name.toLowerCase().includes(p.name.toLowerCase())) ||
+        (p.name && gp.name && p.name.toLowerCase().includes(gp.name.toLowerCase()))
+    );
+
+    if (realGumroad) {
+      return {
+        ...p,
+        status: realGumroad.published ? "Live on Gumroad" : "Draft on Gumroad",
+        price: realGumroad.formatted_price || p.price,
+        gumroadUrl: realGumroad.short_url || p.gumroadUrl,
+      };
+    }
+
+    return {
+      ...p,
+      status: p.status.toLowerCase().includes("live") ? "Ready to List" : p.status,
+    };
+  });
+
+  const filteredProducts = mergedCatalog.filter((p) => {
     if (filter === "live" && !p.status.toLowerCase().includes("live")) return false;
     if (filter === "tools" && p.category !== "Interactive Tools") return false;
     if (filter === "magnets" && p.tier !== "Lead Magnet") return false;
@@ -245,8 +288,9 @@ export default function ProductsTab({ onAskHermes }) {
     return true;
   });
 
-  const liveCount = PRODUCT_CATALOG.filter((p) => p.status.toLowerCase().includes("live")).length;
-  const readyCount = PRODUCT_CATALOG.filter((p) => p.status.toLowerCase().includes("ready")).length;
+  const liveCount = mergedCatalog.filter((p) => p.status.toLowerCase().includes("live")).length;
+  const readyCount = mergedCatalog.filter((p) => p.status.toLowerCase().includes("ready")).length;
+  const draftCount = mergedCatalog.filter((p) => p.status.toLowerCase().includes("draft")).length;
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>

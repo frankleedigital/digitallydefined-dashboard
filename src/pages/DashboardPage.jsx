@@ -1197,7 +1197,14 @@ const DashboardPage = () => {
   };
 
   const renderTab = () => {
-    if (activeTab === "products") return <ProductsTab onAskHermes={(prompt) => sendAssistantMessage(prompt)} />;
+    if (activeTab === "products") return (
+      <ProductsTab
+        onAskHermes={(prompt) => {
+          setActiveTab("dashboard");
+          sendAssistantMessage(prompt);
+        }}
+      />
+    );
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
     return <CommandTab data={data} stats={stats} latestBrief={latestBrief} />;
   };
