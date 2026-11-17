@@ -42,6 +42,7 @@ import GrowthTab from "./GrowthTab";
 import ProductsTab from "./ProductsTab";
 import IntegrationsTab from "./IntegrationsTab";
 import AntigravityPage from "./AntigravityPage";
+import AutomationsPage from "./AutomationsPage";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -1206,6 +1207,9 @@ const DashboardPage = () => {
       />
     );
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
+    if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} onRefresh={syncEmpireData} />;
+    if (activeTab === "notion") return <AntigravityPage onSync={syncEmpireData} />;
+    if (activeTab === "automations") return <AutomationsPage />;
     return <CommandTab data={data} stats={stats} latestBrief={latestBrief} />;
   };
 
