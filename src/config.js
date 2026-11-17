@@ -198,7 +198,7 @@ const CONFIG = {
       },
       {
         id: "integrations",
-        label: "INTEGRATIONS",
+        label: "SYSTEM HEALTH",
       },
       {
         id: "notion",
