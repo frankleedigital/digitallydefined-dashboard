@@ -206,7 +206,7 @@ const CONFIG = {
       },
     ],
     lastSyncPrefix: "Last sync:",
-    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.8-flash",
+    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.5-flash-lite",
     integrationsTitle: "Integrations",
     integrationsCta: "Connect Source",
     integrationsDescription: "Connect your growth sources so the dashboard and assistant can read live data.",
