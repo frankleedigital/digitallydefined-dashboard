@@ -27,7 +27,7 @@ const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
 
 function App() {
   const hostname = window.location.hostname;
-  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency" || hostname === "dashboard.digitallydefined.online";
+  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency";
   const isLegacyOsDomain = hostname === "legacyos.digitallydefined.store";
 
   // On the dashboard domain "/" is the dashboard. On the legacyos store
