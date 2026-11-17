@@ -192,7 +192,20 @@ const CONFIG = {
         id: "growth",
         label: "GROWTH & SIGNALS",
       },
+      {
+        id: "automations",
+        label: "AUTOMATIONS & WORKERS",
+      },
+      {
+        id: "integrations",
+        label: "INTEGRATIONS",
+      },
+      {
+        id: "notion",
+        label: "NOTION OS ARCHITECT",
+      },
     ],
+    lastSyncPrefix: "Last sync:",
     assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.8-flash",
     integrationsTitle: "Integrations",
     integrationsCta: "Connect Source",

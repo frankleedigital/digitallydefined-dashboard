@@ -95,8 +95,9 @@ const tabIcons = {
   dashboard: LayoutDashboard,
   products: ShoppingBag,
   growth: TrendingUp,
-  notion: FileText,
   automations: Workflow,
+  integrations: Plug,
+  notion: FileText,
 };
 
 const formatConversion = (value) => {
@@ -1378,7 +1379,7 @@ const DashboardPage = () => {
           >
             {syncError ||
               (lastSync
-                ? `${dashboardConfig.lastSyncPrefix} ${lastSync}`
+                ? `${dashboardConfig.lastSyncPrefix || "Last sync:"} ${lastSync}`
                 : dashboardLabels.noSync)}
           </div>
         </aside>
