@@ -5,6 +5,8 @@ import {
   BarChart3,
   Bot,
   BrainCircuit,
+  ChevronDown,
+  ChevronRight,
   Database,
   DollarSign,
   FolderHeart,
@@ -43,6 +45,7 @@ import ProductsTab from "./ProductsTab";
 import IntegrationsTab from "./IntegrationsTab";
 import AntigravityPage from "./AntigravityPage";
 import AutomationsPage from "./AutomationsPage";
+import AgentHub from "./AgentHub";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -94,6 +97,7 @@ const assistantWelcome = {
 
 const tabIcons = {
   dashboard: LayoutDashboard,
+  agents: Bot,
   products: ShoppingBag,
   growth: TrendingUp,
   automations: Workflow,
@@ -258,7 +262,7 @@ const EmptyState = ({ children }) => (
   </p>
 );
 
-function CommandTab({ data, stats, latestBrief }) {
+function CommandTab({ data, stats, latestBrief, onOpenAgentHub }) {
   const aiBrief = data.aiBrief;
   const morning = latestBrief;
   const sections = aiBrief ? [
@@ -277,6 +281,26 @@ function CommandTab({ data, stats, latestBrief }) {
 
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
+      {/* OS COMMAND CENTER — data first, agent access prominent */}
+      <div style={{ ...cardStyle, backgroundColor: "#111111", color: "#FFFFFF", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+        <div>
+          <span style={{ ...brutalEyebrow, color: "#F18B25", fontSize: "0.62rem" }}>Business Command Center</span>
+          <div style={{ ...brutalHeading, fontSize: "1.1rem", color: "#FFFFFF", margin: "0.2rem 0 0" }}>OPERATIONS</div>
+          <div style={{ fontSize: "0.8rem", color: "#BFBFBF", marginTop: "0.2rem" }}>
+            Your operating objects, live signals, and the agent team that runs them.
+          </div>
+        </div>
+        {onOpenAgentHub && (
+          <button
+            type="button"
+            onClick={onOpenAgentHub}
+            style={{ border: "2px solid #F18B25", backgroundColor: "#F18B25", color: "#111", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.78rem", padding: "0.6rem 1rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "0.5rem", fontFamily: theme.fonts.body }}
+          >
+            <Bot size={15} /> Open Agent Hub
+          </button>
+        )}
+      </div>
+
       <div style={compactGrid}>
         <InfoBlock label="Top Asset" value={stats.topAsset} />
         <InfoBlock label="Community Growth" value={stats.communityGrowth} />
@@ -906,6 +930,7 @@ const DashboardPage = () => {
   const [assistantInput, setAssistantInput] = useState("");
   const [isAssistantThinking, setIsAssistantThinking] = useState(false);
   const [assistantError, setAssistantError] = useState("");
+  const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(
     localStorage.getItem("dd-assistant-model") || "auto/best-chat"
   );
@@ -1198,6 +1223,7 @@ const DashboardPage = () => {
   };
 
   const renderTab = () => {
+    if (activeTab === "agents") return <AgentHub />;
     if (activeTab === "products") return (
       <ProductsTab
         onAskHermes={(prompt) => {
@@ -1210,7 +1236,7 @@ const DashboardPage = () => {
     if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} onRefresh={syncEmpireData} />;
     if (activeTab === "notion") return <AntigravityPage onSync={syncEmpireData} />;
     if (activeTab === "automations") return <AutomationsPage />;
-    return <CommandTab data={data} stats={stats} latestBrief={latestBrief} />;
+    return <CommandTab data={data} stats={stats} latestBrief={latestBrief} onOpenAgentHub={() => setActiveTab("agents")} />;
   };
 
   if (initialLoad) {
@@ -1431,20 +1457,52 @@ const DashboardPage = () => {
             {renderTab()}
           </div>
 
-          <DashboardAssistant
-            messages={assistantMessages}
-            input={assistantInput}
-            isThinking={isAssistantThinking}
-            assistantError={assistantError}
-            onInputChange={setAssistantInput}
-            onSubmit={handleAssistantSubmit}
-            onQuickPrompt={sendAssistantMessage}
-            selectedModel={selectedModel}
-            onModelChange={handleModelChange}
-            modelGroups={modelGroups}
-            modelSwitching={modelSwitching}
-            modelNotice={modelNotice}
-          />
+          <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
+            <button
+              type="button"
+              onClick={() => setAiPanelOpen((o) => !o)}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "0.5rem",
+                padding: "0.9rem 1rem",
+                border: "none",
+                borderBottom: aiPanelOpen ? brutalBorder : "none",
+                background: "#111111",
+                color: "#FFFFFF",
+                cursor: "pointer",
+                fontFamily: theme.fonts.body,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <Bot size={16} color="#F18B25" />
+                <span style={{ ...brutalHeading, fontSize: "0.9rem", color: "#FFFFFF" }}>
+                  AI BUSINESS PARTNER — ORCHESTRATOR
+                </span>
+              </div>
+              {aiPanelOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            {aiPanelOpen && (
+              <div style={{ padding: "0.75rem" }}>
+                <DashboardAssistant
+                  messages={assistantMessages}
+                  input={assistantInput}
+                  isThinking={isAssistantThinking}
+                  assistantError={assistantError}
+                  onInputChange={setAssistantInput}
+                  onSubmit={handleAssistantSubmit}
+                  onQuickPrompt={sendAssistantMessage}
+                  selectedModel={selectedModel}
+                  onModelChange={handleModelChange}
+                  modelGroups={modelGroups}
+                  modelSwitching={modelSwitching}
+                  modelNotice={modelNotice}
+                />
+              </div>
+            )}
+          </div>
         </section>
       </main>
 

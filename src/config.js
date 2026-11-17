@@ -182,7 +182,11 @@ const CONFIG = {
     tabs: [
       {
         id: "dashboard",
-        label: "COMMAND",
+        label: "OPERATIONS",
+      },
+      {
+        id: "agents",
+        label: "AGENT HUB",
       },
       {
         id: "products",
