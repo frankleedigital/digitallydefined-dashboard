@@ -20,6 +20,7 @@ import IntakeWizard from "./pages/IntakeWizard";
 import ReviewCenter from "./pages/ReviewCenter";
 import StorePage from "./pages/StorePage";
 import FinancialHubPage from "./pages/FinancialHubPage";
+import LegacyOSPage from "./pages/LegacyOSPage";
 
 // Where a visitor who lands on a non-dashboard host should go.
 const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
@@ -36,7 +37,7 @@ function App() {
   const homePage = isDashboardDomain ? (
     <Navigate to="/dashboard" replace />
   ) : isLegacyOsDomain ? (
-    <Navigate to="/legacy-os-bundle.html" replace />
+    <LegacyOSPage />
   ) : (
     <Navigate to="/store" replace />
   );
@@ -46,11 +47,14 @@ function App() {
       <SpeedInsights />
       <ScrollProgress />
 
-      {/* Show chat ONLY on the main site */}
-      {!isDashboardDomain && <ChatWidget />}
+      {/* Show chat ONLY on the main site (not on private dashboard or legacyos sales page) */}
+      {!isDashboardDomain && !isLegacyOsDomain && <ChatWidget />}
 
       <Routes>
         <Route path="/" element={homePage} />
+        <Route path="/legacy-os" element={<LegacyOSPage />} />
+        <Route path="/legacy-os-bundle" element={<LegacyOSPage />} />
+        <Route path="/legacy-os-bundle.html" element={<LegacyOSPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
