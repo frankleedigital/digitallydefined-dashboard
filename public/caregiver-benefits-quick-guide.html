@@ -86,14 +86,104 @@ th{background:var(--bl);color:#000;font-family:"Inter";font-weight:900;font-size
   text-align: right !important;
 }
 
+
+/* ── Unified DigitallyDefined Topbar ────────────────────────────────────────── */
+.dd-unified-topbar {
+  background: #FFFCF9 !important;
+  border-bottom: 2px solid #111111 !important;
+  padding: 14px 20px !important;
+  width: 100% !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+}
+.dd-unified-topbar-inner {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+.dd-unified-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+}
+.dd-unified-brand-mark {
+  width: 36px !important;
+  height: 36px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: #111111 !important;
+  color: #FFFCF9 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  flex: 0 0 auto !important;
+}
+.dd-unified-brand-copy {
+  display: flex !important;
+  flex-direction: column !important;
+}
+.dd-unified-brand-title {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  text-transform: uppercase !important;
+}
+.dd-unified-brand-title span {
+  color: #F18B25 !important;
+  font-style: italic !important;
+}
+.dd-unified-brand-sub {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #555555 !important;
+  font-weight: 700 !important;
+  margin-top: 2px !important;
+}
+.dd-unified-tag {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #111111 !important;
+  border: 2px solid #111111 !important;
+  padding: 6px 12px !important;
+  background: #FFFFFF !important;
+}
+@media print {
+  .dd-unified-topbar { display: none !important; }
+}
+
 </style>
 </head>
 <body>
-<div class="wrap">
-<header class="dd-brandbar" role="banner">
-  <span class="dd-brandmark">DIGITALLY<em>DEFINED.</em></span>
-  <span class="dd-brandbar-label">Caregiver Benefits &amp; Compensation Quick Guide</span>
+<header class="dd-unified-topbar" role="banner">
+  <div class="dd-unified-topbar-inner">
+    <div class="dd-unified-brand">
+      <div class="dd-unified-brand-mark">DD</div>
+      <div class="dd-unified-brand-copy">
+        <div class="dd-unified-brand-title">DIGITALLY<span>DEFINED.</span></div>
+        <div class="dd-unified-brand-sub">Build what you own · Legacy OS</div>
+      </div>
+    </div>
+    <div class="dd-unified-tag">Bonus · Caregiver Guide</div>
+  </div>
 </header>
+<div class="wrap">
+
 <div class="card">
 <div class="eyebrow">The Legacy OS &middot; Protect Layer</div>
 <h1>Caregiver Benefits &amp; Compensation Quick Guide</h1>
