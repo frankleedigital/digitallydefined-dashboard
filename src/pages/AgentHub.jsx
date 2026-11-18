@@ -218,23 +218,25 @@ export default function AgentHub() {
             </div>
             <Bot size={20} color={theme.colors.orange} />
           </div>
-          <div style={{ display: "grid", gap: "0.6rem" }}>
+          <div style={{ display: "grid", gap: "0.8rem" }}>
             {((sel.input && sel.input.fields) || []).map((field) => (
-              <div key={field.name}>
+              <div key={field.name} style={{ display: "grid", gap: "0.35rem" }}>
                 <label style={{ fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em" }}>{field.label} {field.required ? "*" : ""}</label>
                 {field.type === "select" ? (
-                  <select value={inputs[field.name] || ""} onChange={(e) => setInputs((s) => ({ ...s, [field.name]: e.target.value }))} style={{ ...cardStyle, backgroundColor: "#FFFFFF", marginTop: "0.25rem", fontWeight: 600 }}>
+                  <select value={inputs[field.name] || ""} onChange={(e) => setInputs((s) => ({ ...s, [field.name]: e.target.value }))} style={{ border: brutalBorder, backgroundColor: "#FFFFFF", padding: "0.6rem 0.8rem", fontWeight: 600, fontSize: "0.85rem" }}>
                     <option value="">Select...</option>
                     {(field.options || []).map((o) => <option key={o} value={o}>{o}</option>)}
                   </select>
+                ) : field.type === "textarea" || field.name === "content" || field.name === "message" ? (
+                  <textarea value={inputs[field.name] || ""} onChange={(e) => setInputs((s) => ({ ...s, [field.name]: e.target.value }))} rows={4} placeholder={field.label} style={{ border: brutalBorder, backgroundColor: "#FFFFFF", padding: "0.7rem 0.8rem", fontWeight: 600, fontSize: "0.85rem", fontFamily: "inherit", width: "100%", resize: "vertical" }} />
                 ) : (
-                  <input type="text" value={inputs[field.name] || ""} onChange={(e) => setInputs((s) => ({ ...s, [field.name]: e.target.value }))} placeholder={field.type === "json" ? "{ ... }" : field.label} style={{ ...cardStyle, backgroundColor: "#FFFFFF", marginTop: "0.25rem", fontWeight: 600 }} />
+                  <input type="text" value={inputs[field.name] || ""} onChange={(e) => setInputs((s) => ({ ...s, [field.name]: e.target.value }))} placeholder={field.type === "json" ? "{ ... }" : field.label} style={{ border: brutalBorder, backgroundColor: "#FFFFFF", padding: "0.6rem 0.8rem", fontWeight: 600, fontSize: "0.85rem", width: "100%" }} />
                 )}
               </div>
             ))}
-            <button type="button" onClick={runAgent} disabled={running} style={{ border: brutalBorder, backgroundColor: "#F18B25", color: "#111", fontWeight: 900, textTransform: "uppercase", padding: "0.7rem 1rem", cursor: running ? "wait" : "pointer", display: "inline-flex", alignItems: "center", gap: "0.5rem", alignSelf: "flex-start" }}>
+            <button type="button" onClick={runAgent} disabled={running} style={{ border: brutalBorder, backgroundColor: "#F18B25", color: "#111", fontWeight: 900, textTransform: "uppercase", padding: "0.7rem 1.2rem", cursor: running ? "wait" : "pointer", display: "inline-flex", alignItems: "center", gap: "0.5rem", alignSelf: "flex-start", marginTop: "0.3rem" }}>
               {running ? <Loader2 size={15} className="spin" /> : <Play size={15} />}
-              {running ? "Running..." : "Run Agent"}
+              {running ? "Running Agent..." : "Run Agent"}
             </button>
           </div>
           {result && (
