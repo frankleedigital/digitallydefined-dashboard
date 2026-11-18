@@ -34,18 +34,20 @@ const VERDICT_COLORS = {
 
 export default function BrandSupervisorTab() {
   const [content, setContent] = useState(
-    "Let's get real. Stop making excuses and build your digital asset empire today. Click here to buy our course."
+    "<div className=\"rounded-xl shadow-lg bg-blue-500 p-6 text-center\">\n  <h2 className=\"text-2xl font-sans text-white\">Learn how to grow your business today</h2>\n  <p className=\"text-gray-200 mt-2\">Click here to check out our helpful guide.</p>\n  <button className=\"rounded-full shadow bg-emerald-400 text-black px-6 py-2 mt-4\">Get Started</button>\n</div>"
   );
-  const [contentType, setContentType] = useState("copy");
+  const [contentType, setContentType] = useState("ui-component");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const runAudit = async (e) => {
     e?.preventDefault();
     if (!content.trim()) return;
     setLoading(true);
     setError(null);
+    setCopied(false);
     try {
       const res = await ddPost("agents.run", {
         agent: "brandSupervisor",
@@ -54,13 +56,20 @@ export default function BrandSupervisorTab() {
       if (res && res.success && res.data) {
         setResult(res.data);
       } else {
-        setError(res?.error || "Brand audit failed.");
+        setError(res?.error || "Brand enforcement failed.");
       }
     } catch (err) {
       setError(err.message || "Network error");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopy = () => {
+    if (!result?.enforcedOutput) return;
+    navigator.clipboard.writeText(result.enforcedOutput);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -80,51 +89,53 @@ export default function BrandSupervisorTab() {
       >
         <div>
           <span style={{ ...brutalEyebrow, color: "#2A9D5C", fontSize: "0.68rem" }}>
-            Governance & Quality Assurance
+            Active Brand Enforcement & Implementation Engine
           </span>
           <h2 style={{ ...brutalHeading, fontSize: "1.4rem", color: "#FFFFFF", margin: "0.25rem 0 0" }}>
-            BRAND SUPERVISOR AI
+            BRAND ENFORCEMENT AI
           </h2>
           <p style={{ margin: "0.35rem 0 0", fontSize: "0.82rem", color: "#BFBFBF" }}>
-            Audits copy, landing pages, social posts, and product specs against DigitallyDefined Brand Guidelines before you publish.
+            Builder agent: automatically rewrites copy, refactors UI code to Flat Soft Brutalism tokens, and outputs production-ready assets.
           </p>
         </div>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <span style={{ ...brutalEyebrow, fontSize: "0.7rem", color: "#FFFFFF", border: "1px solid #444", padding: "4px 8px" }}>
-            No-BS Voice ⇄ Soft Brutalism
+            Never Analyzes Without Fixing
           </span>
         </div>
       </div>
 
       {/* INPUT FORM */}
       <form onSubmit={runAudit} style={{ ...cardStyle, display: "grid", gap: "0.8rem", borderTop: "4px solid #2A9D5C" }}>
-        <h3 style={{ ...brutalHeading, fontSize: "0.95rem", margin: 0 }}>Content & Asset Audit Input</h3>
+        <h3 style={{ ...brutalHeading, fontSize: "0.95rem", margin: 0 }}>Asset / Code Input to Enforce</h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.8rem" }}>
           <div>
-            <label style={{ fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase" }}>Content Type</label>
+            <label style={{ fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase" }}>Asset Type</label>
             <select
               value={contentType}
               onChange={(e) => setContentType(e.target.value)}
               style={{ ...cardStyle, backgroundColor: "#FFFFFF", marginTop: "0.25rem", width: "100%", fontWeight: 600 }}
             >
+              <option value="ui-component">UI Component / Code (HTML / React / CSS)</option>
               <option value="copy">Marketing Copy / Email</option>
               <option value="product">Product Description / Offer</option>
-              <option value="landing-page">Landing Page Copy / Spec</option>
+              <option value="landing-page">Landing Page Section</option>
               <option value="social">Social Media / Threads Post</option>
-              <option value="image-spec">Image / Visual Asset Spec</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label style={{ fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase" }}>Content / Copy / Pitch to Audit *</label>
+          <label style={{ fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase" }}>
+            Content / Markup / Spec to Enforce *
+          </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            rows={4}
+            rows={5}
             required
-            placeholder="Paste your draft copy, social post, or product description here..."
-            style={{ ...cardStyle, backgroundColor: "#FFFFFF", marginTop: "0.25rem", width: "100%", fontWeight: 600, fontFamily: "inherit" }}
+            placeholder="Paste draft copy or UI code with rounded corners, drop shadows, or generic voice..."
+            style={{ ...cardStyle, backgroundColor: "#FFFFFF", marginTop: "0.25rem", width: "100%", fontWeight: 600, fontFamily: contentType === "ui-component" ? "monospace" : "inherit", fontSize: "0.85rem" }}
           />
         </div>
 
@@ -146,7 +157,7 @@ export default function BrandSupervisorTab() {
             }}
           >
             {loading ? <Loader2 size={16} className="spin" /> : <ShieldCheck size={16} />}
-            {loading ? "Auditing Brand Constitution..." : "Run Brand Supervisor Audit"}
+            {loading ? "Enforcing Brand Standards & Refactoring..." : "Enforce & Output Production Asset"}
           </button>
         </div>
       </form>
@@ -158,7 +169,7 @@ export default function BrandSupervisorTab() {
       )}
 
       {/* RESULTS SECTION */}
-      {result && result.complianceScore != null && (
+      {result && (
         <div style={{ display: "grid", gap: "1rem" }}>
           {/* TOP SCORE BANNER */}
           <div style={{ ...cardStyle, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", backgroundColor: "#FFFCF9" }}>
@@ -170,7 +181,7 @@ export default function BrandSupervisorTab() {
               </div>
             </div>
             <div>
-              <div style={{ ...brutalEyebrow, fontSize: "0.62rem" }}>Brand Verdict</div>
+              <div style={{ ...brutalEyebrow, fontSize: "0.62rem" }}>Enforcement Status</div>
               <div
                 style={{
                   display: "inline-block",
@@ -183,59 +194,71 @@ export default function BrandSupervisorTab() {
                   border: brutalBorder,
                 }}
               >
-                {result.verdict}
+                {result.verdict || "AUTO_ENFORCED"}
               </div>
             </div>
             <div>
               <div style={{ ...brutalEyebrow, fontSize: "0.62rem" }}>Pillar Alignment</div>
               <div style={{ fontSize: "0.9rem", fontWeight: 800, marginTop: "0.3rem" }}>
-                {result.pillarAlignment}
+                {result.pillarAlignment || "Digital Assets & Product Creation"}
               </div>
             </div>
           </div>
 
-          {/* AUDIT DETAILS */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1rem" }}>
-            <div style={cardStyle}>
-              <h4 style={{ ...brutalHeading, fontSize: "0.9rem", margin: "0 0 0.5rem" }}>Voice Check (No-BS Big Bestie)</h4>
-              <p style={{ margin: "0 0 0.4rem", fontSize: "0.85rem", fontWeight: 600 }}>{result.voiceAudit?.critique}</p>
-              {result.voiceAudit?.suggestedRewrite && (
-                <div style={{ marginTop: "0.5rem", borderTop: brutalBorder, paddingTop: "0.5rem" }}>
-                  <span style={{ ...brutalEyebrow, fontSize: "0.6rem" }}>Suggested Rewrite</span>
-                  <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", fontStyle: "italic", background: "#FFFCF9", padding: "0.5rem", border: brutalBorder }}>
-                    "{result.voiceAudit.suggestedRewrite}"
-                  </p>
-                </div>
-              )}
-            </div>
-            <div style={cardStyle}>
-              <h4 style={{ ...brutalHeading, fontSize: "0.9rem", margin: "0 0 0.5rem" }}>Aesthetic & Architecture Check</h4>
-              <p style={{ margin: "0 0 0.4rem", fontSize: "0.85rem", fontWeight: 600 }}>{result.aestheticAudit?.critique}</p>
-              <div style={{ marginTop: "0.8rem" }}>
-                <span style={{ ...brutalEyebrow, fontSize: "0.6rem" }}>Detected Violations</span>
-                {Array.isArray(result.violations) && result.violations.length > 0 ? (
-                  <ul style={{ margin: "0.3rem 0 0", paddingLeft: "1rem", fontSize: "0.82rem", color: theme.colors.darkRed }}>
-                    {result.violations.map((v, i) => (
-                      <li key={i}>{v}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div style={{ fontSize: "0.82rem", color: theme.colors.success, fontWeight: 700, marginTop: "0.2rem" }}>
-                    ✓ Zero brand violations detected.
-                  </div>
-                )}
+          {/* PRODUCTION-READY ENFORCED OUTPUT */}
+          <div style={{ ...cardStyle, backgroundColor: "#FFFFFF", borderTop: "4px solid #F18B25" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+              <div>
+                <span style={{ ...brutalEyebrow, color: "#F18B25", fontSize: "0.65rem" }}>Ready to Publish</span>
+                <h4 style={{ ...brutalHeading, fontSize: "1rem", margin: 0 }}>Enforced Production Output</h4>
               </div>
+              <button
+                type="button"
+                onClick={handleCopy}
+                style={{
+                  border: brutalBorder,
+                  backgroundColor: copied ? "#2A9D5C" : "#FFFCF9",
+                  color: copied ? "#FFFFFF" : "#111111",
+                  fontWeight: 800,
+                  fontSize: "0.75rem",
+                  padding: "0.35rem 0.8rem",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                  textTransform: "uppercase",
+                }}
+              >
+                {copied ? <CheckCircle2 size={14} /> : <FileText size={14} />}
+                {copied ? "Copied!" : "Copy Output"}
+              </button>
             </div>
+            <pre
+              style={{
+                margin: 0,
+                padding: "0.9rem",
+                backgroundColor: "#FFFCF9",
+                border: brutalBorder,
+                fontSize: "0.85rem",
+                lineHeight: 1.5,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                fontFamily: contentType === "ui-component" ? "monospace" : "inherit",
+                fontWeight: 600,
+              }}
+            >
+              {result.enforcedOutput}
+            </pre>
           </div>
 
-          {/* REMEDIATION STEPS */}
+          {/* MODIFICATIONS APPLIED */}
           <div style={{ ...cardStyle, backgroundColor: "#FFFCF9" }}>
-            <h4 style={{ ...brutalHeading, fontSize: "0.9rem", margin: "0 0 0.5rem" }}>Remediation & Publishing Steps</h4>
-            <ol style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.85rem", display: "grid", gap: "0.3rem", fontWeight: 600 }}>
-              {(result.remediationSteps || []).map((s, i) => (
-                <li key={i}>{s}</li>
+            <h4 style={{ ...brutalHeading, fontSize: "0.9rem", margin: "0 0 0.5rem" }}>Modifications Applied Automatically</h4>
+            <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.85rem", display: "grid", gap: "0.3rem", fontWeight: 600, color: theme.colors.textPrimary }}>
+              {(result.modificationsApplied || []).map((m, i) => (
+                <li key={i}>✓ {m}</li>
               ))}
-            </ol>
+            </ul>
           </div>
         </div>
       )}
