@@ -197,6 +197,10 @@ const CONFIG = {
         label: "AFFILIATE FLIPPER",
       },
       {
+        id: "brand",
+        label: "BRAND SUPERVISOR",
+      },
+      {
         id: "products",
         label: "PRODUCTS & GUMROAD",
       },

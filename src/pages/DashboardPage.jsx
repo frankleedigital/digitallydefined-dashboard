@@ -48,6 +48,7 @@ import AutomationsPage from "./AutomationsPage";
 import AgentHub from "./AgentHub";
 import WealthCenter from "./WealthCenter";
 import AffiliateFlipperTab from "./AffiliateFlipperTab";
+import BrandSupervisorTab from "./BrandSupervisorTab";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -102,6 +103,7 @@ const tabIcons = {
   agents: Bot,
   wealth: DollarSign,
   flipper: TrendingUp,
+  brand: ShieldCheck,
   products: ShoppingBag,
   growth: TrendingUp,
   automations: Workflow,
@@ -1230,6 +1232,7 @@ const DashboardPage = () => {
     if (activeTab === "agents") return <AgentHub />;
     if (activeTab === "wealth") return <WealthCenter onOpenAgentHub={() => setActiveTab("agents")} />;
     if (activeTab === "flipper") return <AffiliateFlipperTab />;
+    if (activeTab === "brand") return <BrandSupervisorTab />;
     if (activeTab === "products") return (
       <ProductsTab
         onAskHermes={(prompt) => {
