@@ -189,6 +189,10 @@ const CONFIG = {
         label: "AGENT HUB",
       },
       {
+        id: "wealth",
+        label: "WEALTH CENTER",
+      },
+      {
         id: "products",
         label: "PRODUCTS & GUMROAD",
       },
