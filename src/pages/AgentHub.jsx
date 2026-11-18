@@ -64,6 +64,11 @@ export default function AgentHub() {
   const [orchRunning, setOrchRunning] = useState(false);
   const [orchResult, setOrchResult] = useState(null);
   const [recent, setRecent] = useState([]);
+  const panelRef = React.useRef(null);
+  // When an agent is selected, bring its launch panel to the top of the view.
+  useEffect(() => {
+    if (selected && panelRef.current) panelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selected]);
 
   useEffect(() => {
     ddPost("agents.list", {})
@@ -167,6 +172,15 @@ export default function AgentHub() {
           </span>
         </div>
       </div>
+      {/* DISCOVERABILITY HINT */}
+      {!sel && (
+        <div style={{ ...cardStyle, backgroundColor: "#FFFCF9" }}>
+          <span style={{ ...brutalEyebrow, fontSize: "0.7rem" }}>How to open an agent</span>
+          <p style={{ margin: "0.4rem 0 0", fontSize: "0.85rem", color: theme.colors.muted }}>
+            Click any agent in the grid below — its launch form opens automatically and the page scrolls you straight to it. No chat required.
+          </p>
+        </div>
+      )}
       {/* CATEGORY GRID */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
         {(hub.categories || []).map((cat) => {
@@ -182,10 +196,10 @@ export default function AgentHub() {
                     type="button"
                     onClick={() => agent.launchable && openAgent(agent.name)}
                     disabled={!agent.launchable}
-                    style={{ border: brutalBorder, backgroundColor: selected === agent.name ? "#FFFCF9" : "#FFFFFF", padding: "0.5rem 0.6rem", textAlign: "left", fontSize: "0.78rem", fontWeight: 800, cursor: agent.launchable ? "pointer" : "not-allowed", opacity: agent.launchable ? 1 : 0.55, display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                    style={{ border: brutalBorder, backgroundColor: selected === agent.name ? "#F18B25" : "#FFFFFF", color: selected === agent.name ? "#111" : "inherit", padding: "0.5rem 0.6rem", textAlign: "left", fontSize: "0.78rem", fontWeight: 800, cursor: agent.launchable ? "pointer" : "not-allowed", opacity: agent.launchable ? 1 : 0.55, display: "flex", justifyContent: "space-between", alignItems: "center" }}
                   >
                     <span>{agent.displayName}</span>
-                    <span style={{ ...brutalEyebrow, fontSize: "0.56rem", color: agent.launchable ? cat.color : "#999" }}>{agent.launchable ? "OPEN" : "SOON"}</span>
+                    <span style={{ ...brutalEyebrow, fontSize: "0.56rem", color: selected === agent.name ? "#111" : agent.launchable ? cat.color : "#999" }}>{selected === agent.name ? "OPENED ✓" : agent.launchable ? "OPEN" : "SOON"}</span>
                   </button>
                 ))}
                 {liveCount === 0 && <div style={{ fontSize: "0.7rem", color: theme.colors.muted, fontStyle: "italic" }}>Coming in Phase B.</div>}
@@ -196,7 +210,7 @@ export default function AgentHub() {
       </div>
       {/* SELECTED AGENT LAUNCH PANEL */}
       {sel && (
-        <div style={{ ...cardStyle, borderTop: "4px solid " + theme.colorsorange || theme.colors.orange }}>
+        <div ref={panelRef} style={{ ...cardStyle, borderTop: "4px solid " + theme.colors.orange }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.7rem" }}>
             <div>
               <h3 style={{ ...brutalHeading, fontSize: "1.05rem", margin: 0 }}>{sel.displayName}</h3>
