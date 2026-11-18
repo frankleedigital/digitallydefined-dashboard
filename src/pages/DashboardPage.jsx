@@ -47,6 +47,7 @@ import AntigravityPage from "./AntigravityPage";
 import AutomationsPage from "./AutomationsPage";
 import AgentHub from "./AgentHub";
 import WealthCenter from "./WealthCenter";
+import AffiliateFlipperTab from "./AffiliateFlipperTab";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -100,6 +101,7 @@ const tabIcons = {
   dashboard: LayoutDashboard,
   agents: Bot,
   wealth: DollarSign,
+  flipper: TrendingUp,
   products: ShoppingBag,
   growth: TrendingUp,
   automations: Workflow,
@@ -1227,6 +1229,7 @@ const DashboardPage = () => {
   const renderTab = () => {
     if (activeTab === "agents") return <AgentHub />;
     if (activeTab === "wealth") return <WealthCenter onOpenAgentHub={() => setActiveTab("agents")} />;
+    if (activeTab === "flipper") return <AffiliateFlipperTab />;
     if (activeTab === "products") return (
       <ProductsTab
         onAskHermes={(prompt) => {

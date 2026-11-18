@@ -193,6 +193,10 @@ const CONFIG = {
         label: "WEALTH CENTER",
       },
       {
+        id: "flipper",
+        label: "AFFILIATE FLIPPER",
+      },
+      {
         id: "products",
         label: "PRODUCTS & GUMROAD",
       },
