@@ -9,7 +9,7 @@ const BACKUP_BUY_URL = "https://lavignefrancesca.gumroad.com/l/legacy_os_bundle"
 const styles = {
   wrap: {
     backgroundColor: "#FFFCF9",
-    color: "#2D3748",
+    color: "#111111",
     fontFamily: '"DM Sans", sans-serif',
     fontSize: "16px",
     lineHeight: 1.65,
@@ -155,7 +155,7 @@ const styles = {
     padding: "8px 12px",
   },
   badgeGreen: {
-    backgroundColor: "#2A9D5C",
+    backgroundColor: "#16A34A",
     color: "#FFFFFF",
     border: "2px solid #111111",
     fontFamily: '"Inter", sans-serif',
@@ -437,7 +437,7 @@ export default function LegacyOSPage() {
               <p style={{ fontSize: "14px", color: "#4B5563", marginBottom: "14px" }}>
                 Calculate your exact Freedom Number, map your retirement income gap, and select the digital asset mix that bridges it.
               </p>
-              <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "#2D3748" }}>
+              <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "#111111" }}>
                 <li style={{ marginBottom: "6px" }}>Monthly target calculation</li>
                 <li style={{ marginBottom: "6px" }}>Digital asset cashflow sliders</li>
                 <li style={{ marginBottom: "6px" }}>35× liquidation exit multiple math</li>
@@ -453,7 +453,7 @@ export default function LegacyOSPage() {
               <p style={{ fontSize: "14px", color: "#4B5563", marginBottom: "14px" }}>
                 Turn the caregiving crisis into a financial map. Measure the burn, understand the Medicaid, VA, and Paid Leave paths.
               </p>
-              <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "#2D3748" }}>
+              <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "#111111" }}>
                 <li style={{ marginBottom: "6px" }}>Caregiving financial exposure calculator</li>
                 <li style={{ marginBottom: "6px" }}>Medicaid Self-Directed Care checklist</li>
                 <li style={{ marginBottom: "6px" }}>VA Family Caregiver stipend path</li>
@@ -462,14 +462,14 @@ export default function LegacyOSPage() {
             </div>
 
             {/* CARD 03 */}
-            <div style={{ ...styles.card, borderTop: "6px solid #2A9D5C" }}>
+            <div style={{ ...styles.card, borderTop: "6px solid #16A34A" }}>
               <div style={styles.cardNum}>03</div>
               <h3 style={styles.cardTitle}>Legacy Command Center</h3>
               <div style={styles.cardSub}>03 · The Operations Layer</div>
               <p style={{ fontSize: "14px", color: "#4B5563", marginBottom: "14px" }}>
                 Run the day-to-day without burnout. Care appointments, task delegation, budget targets, and firm diplomacy communication.
               </p>
-              <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "#2D3748" }}>
+              <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "#111111" }}>
                 <li style={{ marginBottom: "6px" }}>Critical care calendar</li>
                 <li style={{ marginBottom: "6px" }}>Shared task delegation board</li>
                 <li style={{ marginBottom: "6px" }}>Financial Force Field budget tracker</li>

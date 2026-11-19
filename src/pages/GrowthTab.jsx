@@ -38,12 +38,12 @@ const PERSONA_INFO = {
   },
   creator: {
     label: "Digital Creator",
-    color: "#2A9D5C",
+    color: "#16A34A",
     strategy: "50 GenX Prompts vault, social content engine, faceless product guides.",
   },
   educator: {
     label: "Authority & Coach",
-    color: "#8B5CF6",
+    color: "#111111",
     strategy: "Worksheets, masterclasses, estate & caregiving survival kits.",
   },
 };
@@ -237,7 +237,7 @@ export default function GrowthTab({ integrations }) {
             <span style={{ fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Quiz Completion Rate
             </span>
-            <Target size={16} color="#2A9D5C" />
+            <Target size={16} color="#16A34A" />
           </div>
           <div style={{ fontSize: "2.2rem", fontWeight: 900, color: "#111111", margin: "0.5rem 0 0.25rem", fontFamily: '"Inter", sans-serif' }}>
             100%
@@ -252,7 +252,7 @@ export default function GrowthTab({ integrations }) {
             <span style={{ fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Traffic Front Door
             </span>
-            <Activity size={16} color="#8B5CF6" />
+            <Activity size={16} color="#111111" />
           </div>
           <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#111111", margin: "0.5rem 0 0.25rem", fontFamily: '"Inter", sans-serif' }}>
             digitallydefined.store

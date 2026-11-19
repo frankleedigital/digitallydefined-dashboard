@@ -32,10 +32,10 @@ const cardStyle = {
 
 const GRADE_COLORS = {
   "ELITE OPPORTUNITY": { bg: "#000000", text: "#FFFFFF" },
-  STRONG: { bg: "#2A9D5C", text: "#FFFFFF" },
+  STRONG: { bg: "#16A34A", text: "#FFFFFF" },
   GOOD: { bg: "#47B7D4", text: "#000000" },
   WEAK: { bg: "#F18B25", text: "#000000" },
-  AVOID: { bg: "#C20F0A", text: "#FFFFFF" },
+  AVOID: { bg: "#8B1A0A", text: "#FFFFFF" },
 };
 
 export default function AffiliateFlipperTab() {

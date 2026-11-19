@@ -8,7 +8,7 @@ const cardStyle = { border: brutalBorder, backgroundColor: theme.colors.card, pa
 const PILLAR_INFO = {
   plan: { label: "PLAN", icon: Target, color: "#F18B25", desc: "Freedom number, retirement gap, asset strategy" },
   protect: { label: "PROTECT", icon: Shield, color: "#47B7D4", desc: "Estate documents, caregiving plan, scam defense" },
-  operate: { label: "OPERATE", icon: TrendingUp, color: "#2A9D5C", desc: "Automations, digital infrastructure, daily ops" },
+  operate: { label: "OPERATE", icon: TrendingUp, color: "#16A34A", desc: "Automations, digital infrastructure, daily ops" },
 };
 
 export default function WealthCenter({ onOpenAgentHub }) {
@@ -44,11 +44,11 @@ export default function WealthCenter({ onOpenAgentHub }) {
       {/* HEADER */}
       <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", backgroundColor: "#111111", color: "#FFFFFF" }}>
         <div>
-          <span style={{ ...brutalEyebrow, color: "#C20F0A", fontSize: "0.68rem" }}>Financial Resilience & Legacy — Pillar 5</span>
+          <span style={{ ...brutalEyebrow, color: "#8B1A0A", fontSize: "0.68rem" }}>Financial Resilience & Legacy — Pillar 5</span>
           <h2 style={{ ...brutalHeading, fontSize: "1.4rem", color: "#FFFFFF", margin: "0.25rem 0 0" }}>WEALTH CENTER</h2>
           <p style={{ margin: "0.3rem 0 0", fontSize: "0.8rem", color: "#BFBFBF" }}>The retirement gap is the WHY. These agents measure how close you are.</p>
         </div>
-        {onOpenAgentHub && <button type="button" onClick={onOpenAgentHub} style={{ border: "2px solid #C20F0A", backgroundColor: "#C20F0A", color: "#FFFFFF", fontWeight: 900, textTransform: "uppercase", fontSize: "0.78rem", padding: "0.6rem 1rem", cursor: "pointer" }}>Open Agent Hub</button>}
+        {onOpenAgentHub && <button type="button" onClick={onOpenAgentHub} style={{ border: "2px solid #8B1A0A", backgroundColor: "#8B1A0A", color: "#FFFFFF", fontWeight: 900, textTransform: "uppercase", fontSize: "0.78rem", padding: "0.6rem 1rem", cursor: "pointer" }}>Open Agent Hub</button>}
       </div>
 
       {/* LEGACY OS PILLARS */}

@@ -150,7 +150,7 @@ export default function AutomationsPage() {
           return (
             <div
               key={worker.id}
-              style={{ ...cardStyle, borderLeft: `5px solid ${isRunning ? "#2A9D5C" : "#C20F0A"}` }}
+              style={{ ...cardStyle, borderLeft: `5px solid ${isRunning ? "#16A34A" : "#8B1A0A"}` }}
             >
               <div
                 style={{
@@ -161,7 +161,7 @@ export default function AutomationsPage() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <Cpu size={18} color={isRunning ? "#2A9D5C" : "#C20F0A"} />
+                  <Cpu size={18} color={isRunning ? "#16A34A" : "#8B1A0A"} />
                   <span style={{ fontSize: "0.85rem", fontWeight: 900, textTransform: "uppercase", color: "#111111" }}>
                     {worker.name}
                   </span>
@@ -174,7 +174,7 @@ export default function AutomationsPage() {
                     fontSize: "0.68rem",
                     fontWeight: 900,
                     textTransform: "uppercase",
-                    color: isRunning ? "#2A9D5C" : "#C20F0A",
+                    color: isRunning ? "#16A34A" : "#8B1A0A",
                     border: "1px solid #111111",
                     padding: "2px 6px",
                     backgroundColor: isRunning ? "#F0FDF4" : "#FEF2F2",
@@ -296,7 +296,7 @@ export default function AutomationsPage() {
                       textTransform: "uppercase",
                       padding: "2px 6px",
                       backgroundColor: job.status === "success" ? "#F0FDF4" : "#FEF2F2",
-                      color: job.status === "success" ? "#16A34A" : "#C20F0A",
+                      color: job.status === "success" ? "#16A34A" : "#8B1A0A",
                       border: "1px solid #111111",
                     }}
                   >

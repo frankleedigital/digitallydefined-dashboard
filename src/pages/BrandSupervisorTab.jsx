@@ -27,9 +27,9 @@ const cardStyle = {
 };
 
 const VERDICT_COLORS = {
-  APPROVED: { bg: "#2A9D5C", text: "#FFFFFF" },
+  APPROVED: { bg: "#16A34A", text: "#FFFFFF" },
   REVISE: { bg: "#F18B25", text: "#000000" },
-  REJECT: { bg: "#C20F0A", text: "#FFFFFF" },
+  REJECT: { bg: "#8B1A0A", text: "#FFFFFF" },
 };
 
 export default function BrandSupervisorTab() {
@@ -88,7 +88,7 @@ export default function BrandSupervisorTab() {
         }}
       >
         <div>
-          <span style={{ ...brutalEyebrow, color: "#2A9D5C", fontSize: "0.68rem" }}>
+          <span style={{ ...brutalEyebrow, color: "#16A34A", fontSize: "0.68rem" }}>
             Active Brand Enforcement & Implementation Engine
           </span>
           <h2 style={{ ...brutalHeading, fontSize: "1.4rem", color: "#FFFFFF", margin: "0.25rem 0 0" }}>
@@ -106,7 +106,7 @@ export default function BrandSupervisorTab() {
       </div>
 
       {/* INPUT FORM */}
-      <form onSubmit={runAudit} style={{ ...cardStyle, display: "grid", gap: "0.8rem", borderTop: "4px solid #2A9D5C" }}>
+      <form onSubmit={runAudit} style={{ ...cardStyle, display: "grid", gap: "0.8rem", borderTop: "4px solid #16A34A" }}>
         <h3 style={{ ...brutalHeading, fontSize: "0.95rem", margin: 0 }}>Asset / Code Input to Enforce</h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.8rem" }}>
           <div>
@@ -145,7 +145,7 @@ export default function BrandSupervisorTab() {
             disabled={loading}
             style={{
               border: brutalBorder,
-              backgroundColor: "#2A9D5C",
+              backgroundColor: "#16A34A",
               color: "#FFF",
               fontWeight: 900,
               textTransform: "uppercase",
@@ -217,7 +217,7 @@ export default function BrandSupervisorTab() {
                 onClick={handleCopy}
                 style={{
                   border: brutalBorder,
-                  backgroundColor: copied ? "#2A9D5C" : "#FFFCF9",
+                  backgroundColor: copied ? "#16A34A" : "#FFFCF9",
                   color: copied ? "#FFFFFF" : "#111111",
                   fontWeight: 800,
                   fontSize: "0.75rem",
