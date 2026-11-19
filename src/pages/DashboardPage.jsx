@@ -1237,6 +1237,7 @@ const DashboardPage = () => {
       <ProductsTab
         onAskHermes={(prompt) => {
           setActiveTab("dashboard");
+          setAiPanelOpen(true);
           sendAssistantMessage(prompt);
         }}
       />
