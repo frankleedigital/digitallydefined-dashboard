@@ -25,6 +25,10 @@ export function getApiKey() {
   return import.meta.env.VITE_DASHBOARD_API_KEY || 'DigitallyDefined-OS-2026';
 }
 
+export function getGaMeasurementId() {
+  return import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-WJQ9E00JD5';
+}
+
 export function buildHeaders(extra = {}) {
   return {
     'Content-Type': 'application/json',

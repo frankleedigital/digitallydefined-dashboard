@@ -258,7 +258,7 @@ export default function GrowthTab({ integrations }) {
             digitallydefined.store
           </div>
           <div style={{ fontSize: "0.75rem", color: "#555555", fontWeight: 700 }}>
-            GA4 Measurement: Not Configured
+            GA4 Measurement: G-WJQ9E00JD5 (Active)
           </div>
         </div>
       </div>
