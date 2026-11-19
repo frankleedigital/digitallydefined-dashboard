@@ -4,7 +4,7 @@
 import React from "react";
 
 const GUMROAD_BUY_URL = "https://shop.digitallydefined.store/l/legacy_os_bundle";
-const BACKUP_BUY_URL = "https://lavignefrancesca.gumroad.com/l/legacy_os_bundle";
+const BACKUP_BUY_URL = "https://shop.digitallydefined.store/l/legacy_os_bundle";
 
 const styles = {
   wrap: {
