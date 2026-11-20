@@ -232,6 +232,8 @@ export default function ProductsTab({ onAskHermes }) {
   const [search, setSearch] = useState("");
   const [gumroadProducts, setGumroadProducts] = useState([]);
   const [loadingGumroad, setLoadingGumroad] = useState(false);
+  const [publishingId, setPublishingId] = useState(null);
+  const [pipelineResult, setPipelineResult] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -544,26 +546,46 @@ export default function ProductsTab({ onAskHermes }) {
                   {onAskHermes && (
                     <button
                       type="button"
-                      onClick={() =>
-                        onAskHermes(
-                          `How should I position and market "${p.name}" (${p.price}) to Gen X women and women over 50 looking for digital cash flow? Give me a 3-step action plan.`
-                        )
-                      }
+                      disabled={publishingId === p.id}
+                      onClick={async () => {
+                        setPublishingId(p.id);
+                        const brief = `${p.name}\n${p.description || ''}\n${p.persona || ''}\n${p.profitability || ''}`;
+                        try {
+                          const res = await ddPost("agents.run", {
+                            agent: "gumroadPublisher",
+                            params: {
+                              name: p.name,
+                              brief,
+                              price: p.price,
+                              persona: p.persona,
+                            },
+                          });
+                          if (res?.success && res?.data) {
+                            setPipelineResult({ product: p, ...res.data });
+                          } else {
+                            alert(res?.error || 'Agent pipeline failed');
+                          }
+                        } catch (err) {
+                          alert(err.message);
+                        } finally {
+                          setPublishingId(null);
+                        }
+                      }}
                       style={{
                         border: brutalBorder,
-                        backgroundColor: theme.colors.card,
+                        backgroundColor: publishingId === p.id ? theme.colors.muted : theme.colors.card,
                         color: theme.colors.textPrimary,
                         padding: "0.35rem 0.65rem",
                         fontSize: "0.78rem",
                         fontWeight: 700,
-                        cursor: "pointer",
+                        cursor: publishingId === p.id ? "wait" : "pointer",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "0.35rem",
                       }}
                     >
                       <Sparkles size={13} color="#7c3aed" />
-                      Ask Hermes to Market This
+                      {publishingId === p.id ? "Running Pipeline..." : "Market on Gumroad"}
                     </button>
                   )}
 
@@ -607,6 +629,112 @@ export default function ProductsTab({ onAskHermes }) {
           );
         })}
       </div>
+
+      {/* Pipeline Result Modal */}
+      {pipelineResult && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.6)",
+          zIndex: 1000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1rem"
+        }}>
+          <div style={{
+            backgroundColor: "#FFFCF9",
+            border: brutalBorder,
+            maxWidth: "750px",
+            width: "100%",
+            maxHeight: "90vh",
+            overflowY: "auto",
+            padding: "1.5rem",
+            display: "grid",
+            gap: "1rem"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #111", paddingBottom: "0.75rem" }}>
+              <div>
+                <span style={{ ...brutalEyebrow, color: theme.colors.orange }}>DIGITALLYDEFINED AI PIPELINE</span>
+                <h2 style={{ fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: "1.3rem", margin: "0.2rem 0 0 0" }}>
+                  {pipelineResult.listing?.title || pipelineResult.product?.name}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPipelineResult(null)}
+                style={{ border: brutalBorder, backgroundColor: "#C20F0A", color: "#fff", padding: "0.3rem 0.6rem", fontWeight: 800, cursor: "pointer" }}
+              >
+                CLOSE ✕
+              </button>
+            </div>
+
+            {/* Status & Publish */}
+            <div style={{ border: brutalBorder, backgroundColor: "#fff", padding: "1rem" }}>
+              <h3 style={{ ...brutalEyebrow, color: theme.colors.success, marginBottom: "0.5rem" }}>GUMROAD PUBLISH STATUS</h3>
+              <p style={{ margin: "0 0 0.5rem 0", fontWeight: 700 }}>Status: {pipelineResult.publish?.status}</p>
+              <p style={{ margin: "0 0 0.75rem 0", fontSize: "0.85rem", color: "#4b5563" }}>{pipelineResult.publish?.reason}</p>
+              {pipelineResult.publish?.url && (
+                <a
+                  href={pipelineResult.publish.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ display: "inline-block", border: brutalBorder, backgroundColor: theme.colors.orange, color: "#111", padding: "0.4rem 0.8rem", fontWeight: 800, textDecoration: "none", fontSize: "0.85rem" }}
+                >
+                  OPEN GUMROAD DRAFT ↗
+                </a>
+              )}
+            </div>
+
+            {/* Brand Audit */}
+            <div style={{ border: brutalBorder, backgroundColor: "#fff", padding: "1rem" }}>
+              <h3 style={{ ...brutalEyebrow, color: "#7c3aed", marginBottom: "0.5rem" }}>BRAND SUPERVISOR AUDIT</h3>
+              <p style={{ margin: "0 0 0.4rem 0", fontSize: "0.85rem" }}>Verdict: <strong>{pipelineResult.brand?.verdict}</strong> ({pipelineResult.brand?.complianceScore}% compliant)</p>
+              <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.82rem", color: "#374151" }}>
+                {(pipelineResult.brand?.modificationsApplied || []).map((m, i) => (
+                  <li key={i}>{m}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Listing Copy */}
+            <div style={{ border: brutalBorder, backgroundColor: "#fff", padding: "1rem", display: "grid", gap: "0.5rem" }}>
+              <h3 style={{ ...brutalEyebrow, color: "#111", marginBottom: "0.2rem" }}>NO-BS GUMROAD COPY</h3>
+              <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 700 }}>Price: ${pipelineResult.listing?.price}</p>
+              <div style={{ fontSize: "0.85rem", whiteSpace: "pre-line", backgroundColor: "#FFFCF9", border: "1px solid #e5e7eb", padding: "0.75rem" }}>
+                {pipelineResult.listing?.description}
+              </div>
+              <h4 style={{ margin: "0.5rem 0 0.2rem 0", fontSize: "0.85rem", fontWeight: 800 }}>Benefit Bullets:</h4>
+              <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.82rem" }}>
+                {(pipelineResult.listing?.bullets || []).map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Visual Assets */}
+            {pipelineResult.assets?.cover && (
+              <div style={{ border: brutalBorder, backgroundColor: "#fff", padding: "1rem" }}>
+                <h3 style={{ ...brutalEyebrow, color: "#111", marginBottom: "0.5rem" }}>FLAT SOFT BRUTALISM COVER SVG</h3>
+                <div style={{ border: "1px solid #111", maxHeight: "200px", overflow: "hidden", backgroundColor: "#FFFCF9", display: "flex", justifyContent: "center" }} dangerouslySetInnerHTML={{ __html: pipelineResult.assets.cover.svgCode }} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(pipelineResult.assets.cover.svgCode);
+                    alert("Cover SVG copied to clipboard!");
+                  }}
+                  style={{ marginTop: "0.5rem", border: brutalBorder, backgroundColor: "#47B7D4", color: "#111", padding: "0.3rem 0.6rem", fontWeight: 800, fontSize: "0.78rem", cursor: "pointer" }}
+                >
+                  COPY COVER SVG CODE
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
