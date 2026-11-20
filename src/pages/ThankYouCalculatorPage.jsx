@@ -174,7 +174,7 @@ const ThankYouCalculatorPage = () => {
             }}
           >
             <a
-              href={CONFIG.contact.gumroadUrl || CONFIG.contact.fullCalculatorUrl}
+              href={mergedConfig.contact.gumroadUrl || mergedConfig.contact.fullCalculatorUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={brutalButtonPrimary}
@@ -183,7 +183,7 @@ const ThankYouCalculatorPage = () => {
             </a>
             
             <a
-              href={CONFIG.contact.website}
+              href={mergedConfig.contact.website}
               style={brutalButtonSecondary}
             >
               {tyConfig.secondaryCtaLabel} <ArrowRight size={16} />
@@ -208,7 +208,7 @@ const ThankYouCalculatorPage = () => {
               fontSize: "0.9rem",
             }}
           >
-            {tyConfig.emailNote} <strong>{CONFIG.contact.email}</strong>
+            {tyConfig.emailNote} <strong>{mergedConfig.contact.email}</strong>
           </p>
         </section>
       </div>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 96-Hour Scam Response Plan | DigitallyDefined</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dd-bg: #FFFCF9;
+            --dd-text: #111111;
+            --dd-frame: #111111;
+            --dd-accent-primary: #F18B25;
+            --dd-accent-secondary: #47B7D4;
+            --dd-accent-tertiary: #C20F0A;
+            --dd-font-head: 'Inter', sans-serif;
+            --dd-font-body: 'DM Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dd-bg);
+            color: var(--dd-text);
+            font-family:'Inter';
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .dd-page {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dd-section { margin-bottom: 32px; }
+
+        .dd-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .dd-card {
+            background: #FFFFFF;
+            border: 1px solid var(--dd-frame);
+            padding: 24px;
+        }
+
+        h1, h2, h3 {
+            font-family:'Inter';
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            color: var(--dd-text);
+        }
+
+        h1 { font-size: 2rem; margin-bottom: 8px; line-height: 1.1; }
+        h2 { font-size: 1.1rem; margin-bottom: 16px; border-bottom: 1px solid var(--dd-frame); padding-bottom: 8px; }
+        p { font-size: 0.95rem; margin-bottom: 1rem; }
+
+        .accent-tag {
+            display: inline-block;
+            font-family:'Inter';
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border: 1px solid var(--dd-frame);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .tag-blue { background: var(--dd-accent-primary); }
+        .tag-orange { background: var(--dd-accent-secondary); }
+        .tag-red { background: var(--dd-accent-tertiary); color: #fff; }
+
+        .stage-number {
+            font-family:'Inter';
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--dd-accent-tertiary);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stage-title {
+            font-family:'Inter';
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .timeline-label {
+            font-family:'Inter';
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--dd-accent-primary);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .dd-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            border: 1px solid var(--dd-frame);
+            background: #fff;
+            cursor: pointer;
+            margin-top: 2px;
+            position: relative;
+        }
+
+        .dd-checkbox:checked {
+            background-color: var(--dd-accent-primary);
+            border-color: var(--dd-frame);
+        }
+
+        .dd-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 5px;
+            height: 10px;
+            border: solid #111111;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .flag {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .flag-marker {
+            font-family:'Inter';
+            font-weight: 900;
+            color: var(--dd-accent-tertiary);
+            min-width: 14px;
+        }
+
+        .fortress-box {
+            background: var(--dd-bg);
+            border: 1px solid var(--dd-frame);
+            border-top: 1px solid var(--dd-accent-tertiary);
+            padding: 20px;
+        }
+
+        .phone-line {
+            font-family:'Inter';
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 8px 0;
+            border-bottom: 1px solid #111111;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .phone-line:last-child { border-bottom: none; }
+        .phone-num { text-align: right; }
+
+        .cta-box {
+            background: var(--dd-bg);
+            border: 1px solid var(--dd-frame);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--dd-accent-tertiary);
+            color: #fff;
+            font-family:'Inter';
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 12px 24px;
+            border: 1px solid var(--dd-frame);
+            margin-top: 8px;
+            text-decoration: none;
+        }
+
+        .dd-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dd-frame);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-family:'Inter';
+            text-transform: uppercase;
+        }
+
+        .disclaimer {
+            font-size: 0.7rem;
+            color: #5F5F5F;
+            margin-top: 12px;
+            border-top: 1px solid #111111;
+            padding-top: 10px;
+        }
+
+        @media print {
+            body { background: #fff; }
+            .dd-page { padding: 0; max-width: 100%; }
+            .dd-card { break-inside: avoid; }
+        }
+
+        @media (max-width: 600px) {
+            .dd-grid-2 { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+        }
+    
+/* Hide duplicate logo instances inside page layout (leaving only the top-left brandbar logo active) */
+.dd-logo, .logo, [class*='dd-logo']:not(.dd-brandmark) { display: none !important; }
+
+/* ── Unified DigitallyDefined Topbar ────────────────────────────────────────── */
+.dd-unified-topbar {
+  background: #FFFCF9 !important;
+  border-bottom: 2px solid #111111 !important;
+  padding: 14px 20px !important;
+  width: 100% !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+}
+.dd-unified-topbar-inner {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+.dd-unified-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+}
+.dd-unified-brand-mark {
+  width: 36px !important;
+  height: 36px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: #111111 !important;
+  color: #FFFCF9 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  flex: 0 0 auto !important;
+}
+.dd-unified-brand-copy {
+  display: flex !important;
+  flex-direction: column !important;
+}
+.dd-unified-brand-title {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  text-transform: uppercase !important;
+}
+.dd-unified-brand-title span {
+  color: #F18B25 !important;
+  font-style: italic !important;
+}
+.dd-unified-brand-sub {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #555555 !important;
+  font-weight: 700 !important;
+  margin-top: 2px !important;
+}
+.dd-unified-tag {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #111111 !important;
+  border: 2px solid #111111 !important;
+  padding: 6px 12px !important;
+  background: #FFFFFF !important;
+}
+@media print {
+  .dd-unified-topbar { display: none !important; }
+}
+
+</style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+/* ============================================================================
+   DigitallyDefined — Official Brand Standard v2.0
+   Source of truth for every digital product. See brand/README.md.
+   Inlined into each product's <style id="dd-brand-standard"> by
+   scripts/apply_brand.py — do not hand-edit the copies.
+
+   Spec (from the official brand file):
+     • 3-colour system: #F18B25 primary, #47B7D4 secondary, #C20F0A important
+     • 1px solid #111111 frame on every card, button, badge, input
+     • rounded-none: 0px radius everywhere
+     • flat: no box-shadows, no gradients-as-decoration
+     • Inter 900 italic "DEFINED." logotype beside upright "DIGITALLY"
+     • Inter for headings / UI / buttons, DM Sans for body copy
+     • Outcome-first, non-technical, Gen X voice
+   ========================================================================= */
+
+:root {
+  /* ── 1. Brand roles ─────────────────────────────────────────────────── */
+  --dd-orange: #F18B25 !important;   /* PRIMARY   — CTAs, active state, default accent */
+  --dd-blue:   #47B7D4 !important;   /* SECONDARY — supporting modules, metrics, tech */
+  --dd-red:    #C20F0A !important;   /* IMPORTANT — alerts, security, critical only  */
+
+  /* ── 2. Surfaces ────────────────────────────────────────────────────── */
+  --dd-bg:             #FFFCF9 !important;  /* page */
+  --dd-card:           #FFFFFF !important;  /* card / panel face */
+  --dd-panel:          #FFFAF5 !important;  /* inset well */
+  --dd-dark:           #0F0F0F !important;  /* brutal-dark block */
+  --dd-accent-surface: #FFFFC9 !important;  /* brand banner strip */
+
+  /* Derived washes — tints of the 3 roles, no new hues introduced */
+  --dd-wash-orange: #FFF0DE !important;
+  --dd-wash-blue:   #E6F5F9 !important;
+  --dd-wash-red:    #FBEAEA !important;
+
+  /* ── 3. Ink & line ──────────────────────────────────────────────────── */
+  --dd-ink:   #111111 !important;
+  --dd-muted: #5F5F5F !important;
+  --dd-line:  #111111 !important;
+  --dd-bdr:   #111111 !important;   /* colour only — pair with `1px solid` */
+
+  /* ── 4. Structure: always square, always flat ───────────────────────── */
+  --dd-radius: 0px !important;
+  --dd-shadow: none !important;
+
+  /* ── 5. Type ────────────────────────────────────────────────────────── */
+  --dd-font-head: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  --dd-font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+
+  /* ── 6. Legacy aliases ──────────────────────────────────────────────────
+     Every variable name used across the catalogue, pointing at the token
+     it should have been. Colour tokens only — structural vars are colours,
+     and every `border:` declaration is rewritten to `1px solid var(...)`
+     so the shorthand can never resolve to an invalid value.              */
+  --bg: var(--dd-bg) !important;
+  --cream-bg: var(--dd-bg) !important;
+  --cream: var(--dd-bg) !important;
+  --card-bg: var(--dd-card) !important;
+  --card: var(--dd-card) !important;
+  --dd-card-bg: var(--dd-card) !important;
+  --pure-white: #FFFFFF !important;
+  --white: #FFFFFF !important;
+  --dd-white: #FFFFFF !important;
+  --panel: var(--dd-panel) !important;
+  --light-gray: var(--dd-panel) !important;
+
+  --text: var(--dd-ink) !important;
+  --dd-text: var(--dd-ink) !important;
+  --ink: var(--dd-ink) !important;
+  --dk: var(--dd-ink) !important;
+  --black: var(--dd-ink) !important;
+  --dark-grey: var(--dd-ink) !important;
+  --medium-grey: var(--dd-muted) !important;
+  --muted: var(--dd-muted) !important;
+
+  --border: var(--dd-line) !important;
+  --dd-border: var(--dd-line) !important;
+  --bdr: var(--dd-line) !important;
+  --line: var(--dd-line) !important;
+  --frame: var(--dd-line) !important;
+  --dd-frame: var(--dd-line) !important;
+  --dd-frame-sm: var(--dd-line) !important;
+  --black-border: var(--dd-line) !important;
+  --border-gray: var(--dd-line) !important;
+
+  --or: var(--dd-orange) !important;
+  --orange: var(--dd-orange) !important;
+  --orange-highlight: var(--dd-orange) !important;
+  --accent: var(--dd-orange) !important;
+  --primary: var(--dd-orange) !important;
+
+  --bl: var(--dd-blue) !important;
+  --aqua: var(--dd-blue) !important;
+  --dd-aqua: var(--dd-blue) !important;
+  --aqua-blue: var(--dd-blue) !important;
+  --secondary: var(--dd-blue) !important;
+  --dd-accent-primary: var(--dd-orange) !important;
+  --dd-accent-secondary: var(--dd-blue) !important;
+
+  --rd: var(--dd-red) !important;
+  --red: var(--dd-red) !important;
+  --deep-red-warning: var(--dd-red) !important;
+  --tertiary: var(--dd-red) !important;
+  --dd-accent-tertiary: var(--dd-red) !important;
+
+  --dark: var(--dd-dark) !important;
+
+  --font-head: var(--dd-font-head) !important;
+  --font-body: var(--dd-font-body) !important;
+  --font-sans: var(--dd-font-body) !important;
+  --font-mono: var(--dd-font-head) !important;
+}
+
+/* ── Flat + square: the two non-negotiable brutalist rules ─────────────── */
+*,
+*::before,
+*::after {
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* ── Type system ───────────────────────────────────────────────────────── */
+body {
+  background-color: var(--dd-bg) !important;
+  color: var(--dd-ink) !important;
+  font-family: var(--dd-font-body) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+h1, h2, h3, h4, h5, h6, .dd-h {
+  font-family: var(--dd-font-head) !important;
+  color: var(--dd-ink) !important;
+  letter-spacing: -0.025em !important;
+}
+
+h1, h2, h3 { font-weight: 900 !important; }
+h4, h5, h6 { font-weight: 800 !important; }
+
+/* Body copy stays DM Sans — inputs included, so nothing falls back to Arial */
+p, li, td, dd, dt, blockquote, figcaption,
+input, select, textarea, optgroup, option {
+  font-family: var(--dd-font-body);
+}
+
+/* Action controls are Inter, 800 — per spec */
+button,
+.btn,
+.cta,
+.dd-btn,
+input[type="submit"],
+input[type="button"] {
+  font-family: var(--dd-font-head) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Third typefaces retired: Inter covers metric / label duty */
+code, pre, kbd, samp,
+.mono, .font-mono, .dd-badge, .badge, .tag, .eyebrow {
+  font-family: var(--dd-font-head) !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em !important;
+}
+
+/* ── 1px frame for every Tailwind border-width utility ─────────────────── */
+.border-2, .border-4, .border-8 { border-width: 1px !important; }
+.border-t-2, .border-t-4 { border-top-width: 1px !important; }
+.border-b-2, .border-b-4 { border-bottom-width: 1px !important; }
+.border-l-2, .border-l-4 { border-left-width: 1px !important; }
+.border-r-2, .border-r-4 { border-right-width: 1px !important; }
+.border-x-2, .border-x-4 { border-left-width: 1px !important; border-right-width: 1px !important; }
+.border-y-2, .border-y-4 { border-top-width: 1px !important; border-bottom-width: 1px !important; }
+
+/* ── Focus state: brand orange, always visible (shadows are gone) ─────── */
+:focus-visible,
+input:focus, select:focus, textarea:focus, button:focus, a:focus {
+  outline: 2px solid var(--dd-orange) !important;
+  outline-offset: 2px !important;
+}
+
+/* ── Official brand bar ───────────────────────────────────────────────── */
+.dd-brandbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  padding: 10px 16px !important;
+  background: var(--dd-card) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--dd-line) !important;
+  font-family: var(--dd-font-head) !important;
+}
+
+.dd-brandmark {
+  display: inline-block;
+  font-family: var(--dd-font-head) !important;
+  font-weight: 900 !important;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--dd-ink);
+  text-decoration: none;
+}
+
+.dd-brandmark em {
+  font-style: italic;
+  color: var(--dd-orange);
+}
+
+.dd-brandbar-label {
+  font-family: var(--dd-font-head) !important;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dd-muted);
+  text-align: right;
+}
+
+/* Existing in-page logo slots are upgraded to the official lockup */
+.dd-logo-name,
+.logo-text {
+  font-family: var(--dd-font-head) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  text-transform: uppercase;
+}
+
+.dd-logo-name em,
+.logo-text em {
+  font-style: italic !important;
+  color: var(--dd-orange) !important;
+}
+
+@media print {
+  .dd-brandbar { display: none !important; }
+}
+
+
+/* ── Unified DigitallyDefined Topbar ────────────────────────────────────────── */
+.dd-unified-topbar {
+  background: #FFFCF9 !important;
+  border-bottom: 2px solid #111111 !important;
+  padding: 14px 20px !important;
+  width: 100% !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+}
+.dd-unified-topbar-inner {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+.dd-unified-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+}
+.dd-unified-brand-mark {
+  width: 36px !important;
+  height: 36px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: #111111 !important;
+  color: #FFFCF9 !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  flex: 0 0 auto !important;
+}
+.dd-unified-brand-copy {
+  display: flex !important;
+  flex-direction: column !important;
+}
+.dd-unified-brand-title {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  text-transform: uppercase !important;
+}
+.dd-unified-brand-title span {
+  color: #F18B25 !important;
+  font-style: italic !important;
+}
+.dd-unified-brand-sub {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #555555 !important;
+  font-weight: 700 !important;
+  margin-top: 2px !important;
+}
+.dd-unified-tag {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #111111 !important;
+  border: 2px solid #111111 !important;
+  padding: 6px 12px !important;
+  background: #FFFFFF !important;
+}
+@media print {
+  .dd-unified-topbar { display: none !important; }
+}
+
+</style>
+</head>
+<body>
+<header class="dd-unified-topbar" role="banner">
+  <div class="dd-unified-topbar-inner">
+    <div class="dd-unified-brand">
+      <div class="dd-unified-brand-mark">DD</div>
+      <div class="dd-unified-brand-copy">
+        <div class="dd-unified-brand-title">DIGITALLY<span>DEFINED.</span></div>
+        <div class="dd-unified-brand-sub">Build what you own · Legacy OS</div>
+      </div>
+    </div>
+    <div class="dd-unified-tag">Bonus · Scam Response Plan</div>
+  </div>
+</header>
+
+<!-- DigitallyDefined Official Header -->
+
+
+    <div class="dd-page">
+
+        <!-- HEADER -->
+        <div class="dd-section">
+            <div class="dd-card" style="border-bottom: 1px solid var(--dd-frame);">
+                <span class="accent-tag tag-red">Free Download • Volume 2 Companion</span>
+                <h1>The 96-Hour<br>Scam Response Plan</h1>
+                <p style="margin-bottom: 0; font-weight: 500;">If you (or a parent, sibling, or friend) just wired money, shared credentials, or fell for an "urgent" call — the first 96 hours decide how much you recover. Here's the exact hour-by-hour playbook.</p>
+            </div>
+        </div>
+
+        <!-- STAGE 1 -->
+        <div class="dd-section">
+            <div class="dd-card" style="border-left: 1px solid var(--dd-accent-tertiary);">
+                <div class="stage-number">1</div>
+                <div class="stage-title">Hour 0–4: Stop the Bleeding</div>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Call the fraud hotline at your bank / credit union NOW — ask for a <strong>chargeback</strong> and account freeze</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Change every password tied to one compromised email (the "one password" problem)</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Enable 2FA on email, banking, and any cloud / file storage you use</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Do NOT delete the scam emails, messages, or call logs — they are evidence</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- STAGE 2 -->
+        <div class="dd-section">
+            <div class="dd-card">
+                <div class="stage-number">2</div>
+                <div class="stage-title">Hour 4–24: File the Reports</div>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Report to the <strong>FTC</strong> at <span class="timeline-label">reportfraud.ftc.gov</span> — it triggers a case number and feeds the database that stops repeat victims</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>If it was a wire / crypto / gift-card loss: call <strong>IC3.gov</strong> (FBI's Internet Crime Complaint Center)</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Report to local police for a written report — required by most insurers and credit-freeze flows</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Save the exact date, time, and dollar amount for every incident in one place</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- STAGE 3 -->
+        <div class="dd-section">
+            <div class="dd-card">
+                <div class="stage-number">3</div>
+                <div class="stage-title">Day 2–4: Lock Down Identity</div>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Freeze credit at all three bureaus — <strong>Freeze it</strong>, not just "add an alert"</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Place a fraud alert on your credit file (lifts the freeze at a specific account if needed)</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Pull your credit report and check for accounts you don't recognize</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" class="dd-checkbox">
+                    <span>Update SSN-adjacent info: notify the IRS if a 1099 appears under your name</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 5 LAYER DEFENSE -->
+        <div class="dd-section">
+            <div class="dd-card">
+                <span class="accent-tag tag-blue">The 5-Layer Defense — Do This Before a Scam Happens</span>
+                <h2>Build Your Fortress</h2>
+                <div class="flag">
+                    <span class="flag-marker">L1</span>
+                    <span><strong>Dedicated "bait" account</strong> — a separate email/phone that never holds your real SSN, bank login, or 2FA. Use it only for public signups, mailers, and anything you won't miss.</span>
+                </div>
+                <div class="flag">
+                    <span class="flag-marker">L2</span>
+                    <span><strong>One password = one site</strong>. No reuse. A password manager turns a 40-site nightmare into a 30-second login ritual.</span>
+                </div>
+                <div class="flag">
+                    <span class="flag-marker">L3</span>
+                    <span><strong>Bank "instant fraud number"</strong> — program a direct line on your phone that skips the 20-minute hold and reaches a fraud agent who can freeze and chargeback on the spot.</span>
+                </div>
+                <div class="flag">
+                    <span class="flag-marker">L4</span>
+                    <span><strong>Family code word</strong> — pick a phrase only your immediate circle knows. No "grandma, it's me" gets past it. If no code word, no transfer. Period.</span>
+                </div>
+                <div class="flag">
+                    <span class="flag-marker">L5</span>
+                    <span><strong>The 24-hour rule</strong> — no money moves within 24 hours of any "urgent" call, email, or text. Sleep on it. Most real opportunities can survive one night.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORTRESS PHONE BOX -->
+        <div class="dd-section">
+            <div class="fortress-box">
+                <h2 style="margin-bottom: 12px;">Keep These Numbers Handy</h2>
+                <div class="phone-line"><span>FTC — fraud reporting</span><span class="phone-num">1-877-372-7970</span></div>
+                <div class="phone-line"><span>IC3 — FBI online crime</span><span class="phone-num">ic3.gov</span></div>
+                <div class="phone-line"><span>Credit Freeze — Equifax</span><span class="phone-num">1-800-685-1111</span></div>
+                <div class="phone-line"><span>Credit Freeze — TransUnion</span><span class="phone-num">1-800-916-8850</span></div>
+                <div class="phone-line"><span>Credit Freeze — Experian</span><span class="phone-num">1-888-397-3742</span></div>
+                <div class="phone-line"><span>Your bank fraud line</span><span class="phone-num">[YOUR BANK]</span></div>
+            </div>
+        </div>
+
+        
+        <!-- COMMUNITY & SOCIAL CTA -->
+        <div class="dd-section">
+            <div class="cta-box" style="background:#FFFFFF; border:2px solid #111111; padding:24px;">
+                <p style="font-size: 1.1rem; font-weight: 900; font-family:'Inter', sans-serif; text-transform:uppercase; margin-bottom: 6px; color:#111111;">
+                    Join the DigitallyDefined Community
+                </p>
+                <p style="font-size: 0.92rem; line-height:1.6; color:#2D3748; margin-bottom: 16px;">
+                    Connect with ambitious Gen X women building sovereign digital assets, protecting family wealth, and creating automated income on their own terms. No hustle culture, zero fluff.
+                </p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;">
+                    <a class="cta-button" href="https://facebook.com/groups/digitallydefind" target="_blank" rel="noopener noreferrer" style="background:#F18B25; color:#111111; font-weight:800; text-decoration:none; padding:12px 20px; border:2px solid #111111; font-family:'Inter', sans-serif; text-transform:uppercase; font-size:0.85rem; display:inline-block;">
+                        Join the Facebook Group →
+                    </a>
+                    <a class="cta-button" href="https://facebook.com/digitallydefin1" target="_blank" rel="noopener noreferrer" style="background:#FFFFFF; color:#111111; font-weight:700; text-decoration:none; padding:12px 16px; border:2px solid #111111; font-family:'Inter', sans-serif; text-transform:uppercase; font-size:0.85rem; display:inline-block;">
+                        Facebook Page
+                    </a>
+                    <a class="cta-button" href="https://www.instagram.com/digitally.defined" target="_blank" rel="noopener noreferrer" style="background:#FFFFFF; color:#111111; font-weight:700; text-decoration:none; padding:12px 16px; border:2px solid #111111; font-family:'Inter', sans-serif; text-transform:uppercase; font-size:0.85rem; display:inline-block;">
+                        Instagram (@digitally.defined)
+                    </a>
+                    <a class="cta-button" href="https://www.threads.net/@digitally.defined" target="_blank" rel="noopener noreferrer" style="background:#FFFFFF; color:#111111; font-weight:700; text-decoration:none; padding:12px 16px; border:2px solid #111111; font-family:'Inter', sans-serif; text-transform:uppercase; font-size:0.85rem; display:inline-block;">
+                        Threads
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="dd-footer">
+            <span>DigitallyDefined.store</span>
+            <span>Build What You Own · Legacy OS</span>
+        </div>
+
+        <div class="disclaimer">
+            This plan is for educational and awareness purposes only and is not financial, legal, or law-enforcement advice. Report fraud through the channels above. Verify any specific phone number with your institution before relying on it.
+        </div>
+
+    </div>
+</body>
+</html>

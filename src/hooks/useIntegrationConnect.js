@@ -54,7 +54,7 @@ export function useIntegrationConnect() {
         } else {
           setNotice({
             type: "error",
-            message: result?.error || `Could not connect ${label}.`,
+            message: result?.message || result?.error || `Could not connect ${label}.`,
           });
         }
       } catch (err) {

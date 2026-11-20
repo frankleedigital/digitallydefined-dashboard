@@ -216,10 +216,22 @@ async function checkHealth() {
 
 async function hermesStatus() {
   try {
-    const data = await postAction('hermes.status', {}, { timeoutMs: 15000, retries: 0 });
-    return { online: Boolean(data?.online), status: data?.status ?? 200 };
+    const res = await fetch(`${_baseUrl}/api`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ action: 'hermes.status' }),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) {
+      return { online: false, success: false, status: res.status, error: `Request failed: ${res.status}` };
+    }
+    const data = await res.json();
+    // Return the full backend payload (activeProvider, providerHealth,
+    // fallbackOrder, providerLatencies, currentModel) so consumers do not
+    // need a second request. `online`/`status` are kept for compatibility.
+    return { ...data, online: Boolean(data?.online ?? data?.success), status: data?.status ?? res.status };
   } catch (err) {
-    return { online: false, status: err?.status ?? null };
+    return { online: false, success: false, error: err?.message || 'Backend unreachable' };
   }
 }
 

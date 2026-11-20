@@ -40,9 +40,7 @@ export async function fetchEmailStats() {
 
     const subscribers = payload.subscribers ?? payload.totalSubscribers ?? null;
     const campaigns = Array.isArray(payload.campaigns) ? payload.campaigns.slice(0, 5) : [];
-    const connected = Boolean(
-      payload.connected ?? (subscribers != null || campaigns.length > 0),
-    );
+    const connected = Boolean(payload.connected ?? (subscribers != null || campaigns.length > 0)) || (typeof localStorage !== "undefined" && localStorage.getItem("integration.email.connected") === "true");
 
     return {
       connected,
@@ -80,8 +78,11 @@ export default { fetchEmailStats, startEmail };
  */
 export async function startEmail() {
   const res = await callSupabaseEdge('integration.email.start', { provider: 'email' });
+  if (res?.success === true) {
+    try { localStorage.setItem("integration.email.connected", "true"); } catch { /* noop */ }
+  }
   return {
-    success: res?.success !== false,
+    success: res?.success === true,
     message: res?.message || 'Email List connection started',
   };
 }

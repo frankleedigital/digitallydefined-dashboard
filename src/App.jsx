@@ -4,35 +4,42 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import DashboardPage from "./pages/DashboardPage";
 import AssistantPage from "./pages/AssistantPage";
 import ThankYouCalculatorPage from "./pages/ThankYouCalculatorPage";
-import IntelligencePage from "./pages/IntelligencePage";
-import AnalyticsPage from "./pages/AnalyticsPage";
+import MyRoadmapPage from "./pages/MyRoadmapPage";
 import ChatWidget from "./components/ChatWidget";
 import ScrollProgress from "./components/ScrollProgress";
-import Login from "./pages/auth/Login";
-import SignUp from "./pages/auth/SignUp";
-import AuthCallback from "./pages/auth/AuthCallback";
+import PremiumGate from "./components/PremiumGate";
+import NewsletterSignup from "./components/NewsletterSignup";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SignUp from "./pages/auth/SignUp";
+import Login from "./pages/auth/Login";
+import AuthCallback from "./pages/auth/AuthCallback";
+import QuizPage from "./pages/quiz/QuizPage";
+import QuizResultsPage from "./pages/quiz/QuizResultsPage";
+import OnboardingPage from "./pages/OnboardingPage";
+import IntakeWizard from "./pages/IntakeWizard";
+import ReviewCenter from "./pages/ReviewCenter";
+import StorePage from "./pages/StorePage";
+import FinancialHubPage from "./pages/FinancialHubPage";
+import LegacyOSPage from "./pages/LegacyOSPage";
 
-// Quiz flow: the canonical quiz lives on the production public site at
-// https://digitallydefined.store/quiz (NOT in this repo —
-// digitallydefined-online-local was removed as legacy).
-// The dashboard never reimplements the quiz; IntelligencePage reads the
-// quiz result (`dd-quiz-results` in localStorage) and calls the backend
-// `intelligence` action via digitallydefined-os-backend.
-const PUBLIC_SITE = "https://digitallydefined.store";
-const PUBLIC_QUIZ = `${PUBLIC_SITE}/quiz`;
+// Where a visitor who lands on a non-dashboard host should go.
+const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
 
 function App() {
   const hostname = window.location.hostname;
-  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency" || hostname === "dashboard.digitallydefined.online";
+  const isDashboardDomain = hostname === "dashboard.digitallydefined.agency";
+  const isLegacyOsDomain = hostname === "legacyos.digitallydefined.store";
 
-  // On the dashboard domain "/" is the dashboard. On any other host (Vercel
-  // preview URLs) send the visitor to the real public site rather than
-  // rendering a second, divergent copy of it.
+  // On the dashboard domain "/" is the dashboard. On the legacyos store
+  // domain "/" is the Legacy OS Bundle offer page. On any other host
+  // (Vercel preview URLs, digitallydefined.store) serve the public storefront
+  // instead, so a shared link goes to the funnel rather than bouncing off.
   const homePage = isDashboardDomain ? (
     <Navigate to="/dashboard" replace />
+  ) : isLegacyOsDomain ? (
+    <LegacyOSPage />
   ) : (
-    <Navigate to={PUBLIC_SITE} replace />
+    <Navigate to="/store" replace />
   );
 
   return (
@@ -40,33 +47,68 @@ function App() {
       <SpeedInsights />
       <ScrollProgress />
 
-      {/* Show chat ONLY on the main site */}
-      {!isDashboardDomain && <ChatWidget />}
+      {/* Show chat ONLY on the main site (not on private dashboard or legacyos sales page) */}
+      {!isDashboardDomain && !isLegacyOsDomain && <ChatWidget />}
 
       <Routes>
         <Route path="/" element={homePage} />
+        <Route path="/legacy-os" element={<LegacyOSPage />} />
+        <Route path="/legacy-os-bundle" element={<LegacyOSPage />} />
+        <Route path="/legacy-os-bundle.html" element={<LegacyOSPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {/* OAuth callback — now a no-op redirect, kept for backwards compatibility */}
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        {/* Quiz is owned by the production public site (https://digitallydefined.store/quiz).
-            Redirect, do not reimplement. Replacement route documented in POST_CLEANUP_ARCHITECTURE.md. */}
-        <Route path="/quiz" element={<Navigate to={PUBLIC_QUIZ} replace />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        {/* The Digital Superpower Quiz — the funnel's lead magnet.
+            Served by this app so it works the moment the domain is pointed
+            here; the result is scored on-device and delivered on screen, and
+            the email opt-in is best-effort (it can never block the result).
+            Move to digitallydefined.store by adding that domain to
+            this Vercel project and updating the CNAME. */}
+        <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/quiz/results" element={<QuizResultsPage />} />
+        {/* The storefront shelf — products, prices, quiz entry point.
+            Non-dashboard domains land here (see homePage above). */}
+        <Route path="/store" element={<StorePage />} />
+        {/* The storefront. The Gumroad profile shows no products, so this page
+            is the shelf: what each product is, who it is for, and the price. */}
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/financial-hub" element={<FinancialHubPage />} />
+<Route path="/intake" element={<IntakeWizard />} />
+<Route path="/review" element={<ReviewCenter />} />
         <Route path="/automations" element={<AssistantPage />} />
         <Route path="/thank-you-calculator" element={<ThankYouCalculatorPage />} />
-        {/* Control-center feature: no paywall. Purchase gating lives on Gumroad. */}
-        <Route path="/intelligence" element={<IntelligencePage />} />
+        {/* Customer journey: Notion OS roadmap + automations, outside the owner dashboard bar */}
+        <Route
+          path="/roadmap"
+          element={
+            <ProtectedRoute>
+              <MyRoadmapPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* /intelligence now lives inside the COMMAND tab — redirect, do not 404 */}
+        <Route path="/intelligence" element={<Navigate to="/dashboard" replace />} />
 
-        {/* Live website analytics (AI Business Partner data source) */}
+        {/* Analytics signals now live inside GROWTH & SIGNALS — redirect, do not 404 */}
         {isDashboardDomain && (
-          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/analytics" element={<Navigate to="/dashboard" replace />} />
         )}
 
         {/* AI Assistant Page (dashboard only) */}
         {isDashboardDomain && (
-                  <Route path="/assistant" element={<AssistantPage />} />
-                )}
+          <Route
+            path="/assistant"
+            element={
+              <ProtectedRoute>
+                <PremiumGate feature="AI Business Partner">
+                  <AssistantPage />
+                </PremiumGate>
+              </ProtectedRoute>
+            }
+          />
+        )}
 
         <Route
           path="*"
@@ -79,6 +121,13 @@ function App() {
           }
         />
       </Routes>
+
+      {/* Email capture — available on every dashboard page. */}
+      {isDashboardDomain && (
+        <div style={{ width: "min(1100px, 100%)", margin: "0 auto", padding: "0 clamp(1.25rem, 5vw, 2.5rem) 2.5rem" }}>
+          <NewsletterSignup />
+        </div>
+      )}
     </>
   );
 }

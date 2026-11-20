@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import FeedbackWidget from "../components/FeedbackWidget";
 import {
   BarChart3,
   Bot,
   BrainCircuit,
+  ChevronDown,
+  ChevronRight,
   Database,
   DollarSign,
   FolderHeart,
@@ -20,6 +23,7 @@ import {
   ExternalLink,
   Plug,
   FileText,
+  ShoppingBag,
 } from "lucide-react";
 import CONFIG from "../config";
 import Logo from "../components/Logo";
@@ -42,17 +46,19 @@ import { captureClientError } from "../lib/error-monitor";
 import { getActiveModelId, fetchActiveModel, fetchModelGroups, switchActiveModel } from "../lib/modelSelector";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
 import GrowthTab from "./GrowthTab";
+import ProductsTab from "./ProductsTab";
 import IntegrationsTab from "./IntegrationsTab";
-import NotionTab from "./NotionTab";
 import AntigravityPage from "./AntigravityPage";
-import AIStatusPanel from "./AIStatusPanel";
-import NextActionEngine from "./NextActionEngine";
+import AutomationsPage from "./AutomationsPage";
+import AgentHub from "./AgentHub";
+import WealthCenter from "./WealthCenter";
+import AffiliateFlipperTab from "./AffiliateFlipperTab";
+import BrandSupervisorTab from "./BrandSupervisorTab";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
   fetchEmailStats,
   fetchCommunityStats,
-  fetchNotionData,
 } from "../lib/integrations";
 import mergedConfig from "../configMerge";
 
@@ -94,19 +100,20 @@ const ASSISTANT_MODEL =
 const assistantWelcome = {
   role: "assistant",
   content:
-    "I am ready. Sync the Vault, then ask what content, workflow, or calculator move should come next.",
+    "Let's get real. I am your DigitallyDefined AI Business Partner. Ask me what digital product move to make next, review our live conversion numbers, or diagnose our revenue bottlenecks.",
 };
 
 const tabIcons = {
   dashboard: LayoutDashboard,
-  reputation: ShieldCheck,
-  intel: BarChart3,
+  agents: Bot,
+  wealth: DollarSign,
+  flipper: TrendingUp,
+  brand: ShieldCheck,
+  products: ShoppingBag,
   growth: TrendingUp,
-  brain: BrainCircuit,
   automations: Workflow,
-  integrations: Settings,
+  integrations: Plug,
   notion: FileText,
-  antigravity: Database,
 };
 
 const formatConversion = (value) => {
@@ -266,15 +273,115 @@ const EmptyState = ({ children }) => (
   </p>
 );
 
-function CommandTab({ data, stats }) {
+function CommandTab({ data, stats, latestBrief, onOpenAgentHub }) {
+  const aiBrief = data.aiBrief;
+  const morning = latestBrief;
+  const sections = aiBrief ? [
+    ["What's Working", aiBrief.working, theme.colors.success || "#10b981"],
+    ["What's Slipping", aiBrief.slipping, theme.colors.darkRed || "#ef4444"],
+    ["Next Actions", aiBrief.nextActions, theme.colors.orange || "#f59e0b"],
+  ] : [];
+
+  const morningSections = morning
+    ? [
+        ["What's Working", morning.working, theme.colors.success || "#10b981"],
+        ["What's Slipping", morning.slipping, theme.colors.darkRed || "#ef4444"],
+        ["Next Actions", morning.nextActions, theme.colors.orange || "#f59e0b"],
+      ]
+    : [];
+
   return (
     <div style={{ display: "grid", gap: "1rem" }}>
+      {/* OS COMMAND CENTER — data first, agent access prominent */}
+      <div style={{ ...cardStyle, backgroundColor: "#111111", color: "#FFFFFF", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+        <div>
+          <span style={{ ...brutalEyebrow, color: "#F18B25", fontSize: "0.62rem" }}>Business Command Center</span>
+          <div style={{ ...brutalHeading, fontSize: "1.1rem", color: "#FFFFFF", margin: "0.2rem 0 0" }}>OPERATIONS</div>
+          <div style={{ fontSize: "0.8rem", color: "#BFBFBF", marginTop: "0.2rem" }}>
+            Your operating objects, live signals, and the agent team that runs them.
+          </div>
+        </div>
+        {onOpenAgentHub && (
+          <button
+            type="button"
+            onClick={onOpenAgentHub}
+            style={{ border: "2px solid #F18B25", backgroundColor: "#F18B25", color: "#111", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.78rem", padding: "0.6rem 1rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "0.5rem", fontFamily: theme.fonts.body }}
+          >
+            <Bot size={15} /> Open Agent Hub
+          </button>
+        )}
+      </div>
+
       <div style={compactGrid}>
         <InfoBlock label="Top Asset" value={stats.topAsset} />
         <InfoBlock label="Community Growth" value={stats.communityGrowth} />
         <InfoBlock label="Email Growth" value={stats.emailGrowth} />
         <InfoBlock label="Churn Risk" value={stats.churnRisk} />
       </div>
+
+      {morningSections.length > 0 && (
+        <section style={{ display: "grid", gap: "0.6rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 style={{ ...brutalHeading, margin: 0, fontSize: "0.95rem" }}>
+              This Morning's Brief
+            </h3>
+            <span style={{ ...brutalEyebrow, fontSize: "0.62rem", color: theme.colors.muted }}>
+              {String(morning.brief_date || "").slice(0, 10)}
+            </span>
+          </div>
+          <div style={{ display: "grid", gap: "0.65rem" }}>
+            {morningSections.map(([title, items, color]) =>
+              Array.isArray(items) && items.length ? (
+                <section key={title} style={{ ...cardStyle, padding: "0.9rem" }}>
+                  <h4 style={{ ...brutalHeading, margin: "0 0 0.5rem", color, fontSize: "0.9rem" }}>
+                    {title}
+                  </h4>
+                  <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+                    {items.map((item, index) => (
+                      <li key={`${title}-${index}`} style={{ marginBottom: "0.35rem", fontSize: "0.88rem" }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null,
+            )}
+          </div>
+        </section>
+      )}
+
+      {sections.length > 0 && (
+        <section style={{ display: "grid", gap: "0.6rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 style={{ ...brutalHeading, margin: 0, fontSize: "0.95rem" }}>
+              Hermes AI Strategic Brief
+            </h3>
+            {aiBrief?.provider && (
+              <span style={{ ...brutalEyebrow, fontSize: "0.62rem", color: theme.colors.muted }}>
+                {aiBrief.provider}
+              </span>
+            )}
+          </div>
+          <div style={{ display: "grid", gap: "0.65rem" }}>
+            {sections.map(([title, items, color]) =>
+              items?.length ? (
+                <section key={title} style={{ ...cardStyle, padding: "0.9rem" }}>
+                  <h4 style={{ ...brutalHeading, margin: "0 0 0.5rem", color, fontSize: "0.9rem" }}>
+                    {title}
+                  </h4>
+                  <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+                    {items.map((item, index) => (
+                      <li key={`${title}-${index}`} style={{ marginBottom: "0.35rem", fontSize: "0.88rem" }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null,
+            )}
+          </div>
+        </section>
+      )}
 
       {data.alerts.length > 0 && (
         <section style={{ display: "grid", gap: "0.5rem" }}>
@@ -470,38 +577,6 @@ function BrainTab({ aiBrief }) {
   );
 }
 
-function AutomationsTab({ automations }) {
-  if (!automations.length) {
-    return <EmptyState>{dashboardConfig.automationsEmpty || "No workflows running yet. Start with /tools to launch a content, product, or automation workflow."}</EmptyState>;
-  }
-
-  return (
-    <div style={{ display: "grid", gap: "0.75rem" }}>
-      {automations.map((automation, index) => (
-        <div
-          key={`${automation.id || automation.name || index}`}
-          style={{ ...cardStyle, padding: "0.9rem" }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
-            <strong>{automation.name || "Automation"}</strong>
-            <span style={{ color: theme.colors.muted, fontSize: "0.78rem" }}>
-              {automation.status || "unknown"}
-            </span>
-          </div>
-          {automation.lastRun && (
-            <p style={{ margin: "0.25rem 0 0", fontSize: "0.85rem", color: theme.colors.muted }}>
-              Last run: {automation.lastRun}
-            </p>
-          )}
-          {automation.details && (
-            <p style={{ margin: "0.5rem 0 0", fontSize: "0.85rem" }}>{automation.details}</p>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function DashboardAssistant({
   messages,
   input,
@@ -517,9 +592,9 @@ function DashboardAssistant({
   modelNotice,
 }) {
   const quickPrompts = [
-    "What needs my attention today?",
-    "Summarize my content engines and tools.",
-    "What is the next best move?",
+    "Which digital product is most profitable to post next for Gen X women?",
+    "What needs our immediate attention today to close the gap?",
+    "Give me a direct read on our traffic, leads, and conversion engine.",
   ];
 
   // Model selector options — REAL OmniRoute models grouped by cost tier.
@@ -583,7 +658,7 @@ function DashboardAssistant({
             key={si}
             style={{
               border: `1px solid ${theme.colors.accent}33`,
-              borderRadius: 4,
+              borderRadius: 0,
               padding: "0.45rem 0.6rem",
               backgroundColor: "rgba(0,0,0,0.2)",
             }}
@@ -645,7 +720,7 @@ function DashboardAssistant({
         <div style={{ display: "flex", alignItems: "center", gap: "0.55rem" }}>
           <Bot size={19} color={theme.colors.aquaBlue} />
           <h2 style={{ ...brutalHeading, fontSize: "1rem", margin: 0 }}>
-            Dashboard AI Assistant
+            AI Business Partner (Hermes)
           </h2>
         </div>
         <select
@@ -655,7 +730,7 @@ function DashboardAssistant({
             const v = e.target.value;
             if (onModelChange) onModelChange(v);
           }}
-          title={modelSwitching ? "Switching model…" : "AI model (via OmniRoute)"}
+          title={modelSwitching ? "Switching model…" : "AI model"}
           style={{
             border: brutalBorder,
             backgroundColor: theme.colors.card,
@@ -851,6 +926,7 @@ const DashboardPage = () => {
     churnRisk: "Low",
   });
   const [automations, setAutomations] = useState([]);
+  const [latestBrief, setLatestBrief] = useState(null);
   const [integrations, setIntegrations] = useState({
     googleAnalytics: { connected: false, error: null },
     social: { connected: false, error: null },
@@ -861,21 +937,11 @@ const DashboardPage = () => {
   const [openRouterKey, setOpenRouterKey] = useState(
     localStorage.getItem("openRouterKey") || "",
   );
-  const [notionData, setNotionData] = useState({
-    ideas: [],
-    content: [],
-    automations: [],
-    intakeAlerts: [],
-    publishingQueue: [],
-    approvals: [],
-    buyerSignals: [],
-    aiDrafts: [],
-    ideasAlerts: [],
-  });
   const [assistantMessages, setAssistantMessages] = useState([assistantWelcome]);
   const [assistantInput, setAssistantInput] = useState("");
   const [isAssistantThinking, setIsAssistantThinking] = useState(false);
   const [assistantError, setAssistantError] = useState("");
+  const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(
     localStorage.getItem("dd-assistant-model") || "auto/best-chat"
   );
@@ -1002,6 +1068,16 @@ const DashboardPage = () => {
         setAutomations([]);
       }
 
+      // "This Morning's Brief" — the last brief the daily job stored.
+      let morningBrief = null;
+      try {
+        const mbPayload = await ddPost("brain.latest-brief", {}, { timeoutMs: 20000 });
+        morningBrief = mbPayload?.brief || null;
+      } catch {
+        morningBrief = null;
+      }
+      setLatestBrief(morningBrief);
+
       setStats({
         revenue: metrics.revenue || payload.revenue || "$0",
         leads: Number(metrics.leads ?? payload.leads ?? 0),
@@ -1041,16 +1117,6 @@ const DashboardPage = () => {
       community,
       fetchedAt: new Date().toLocaleString(),
     });
-
-    // Pull Notion data as part of the same sync cycle.
-    let notion = {};
-    try {
-      notion = await fetchNotionData();
-    } catch (err) {
-      console.error('[Dashboard] fetchNotionData failed:', err && err.message ? err.message : err);
-    }
-
-    setNotionData(notion);
   };
 
   useEffect(() => {
@@ -1167,17 +1233,26 @@ const DashboardPage = () => {
     sendAssistantMessage(assistantInput);
   };
 
-  const renderTab = useCallback(() => {
-    if (activeTab === "reputation") return <ReputationTab reviews={data.reviews} />;
-    if (activeTab === "intel") return <IntelTab data={data} />;
+  const renderTab = () => {
+    if (activeTab === "agents") return <AgentHub />;
+    if (activeTab === "wealth") return <WealthCenter onOpenAgentHub={() => setActiveTab("agents")} />;
+    if (activeTab === "flipper") return <AffiliateFlipperTab />;
+    if (activeTab === "brand") return <BrandSupervisorTab />;
+    if (activeTab === "products") return (
+      <ProductsTab
+        onAskHermes={(prompt) => {
+          setActiveTab("dashboard");
+          setAiPanelOpen(true);
+          sendAssistantMessage(prompt);
+        }}
+      />
+    );
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
-    if (activeTab === "brain") return <BrainTab aiBrief={data.aiBrief} />;
-    if (activeTab === "automations") return <AutomationsTab automations={data.automations} />;
-    if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} />;
-    if (activeTab === "notion") return <NotionTab data={notionData} />;
-    if (activeTab === "antigravity") return <AntigravityPage />;
-    return <CommandTab data={data} stats={stats} />;
-  }, [activeTab, data, integrations, notionData, stats]);
+    if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} onRefresh={syncEmpireData} />;
+    if (activeTab === "notion") return <AntigravityPage onSync={syncEmpireData} />;
+    if (activeTab === "automations") return <AutomationsPage />;
+    return <CommandTab data={data} stats={stats} latestBrief={latestBrief} onOpenAgentHub={() => setActiveTab("agents")} />;
+  };
 
   if (initialLoad) {
     return (
@@ -1292,8 +1367,6 @@ const DashboardPage = () => {
         </div>
       </header>
 
-      <AIStatusPanel />
-
       <main
         className="dd-dashboard-shell"
         style={{
@@ -1304,14 +1377,6 @@ const DashboardPage = () => {
           gap: "1rem",
         }}
       >
-        {/* NEXT ACTION ENGINE — Priority #1: the primary output of the OS */}
-        <NextActionEngine
-          stats={stats}
-          data={data}
-          integrations={integrations}
-          automations={automations}
-        />
-
         <div
           style={{
             display: "grid",
@@ -1376,7 +1441,7 @@ const DashboardPage = () => {
           >
             {syncError ||
               (lastSync
-                ? `${dashboardConfig.lastSyncPrefix} ${lastSync}`
+                ? `${dashboardConfig.lastSyncPrefix || "Last sync:"} ${lastSync}`
                 : dashboardLabels.noSync)}
           </div>
         </aside>
@@ -1392,11 +1457,23 @@ const DashboardPage = () => {
               backgroundColor: theme.colors.panel,
             }}
           >
-            <MetricCard icon={DollarSign} label={dashboardLabels.metrics.revenue} value={stats.revenue} />
-            <MetricCard icon={Users} label={dashboardLabels.metrics.leads} value={stats.leads} />
-            <MetricCard icon={TrendingUp} label={dashboardLabels.metrics.conversion} value={stats.conversionRate} />
-            <MetricCard icon={FolderHeart} label={dashboardLabels.metrics.assetValue} value={stats.assetValue} />
-          </div>
+  <MetricCard icon={DollarSign} label={dashboardLabels.metrics.revenue} value={stats.revenue} />
+  <MetricCard icon={Users} label={dashboardLabels.metrics.leads} value={stats.leads} />
+  <MetricCard icon={TrendingUp} label={dashboardLabels.metrics.conversion} value={stats.conversionRate} />
+  <MetricCard icon={FolderHeart} label={dashboardLabels.metrics.assetValue} value={stats.assetValue} />
+  </div>
+  <p
+    style={{
+      fontSize: "0.68rem",
+      fontWeight: 800,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase",
+      color: theme.colors.muted,
+      margin: "-0.35rem 0 0",
+    }}
+  >
+    Demo metrics — connect your accounts in Integrations for live data
+  </p>
 
           <div style={{ ...cardStyle, padding: "1rem", minHeight: 220 }}>
             <h1 style={{ ...brutalHeading, margin: "0 0 0.5rem", fontSize: "1.3rem" }}>
@@ -1405,20 +1482,52 @@ const DashboardPage = () => {
             {renderTab()}
           </div>
 
-          <DashboardAssistant
-            messages={assistantMessages}
-            input={assistantInput}
-            isThinking={isAssistantThinking}
-            assistantError={assistantError}
-            onInputChange={setAssistantInput}
-            onSubmit={handleAssistantSubmit}
-            onQuickPrompt={sendAssistantMessage}
-            selectedModel={selectedModel}
-            onModelChange={handleModelChange}
-            modelGroups={modelGroups}
-            modelSwitching={modelSwitching}
-            modelNotice={modelNotice}
-          />
+          <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
+            <button
+              type="button"
+              onClick={() => setAiPanelOpen((o) => !o)}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "0.5rem",
+                padding: "0.9rem 1rem",
+                border: "none",
+                borderBottom: aiPanelOpen ? brutalBorder : "none",
+                background: "#111111",
+                color: "#FFFFFF",
+                cursor: "pointer",
+                fontFamily: theme.fonts.body,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <Bot size={16} color="#F18B25" />
+                <span style={{ ...brutalHeading, fontSize: "0.9rem", color: "#FFFFFF" }}>
+                  AI BUSINESS PARTNER — ORCHESTRATOR
+                </span>
+              </div>
+              {aiPanelOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+            {aiPanelOpen && (
+              <div style={{ padding: "0.75rem" }}>
+                <DashboardAssistant
+                  messages={assistantMessages}
+                  input={assistantInput}
+                  isThinking={isAssistantThinking}
+                  assistantError={assistantError}
+                  onInputChange={setAssistantInput}
+                  onSubmit={handleAssistantSubmit}
+                  onQuickPrompt={sendAssistantMessage}
+                  selectedModel={selectedModel}
+                  onModelChange={handleModelChange}
+                  modelGroups={modelGroups}
+                  modelSwitching={modelSwitching}
+                  modelNotice={modelNotice}
+                />
+              </div>
+            )}
+          </div>
         </section>
         </div>
       </main>
