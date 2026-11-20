@@ -234,6 +234,7 @@ export default function ProductsTab({ onAskHermes }) {
   const [loadingGumroad, setLoadingGumroad] = useState(false);
   const [publishingId, setPublishingId] = useState(null);
   const [pipelineResult, setPipelineResult] = useState(null);
+  const [productsList, setProductsList] = useState(PRODUCT_CATALOG);
 
   useEffect(() => {
     let isMounted = true;
@@ -251,7 +252,7 @@ export default function ProductsTab({ onAskHermes }) {
     return () => { isMounted = false; };
   }, []);
 
-  const mergedCatalog = PRODUCT_CATALOG.map((p) => {
+  const mergedCatalog = productsList.map((p) => {
     const realGumroad = gumroadProducts.find(
       (gp) =>
         (gp.short_url && p.gumroadUrl && gp.short_url.toLowerCase().includes(p.gumroadUrl.toLowerCase())) ||
@@ -310,7 +311,7 @@ export default function ProductsTab({ onAskHermes }) {
           <div style={{ ...brutalEyebrow, color: theme.colors.muted, fontSize: "0.62rem" }}>
             Total Catalog SKUs
           </div>
-          <strong style={{ fontSize: "1.2rem" }}>{PRODUCT_CATALOG.length} Products</strong>
+          <strong style={{ fontSize: "1.2rem" }}>{productsList.length} Products</strong>
         </div>
         <div>
           <div style={{ ...brutalEyebrow, color: theme.colors.success, fontSize: "0.62rem" }}>
@@ -543,6 +544,29 @@ export default function ProductsTab({ onAskHermes }) {
                 </div>
 
                 <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(`Are you sure you want to remove "${p.name}" from your catalog?`)) {
+                        setProductsList((prev) => prev.filter((item) => item.id !== p.id));
+                      }
+                    }}
+                    style={{
+                      border: brutalBorder,
+                      backgroundColor: "#fee2e2",
+                      color: "#991b1b",
+                      padding: "0.35rem 0.5rem",
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                    title="Remove product"
+                  >
+                    Delete
+                  </button>
+
                   {onAskHermes && (
                     <button
                       type="button"
