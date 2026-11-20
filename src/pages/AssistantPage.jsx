@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { getAnalyticsBrief, formatBriefAsContext } from "../lib/analytics";
-import { callSupabaseEdge } from "../lib/supabase-edge";
-import { getActiveModelId, DEFAULT_ASSISTANT_MODEL } from "../lib/modelSelector";
+import { callSupabaseEdge } from "../services/api";
+import { getActiveModelId, DEFAULT_ASSISTANT_MODEL, fetchModelGroups, fetchActiveModel, switchActiveModel } from "../lib/modelSelector";
+import { theme } from "../theme";
 
 const PARTNER_SYSTEM_PROMPT = `You are Hermes — Francesca's AI business partner at DigitallyDefined. You've known her for months. You know her business inside out.
 
@@ -107,6 +108,9 @@ export default function AssistantPage() {
   const [error, setError] = useState(null);
   const [provider, setProvider] = useState(null);
   const [model, setModel] = useState(null);
+  const [modelGroups, setModelGroups] = useState(null);
+  const [activeModel, setActiveModel] = useState(null);
+  const [switchingModel, setSwitchingModel] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Load the live analytics snapshot so every reply is grounded in real data.
@@ -127,6 +131,40 @@ export default function AssistantPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [active, groups] = await Promise.all([
+          fetchActiveModel(),
+          fetchModelGroups(),
+        ]);
+        if (!cancelled) {
+          setActiveModel(active?.model || getActiveModelId() || DEFAULT_ASSISTANT_MODEL);
+          setModelGroups(groups || null);
+        }
+      } catch {
+        /* best-effort */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const onModelChange = async (event) => {
+    const next = event.target.value;
+    if (!next || next === activeModel) return;
+    setSwitchingModel(true);
+    setError(null);
+    try {
+      await switchActiveModel(next);
+      setActiveModel(next);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Model switch failed.");
+    } finally {
+      setSwitchingModel(false);
+    }
+  };
 
   const formatStructuredBusinessReply = (data) => {
     const summary = data?.summary ? String(data.summary).trim() : "";
@@ -236,6 +274,41 @@ export default function AssistantPage() {
     <div className="dd-page dd-page--assistant">
       <div className="dd-assistant-header">
         DIGITALLY<span className="dd-brand-defined">DEFINED</span> AI Assistant
+        <div style={{ marginTop: 8 }}>
+          <label style={{ fontSize: 12, color: theme.colors.textMuted || "#5F5F5F" }}>
+            Business Partner Model
+          </label>
+          <select
+            value={activeModel || ""}
+            onChange={onModelChange}
+            disabled={switchingModel}
+            style={{
+              marginTop: 4,
+              width: "100%",
+              padding: "0.5rem",
+              border: `1px solid ${theme.colors.border || "#111111"}`,
+              backgroundColor: theme.colors.surface || "#FFFFFF",
+              color: theme.colors.text || "#111111",
+              fontSize: "0.85rem",
+            }}
+          >
+            <option value="" disabled>
+              {modelGroups ? "Select a model…" : "Loading models…"}
+            </option>
+            {modelGroups &&
+              Object.entries(modelGroups).map(([group, models]) =>
+                Array.isArray(models) && models.length ? (
+                  <optgroup key={group} label={group}>
+                    {models.map((m) => (
+                      <option key={m.id || m} value={m.id || m}>
+                        {m.name || m.id || m}
+                      </option>
+                    ))}
+                  </optgroup>
+                ) : null
+              )}
+          </select>
+        </div>
       </div>
 
       <div className="dd-assistant-body">

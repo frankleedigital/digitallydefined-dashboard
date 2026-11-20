@@ -100,13 +100,13 @@ function App() {
         {isDashboardDomain && (
           <Route
             path="/assistant"
-element={
-      <ProtectedRoute>
-        <PremiumGate feature="AI Business Partner">
-          <AssistantPage />
-        </PremiumGate>
-      </ProtectedRoute>
-    }
+            element={
+              <ProtectedRoute>
+                <PremiumGate feature="AI Business Partner">
+                  <AssistantPage />
+                </PremiumGate>
+              </ProtectedRoute>
+            }
           />
         )}
 

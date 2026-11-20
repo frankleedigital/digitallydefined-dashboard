@@ -2,6 +2,7 @@ import React from "react";
 import { AlertTriangle, ExternalLink, TrendingUp, Clock, DollarSign, Star, FileText, LayoutTemplate } from "lucide-react";
 import { brutalBorder, brutalEyebrow, brutalHeading, theme } from "../theme";
 import { mapNotionPageToView } from "../lib/notionArchitect";
+import ApiService from "../services/api";
 
 const cardStyle = {
   border: brutalBorder,
@@ -78,6 +79,32 @@ export default function NotionTab({ data }) {
       {ideas.length > 0 && (
         <section>
           <SectionTitle>IDEAS & INTAKE ({ideas.length})</SectionTitle>
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
+            <button
+              onClick={async () => {
+                const ideaId = prompt("Enter Idea page ID to build as product:");
+                if (!ideaId) return;
+                try {
+                  const result = await ApiService.post("product.factory", { ideaId });
+                  alert("Product factory started!\n\nTitle: " + (result.metadata?.title || "N/A") + "\nStatus: " + (result.status || "unknown"));
+                } catch (err) {
+                  alert();
+                }
+              }}
+              style={{
+                border: brutalBorder,
+                backgroundColor: theme.colors.orange,
+                color: "#000000",
+                padding: "0.5rem 1rem",
+                fontWeight: 800,
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                fontFamily: theme.fonts.app,
+              }}
+            >
+              Build Product from Idea
+            </button>
+          </div>
           <GridList items={ideas.map((item) => mapNotionPageToView("ideas", item))} />
         </section>
       )}

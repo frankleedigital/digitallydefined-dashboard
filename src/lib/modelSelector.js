@@ -14,7 +14,7 @@
 // Everything here is best-effort: switching never blocks the UI.
 // ============================================================================
 
-import { rest, getBaseUrl, buildHeaders } from "./api-client";
+import { rest, getBaseUrl, buildHeaders } from "../services/api";
 import { recordRequestFailure } from "./error-monitor";
 
 const BACKEND_URL = getBaseUrl();

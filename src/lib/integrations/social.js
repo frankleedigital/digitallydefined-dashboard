@@ -1,6 +1,6 @@
 // Social media integration service
 // Supports Facebook, Instagram, YouTube, Twitter/X, LinkedIn through the Hermes edge function.
-import { callSupabaseEdge } from '../supabase-edge';
+import { callSupabaseEdge } from '../../services/api';
 
 export async function fetchSocialStats() {
   const fallbackResult = {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import FeedbackWidget from "../components/FeedbackWidget";
 import {
@@ -35,8 +35,13 @@ import {
   brutalHeading,
   theme,
 } from "../theme";
-import { getSupabaseEdgeUrl, getSupabaseEdgeHeaders, callSupabaseEdge } from "../lib/supabase-edge";
-import { postAction as ddPost, rest as ddRest } from "../lib/api-client";
+import {
+  getSupabaseEdgeUrl,
+  getSupabaseEdgeHeaders,
+  callSupabaseEdge,
+  postAction as ddPost,
+  rest as ddRest,
+} from "../services/api";
 import { captureClientError } from "../lib/error-monitor";
 import { getActiveModelId, fetchActiveModel, fetchModelGroups, switchActiveModel } from "../lib/modelSelector";
 import { formatStructuredBusinessReply, normalizeBusinessPayload } from "../lib/businessPartnerReply";
@@ -1290,6 +1295,9 @@ const DashboardPage = () => {
           .dd-dashboard-shell {
             grid-template-columns: 1fr !important;
           }
+          .dd-dashboard-inner {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
 
@@ -1366,10 +1374,17 @@ const DashboardPage = () => {
           maxWidth: 1200,
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "260px 1fr",
           gap: "1rem",
         }}
       >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "260px 1fr",
+            gap: "1rem",
+          }}
+          className="dd-dashboard-inner"
+        >
         <aside
           style={{
             ...cardStyle,
@@ -1514,6 +1529,7 @@ const DashboardPage = () => {
             )}
           </div>
         </section>
+        </div>
       </main>
 
       {showSettings && (

@@ -1,0 +1,37 @@
+=== AFTER STATE (Fix #1 + Fix #2 applied) ===
+Timestamp: captured via browser_exec on production preview localhost:4173
+
+Panel: AI Infrastructure Status
+Active provider: VERTEX-GEMINI (checked 3:26:36 PM)
+
+omniroute
+  Rank: PRIMARY
+  Status: Local Only / Not Enabled
+  Latency: 0ms
+  Detail: Not applicable in production
+  (no red error text)
+
+vertex gemini
+  Rank: SECONDARY
+  Status: ACTIVE
+  Latency: ~13340ms (from earlier probe; healthy)
+
+FILES MODIFIED:
+1. C:\Users\frank\Documents\DigitallyDefined\digitallydefined-dashboard\src\pages\AIStatusPanel.jsx
+   - Added STATUS_LABEL.not_configured = 'Local Only / Not Enabled'
+   - Detect "not configured" errors via h.error.includes('not configured')
+   - Override status display to neutral style (muted colors, no red)
+   - Show "Not applicable in production" instead of auth/reachable/models
+   - Suppress red error text for intentionally-unconfigured providers
+
+2. C:\Users\frank\Documents\DigitallyDefinedClean\digitallydefined-os-backend\.env.local
+   - RENAMED to .env.local.DEAD
+   - Was overriding OMNIROUTE_BASE_URL to dead https://ai.digitallydefined.online/v1
+   - .env now provides correct localhost:20128/v1
+
+BEFORE (from earlier browser_exec):
+  omniroute: PRIMARY Down • 0ms • not authenticated • unreachable
+  Error: OMNIROUTE_API_KEY or OMNIROUTE_BASE_URL not configured
+
+AFTER:
+  omniroute: PRIMARY Local Only / Not Enabled • 0ms • Not applicable in production

@@ -4,7 +4,7 @@ import {
   Loader2, Play, Plus, RefreshCw, Search, Wrench,
 } from "lucide-react";
 import { brutalBorder, brutalHeading, theme } from "../theme";
-import { callSupabaseEdge } from "../lib/supabase-edge";
+import { callSupabaseEdge } from "../services/api";
 
 const cardStyle = {
   border: brutalBorder,
