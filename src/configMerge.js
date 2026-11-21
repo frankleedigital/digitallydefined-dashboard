@@ -26,14 +26,32 @@ import baseConfig from "./config";
 /**
  * Deep-merge source into target (mutates target).
  * Arrays and primitives are overwritten, objects are recursed.
+ * Keys containing a dot are treated as a path (e.g. "brand.nameLight") and
+ * written into the nested object — the customer map emits dot-notation keys.
  */
 function deepMerge(target, source) {
   if (!source || typeof source !== "object") return target;
   if (Array.isArray(source)) return source;
-  
+
   const result = { ...target };
   for (const key of Object.keys(source)) {
     const val = source[key];
+
+    // Dot-notation path — walk/create the nested path, copying each level so
+    // the imported base config is not mutated.
+    if (key.includes(".")) {
+      const parts = key.split(".");
+      let node = result;
+      for (let i = 0; i < parts.length - 1; i += 1) {
+        const seg = parts[i];
+        const next = node[seg];
+        node[seg] = next && typeof next === "object" && !Array.isArray(next) ? { ...next } : {};
+        node = node[seg];
+      }
+      node[parts[parts.length - 1]] = val;
+      continue;
+    }
+
     if (val && typeof val === "object" && !Array.isArray(val) && result[key] && typeof result[key] === "object") {
       result[key] = deepMerge(result[key], val);
     } else {

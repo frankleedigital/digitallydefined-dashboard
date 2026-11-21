@@ -8,7 +8,7 @@ import { callSupabaseEdge } from "../services/api";
 
 const cardStyle = {
   border: brutalBorder,
-  backgroundColor: theme.colors.colors?.card || "#ffffff",
+  backgroundColor: theme.colors.card || "#ffffff",
   padding: "1rem",
 };
 
@@ -51,7 +51,7 @@ const TOOLS = [
     defaultParams: { dbKey: "ideas", diffOnly: true, verbose: true } },
   { id: "queryDatabase", label: "Query Database", icon: Search, group: "diagnose",
     description: "Read rows back from a Notion database.",
-    defaultParams: { limit: 20 } },
+    defaultParams: { dbKey: "ideas", limit: 20 } },
   { id: "getPage", label: "Get Page", icon: Eye, group: "diagnose",
     description: "Fetch a single Notion page by ID.",
     defaultParams: { pageId: "" } },
@@ -181,6 +181,10 @@ export default function AntigravityPage() {
   };
 
   const runTool = async (tool) => {
+    setTimeout(() => {
+      const el = document.getElementById('antigravity-results');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
     if (tool.write) {
       const warn = tool.id === "phase21.rollout"
         ? "\n\nPhase 21 Rollout touches ALL 8 Notion OS databases."
@@ -245,11 +249,11 @@ export default function AntigravityPage() {
                 <button
                   key={tool.id}
                   type="button"
-                  onClick={() => applyParams(tool)}
+                  onClick={() => { applyParams(tool); runTool(tool); }}
                   disabled={loading}
                   style={{
                     ...cardStyle,
-                    border: isActive ? `2px solid ${theme.colors.accent}` : brutalBorder,
+                    border: isActive ? `2px solid ${theme.colors.orange}` : brutalBorder,
                     cursor: loading ? "progress" : "pointer",
                     textAlign: "left",
                     display: "grid",
@@ -257,7 +261,7 @@ export default function AntigravityPage() {
                     opacity: loading ? 0.7 : 1,
                   }}
                 >
-                  <Icon size={20} color={theme.colors.accent} />
+                  <Icon size={20} color={theme.colors.orange} />
                   <strong style={{ fontSize: "0.9rem" }}>{tool.label}</strong>
                   <span style={{ fontSize: "0.78rem", color: theme.colors.muted }}>{tool.description}</span>
                   {tool.write ? (

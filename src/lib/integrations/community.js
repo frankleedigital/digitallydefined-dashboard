@@ -38,9 +38,7 @@ export async function fetchCommunityStats() {
 
     const members = payload.members ?? payload.memberCount ?? payload.totalMembers ?? null;
     const topMembers = Array.isArray(payload.topMembers) ? payload.topMembers.slice(0, 5) : [];
-    const connected = Boolean(
-      payload.connected ?? (members != null || topMembers.length > 0),
-    );
+    const connected = Boolean(payload.connected ?? (members != null || topMembers.length > 0)) || (typeof localStorage !== "undefined" && localStorage.getItem("integration.community.connected") === "true");
 
     return {
       connected,
@@ -76,8 +74,11 @@ export default { fetchCommunityStats, startCommunity };
  */
 export async function startCommunity() {
   const res = await callSupabaseEdge('integration.community.start', { provider: 'community' });
+  if (res?.success === true) {
+    try { localStorage.setItem("integration.community.connected", "true"); } catch { /* noop */ }
+  }
   return {
-    success: res?.success !== false,
+    success: res?.success === true,
     message: res?.message || 'Community connection started',
   };
 }

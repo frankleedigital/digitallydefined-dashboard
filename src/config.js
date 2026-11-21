@@ -5,12 +5,12 @@ const CONFIG = {
     nameLight: "Digitally",
     nameBold: "Defined",
     fullName: "DigitallyDefined",
-    tagline: "The Reputation OS for Women Who Mean Business.",
-    version: "2.0",
+    tagline: "The Operating System for Gen X women building digital income assets.",
+    version: "3.0",
   },
 
   aesthetic: {
-    philosophy: "Soft Brutalism",
+    philosophy: "Flat Soft Brutalism",
     tokens: {
       colors: {
         background: "#FFFCF9",
@@ -65,16 +65,16 @@ const CONFIG = {
 
   colors: {
     background: "#FFFCF9",
-    backgroundAlt: "#F4EFE8",
+    backgroundAlt: "#FFFCF9",
     dark: "#111111",
-    primary: "#47B7D4",
-    accent: "#F18B25",
+    primary: "#F18B25",
+    accent: "#47B7D4",
     text: "#111111",
     textMuted: "#5F5F5F",
     border: "#111111",
     surface: "#FFFFFF",
-    bone: "#FFF7ED",
-    darkBorder: "#333333",
+    bone: "#FFFCF9",
+    darkBorder: "#111111",
     success: "#16A34A",
     successTint: "#DCFCE7",
     info: "#47B7D4",
@@ -83,16 +83,16 @@ const CONFIG = {
     warningTint: "rgba(241, 139, 37, 0.10)",
     danger: "#8B1A0A",
     dangerTint: "#FEF2F2",
-    panel: "#FFFAF5",
-    featureSurface: "#1F2937",
-    gold: "#EAB308",
-    hotTint: "#FED7AA",
+    panel: "#FFFCF9",
+    featureSurface: "#FFFFFF",
+    gold: "#F18B25",
+    hotTint: "rgba(241, 139, 37, 0.10)",
     ghostText: "rgba(17, 17, 17, 0.12)",
     overlayLight: "rgba(255, 252, 249, 0.92)",
-    boneMuted: "rgba(255, 247, 237, 0.82)",
-    boneSoft: "rgba(255, 247, 237, 0.80)",
-    boneFaint: "rgba(255, 247, 237, 0.68)",
-    whiteBorderSoft: "rgba(255,255,255,0.3)",
+    boneMuted: "rgba(255, 252, 249, 0.82)",
+    boneSoft: "rgba(255, 252, 249, 0.80)",
+    boneFaint: "rgba(255, 252, 249, 0.68)",
+    whiteBorderSoft: "rgba(17, 17, 17, 0.2)",
     onAccent: "#111111",
   },
 
@@ -107,7 +107,7 @@ const CONFIG = {
 
   community: {
     platformName: "DigitallyDefined Collective",
-    platformUrl: "https://digitallydefined.store",
+    platformUrl: "https://facebook.com/groups/digitallydefind",
     members: [
       {
         name: "Rena Walker",
@@ -146,16 +146,16 @@ const CONFIG = {
   },
 
   contact: {
-    email: "francesca@digitallydefined.online",
-    website: "https://digitallydefined.store",
+    email: "francesca@digitallydefined.agency",
+    website: "https://francescaonline.gumroad.com/l/digital-business-os",
     gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
     fullCalculatorUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
-    facebookCommunityUrl: "https://www.facebook.com/groups/digitallydefind",
+    facebookCommunityUrl: "https://facebook.com/groups/digitallydefind",
   },
 
   owner: {
     title: "Certified Digital Marketer & Keyword Researcher",
-    email: "francesca@digitallydefined.online",
+    email: "francesca@digitallydefined.agency",
   },
 
   integrations: {
@@ -182,42 +182,47 @@ const CONFIG = {
     tabs: [
       {
         id: "dashboard",
-        label: "COMMAND",
+        label: "OPERATIONS",
       },
       {
-        id: "reputation",
-        label: "REPUTATION",
+        id: "agents",
+        label: "AGENT HUB",
       },
       {
-        id: "intel",
-        label: "INTEL",
+        id: "wealth",
+        label: "WEALTH CENTER",
+      },
+      {
+        id: "flipper",
+        label: "AFFILIATE FLIPPER",
+      },
+      {
+        id: "brand",
+        label: "BRAND SUPERVISOR",
+      },
+      {
+        id: "products",
+        label: "PRODUCTS & GUMROAD",
       },
       {
         id: "growth",
-        label: "GROWTH",
-      },
-      {
-        id: "brain",
-        label: "THE BRAIN",
+        label: "GROWTH & SIGNALS",
       },
       {
         id: "automations",
-        label: "AUTOMATIONS",
+        label: "AUTOMATIONS & WORKERS",
       },
       {
         id: "integrations",
-        label: "INTEGRATIONS",
+        label: "SYSTEM HEALTH",
       },
       {
         id: "notion",
-        label: "NOTION",
-      },
-      {
-        id: "antigravity",
-        label: "ARCHITECT",
+        label: "NOTION OS ARCHITECT",
       },
     ],
-    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.8-flash",
+    lastSyncPrefix: "Last sync:",
+    assistantModel: import.meta.env.VITE_DASHBOARD_ASSISTANT_MODEL || "gemini-3.5-flash-lite",
     integrationsTitle: "Integrations",
     integrationsCta: "Connect Source",
     integrationsDescription: "Connect your growth sources so the dashboard and assistant can read live data.",
