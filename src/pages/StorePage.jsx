@@ -1,17 +1,12 @@
 // src/pages/StorePage.jsx
-// The storefront.
-//
-// The Gumroad storefront profile currently shows no products, so a visitor who
-// lands there sees an empty shop. This page is the shelf: every product, what
-// it is for, who it is for, and the price — with a link to buy.
-//
-// It also carries the entry point to the free quiz, which is the top of the
-// funnel: quiz -> email -> segmented offer.
+// The public storefront for digitallydefined.store
+// Displays ONLY live, verified Gumroad products with the DigitallyDefined brand logo/header.
 
 import React from "react";
 import { brutalBorder, brutalHeading, theme } from "../theme";
+import Logo from "../components/Logo";
 
-const PRODUCTS = [
+const LIVE_STORE_PRODUCTS = [
   {
     id: "legacy-os",
     name: "The Legacy OS Bundle",
@@ -20,26 +15,37 @@ const PRODUCTS = [
       "Financial Autonomy Planner, Caregiver's Survival Kit & Legacy Command Center. The complete setup for Gen X women building permanent digital wealth.",
     forWho: "You want the flagship suite for long-term legacy and financial security.",
     href: "https://legacyos.digitallydefined.store",
-    badge: "Flagship",
+    badge: "Flagship Bundle",
   },
   {
-    id: "unfiltered-balance-sheet",
-    name: "The Unfiltered Balance Sheet",
-    price: "$97",
+    id: "digital-business-os",
+    name: "Digital Business OS",
+    price: "$49 - $197",
     blurb:
-      "4 Calculators + Masterclass for Divorce, Caregiving, Career Re-Entry & Spousal Dependency. Get real about your net position.",
-    forWho: "You are in a life transition and need total financial truth.",
-    href: "https://shop.digitallydefined.store/l/viedn",
+      "The complete operating system for running a faceless digital real estate business on Notion.",
+    forWho: "You want to organize your entire digital asset portfolio in one place.",
+    href: "https://shop.digitallydefined.store/l/digital-business-os",
+    badge: "Live on Gumroad",
   },
   {
-    id: "financial-dashboard",
-    name: "Annual Financial Dashboard",
+    id: "digital-property-starter-kit",
+    name: "Digital Property Starter Kit",
     price: "$17",
     blurb:
-      "12-Month Budget + Debt + Net Worth tracking. Find your Freedom Number and bridge the gap to your retirement goals.",
-    forWho: "You need the daily math to stay on track toward your number.",
+      "Beginner step-by-step kit for claiming, structuring, and launching your first faceless digital asset.",
+    forWho: "You are starting out and need a low-friction entry point.",
     href: "https://shop.digitallydefined.store/l/ycaru",
-    badge: "Best Seller",
+    badge: "Starter Kit",
+  },
+  {
+    id: "local-seo-checklist",
+    name: "Local SEO Quick-Start Checklist",
+    price: "FREE ($0)",
+    blurb:
+      "High-converting free checklist that captures emails and funnels into the Digital Business OS.",
+    forWho: "You want an instant free framework to audit your search footprint.",
+    href: "https://shop.digitallydefined.store/l/noodsi",
+    badge: "Free Download",
   },
   {
     id: "superpower-quiz",
@@ -49,12 +55,13 @@ const PRODUCTS = [
       "Find your unfair advantage. Discover your persona, get your personalized roadmap, and unlock your first three moves.",
     forWho: "You are at the start and need to know where you fit in the digital economy.",
     href: "/quiz",
-    badge: "Start here",
+    badge: "Start Here",
   },
 ];
 
 const styles = {
   wrap: { maxWidth: "960px", margin: "0 auto", padding: "clamp(2rem, 6vw, 3.5rem) 1.25rem 3rem" },
+  headerRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" },
   eyebrow: {
     fontSize: "0.68rem",
     fontWeight: 800,
@@ -125,6 +132,7 @@ const styles = {
     padding: "0.2rem 0.45rem",
     backgroundColor: theme.colors.aquaBlue,
     color: "#111111",
+    border: "1px solid #111111",
   },
   cardName: {
     fontFamily: theme.fonts.heading,
@@ -166,7 +174,26 @@ const styles = {
 export default function StorePage() {
   return (
     <div style={styles.wrap}>
-      <span style={styles.eyebrow}>DigitallyDefined</span>
+      <div style={styles.headerRow}>
+        <Logo />
+        <a 
+          href="/dashboard" 
+          style={{ 
+            fontSize: "0.8rem", 
+            fontWeight: 800, 
+            textTransform: "uppercase", 
+            color: "#111111", 
+            textDecoration: "none",
+            border: brutalBorder,
+            padding: "0.4rem 0.8rem",
+            backgroundColor: "#ffffff"
+          }}
+        >
+          OS Dashboard →
+        </a>
+      </div>
+
+      <span style={styles.eyebrow}>DigitallyDefined Store</span>
       <h1 style={styles.title}>Build income with the hours you actually have.</h1>
       <p style={styles.lede}>
         Digital products for women building a business with limited energy,
@@ -187,7 +214,7 @@ export default function StorePage() {
       </div>
 
       <div style={styles.grid}>
-        {PRODUCTS.map((p) => (
+        {LIVE_STORE_PRODUCTS.map((p) => (
           <div key={p.id} style={styles.card}>
             {p.badge && <span style={styles.badge}>{p.badge}</span>}
             <h2 style={styles.cardName}>{p.name}</h2>
@@ -202,8 +229,7 @@ export default function StorePage() {
       </div>
 
       <p style={styles.note}>
-        Buying the OS gives you a Gumroad license key. Paste it into the
-        dashboard and the premium features unlock. Need help?{" "}
+        All purchases are securely processed via Gumroad. Need help?{" "}
         <a href="mailto:francesca@digitallydefined.agency" style={{ color: theme.colors.orange, fontWeight: 700 }}>
           francesca@digitallydefined.agency
         </a>
