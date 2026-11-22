@@ -124,7 +124,7 @@ function App() {
 
       {/* Email capture — available on every dashboard page. */}
       {isDashboardDomain && (
-        <div style={{ width: "min(1100px, 100%)", margin: "0 auto", padding: "0 clamp(1.25rem, 5vw, 2.5rem) 2.5rem" }}>
+        <div style={{ width: "min(1200px, 100%)", margin: "0 auto", padding: "0 clamp(1rem, 4vw, 1.5rem) 2.5rem", boxSizing: "border-box" }}>
           <NewsletterSignup />
         </div>
       )}
