@@ -20,11 +20,11 @@ const STORE_PRODUCTS = [
   },
   {
     id: "digital-business-os",
-    name: "Digital Business OS (Notion OS)",
+    name: "Digital Business OS",
     price: "Coming Soon",
     blurb:
       "The complete operating system for running a faceless digital real estate business on Notion.",
-    forWho: "Being built by Notion OS Architect for Q4 release.",
+    forWho: "Being built by Notion OS Architect for release.",
     href: "#",
     badge: "In Development",
     isLive: false,
@@ -32,13 +32,13 @@ const STORE_PRODUCTS = [
   {
     id: "digital-property-starter-kit",
     name: "Digital Property Starter Kit",
-    price: "$17",
+    price: "Coming Soon",
     blurb:
       "Beginner step-by-step kit for claiming, structuring, and launching your first faceless digital asset.",
-    forWho: "You are starting out and need a low-friction entry point.",
-    href: "https://shop.digitallydefined.store/l/ycaru",
-    badge: "Starter Kit",
-    isLive: true,
+    forWho: "Coming soon to Gumroad store.",
+    href: "#",
+    badge: "In Development",
+    isLive: false,
   },
   {
     id: "superpower-quiz",

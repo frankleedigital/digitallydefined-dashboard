@@ -29,7 +29,8 @@ export default function NewsletterSignup() {
         backgroundColor: theme.colors.panel,
         padding: "1.5rem",
         margin: "1.5rem 0",
-        maxWidth: 640,
+        width: "100%",
+        boxSizing: "border-box",
       }}
     >
       <h3 style={{ ...brutalHeading, fontSize: "0.95rem", margin: "0 0 0.35rem" }}>
