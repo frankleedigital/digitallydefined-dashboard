@@ -147,9 +147,9 @@ const CONFIG = {
 
   contact: {
     email: "francesca@digitallydefined.agency",
-    website: "https://francescaonline.gumroad.com/l/digital-business-os",
-    gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
-    fullCalculatorUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
+    website: "https://shop.digitallydefined.store/l/digital-business-os",
+    gumroadUrl: "https://shop.digitallydefined.store/l/digital-business-os",
+    fullCalculatorUrl: "https://shop.digitallydefined.store/l/digital-business-os",
     facebookCommunityUrl: "https://facebook.com/groups/digitallydefind",
   },
 
@@ -211,6 +211,10 @@ const CONFIG = {
       {
         id: "automations",
         label: "AUTOMATIONS & WORKERS",
+      },
+      {
+        id: "kanban",
+        label: "WORKFLOW KANBAN",
       },
       {
         id: "integrations",

@@ -2,7 +2,7 @@
 export const GUMROAD_STORE_URL = "https://digitallydefined.store";
 
 export const GUMROAD_PRODUCTS = [
-  { id: "digital-business-os", name: "Digital Business OS", url: "https://francescaonline.gumroad.com/l/digital-business-os", price: 49 },
+  { id: "digital-business-os", name: "Digital Business OS", url: "https://shop.digitallydefined.store/l/digital-business-os", price: 49 },
 ];
 
 export function gumroadLink(productId) {

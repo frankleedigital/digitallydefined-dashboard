@@ -23,7 +23,7 @@ const CUSTOMER_CONFIG = {
   tagline: "The Reputation OS for Women Who Mean Business.",
 
   // Your website URL
-  websiteUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
+  websiteUrl: "https://shop.digitallydefined.store/l/digital-business-os",
 
   // Your email for support
   supportEmail: "francesca@digitallydefined.agency",

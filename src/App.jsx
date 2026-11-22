@@ -23,7 +23,7 @@ import FinancialHubPage from "./pages/FinancialHubPage";
 import LegacyOSPage from "./pages/LegacyOSPage";
 
 // Where a visitor who lands on a non-dashboard host should go.
-const PUBLIC_SITE = "https://francescaonline.gumroad.com/l/digital-business-os";
+const PUBLIC_SITE = "https://shop.digitallydefined.store/l/digital-business-os";
 
 function App() {
   const hostname = window.location.hostname;
