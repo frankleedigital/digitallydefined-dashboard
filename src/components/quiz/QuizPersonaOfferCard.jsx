@@ -22,7 +22,7 @@ const PERSONA_OFFERS = {
       "One-click duplicate into your personal Notion workspace",
     ],
     ctaText: "Claim Your Digital Business OS ($27)",
-    gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
+    gumroadUrl: "https://shop.digitallydefined.store/l/digital-business-os",
     guarantee: "Instant digital delivery via Gumroad. Works with free Notion accounts.",
   },
 
@@ -41,7 +41,7 @@ const PERSONA_OFFERS = {
       "Plug-and-play templates for Claude, ChatGPT, and Gemini",
     ],
     ctaText: "Get the 50 AI Prompts Pack ($27)",
-    gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
+    gumroadUrl: "https://shop.digitallydefined.store/l/digital-business-os",
     guarantee: "Instant PDF & interactive HTML browser delivery via Gumroad.",
   },
 
@@ -60,7 +60,7 @@ const PERSONA_OFFERS = {
       "Checklists and execution templates you can follow step-by-step",
     ],
     ctaText: "Get Retirement Mastery ($17)",
-    gumroadUrl: "https://lavignefrancesca.gumroad.com/l/ycaru",
+    gumroadUrl: "https://shop.digitallydefined.store/l/ycaru",
     guarantee: "Instant digital access via Gumroad. 100% self-paced.",
   },
 
@@ -79,7 +79,7 @@ const PERSONA_OFFERS = {
       "Decision checklists that eliminate guesswork and wasted effort",
     ],
     ctaText: "Get the Strategy & Balance Sheet Suite ($27)",
-    gumroadUrl: "https://francescaonline.gumroad.com/l/digital-business-os",
+    gumroadUrl: "https://shop.digitallydefined.store/l/digital-business-os",
     guarantee: "Instant download & tool access via Gumroad secure checkout.",
   },
 
@@ -98,7 +98,7 @@ const PERSONA_OFFERS = {
       "Automated follow-up sequences that convert over time",
     ],
     ctaText: "Get the High-Ticket Blueprint ($27)",
-    gumroadUrl: "https://lavignefrancesca.gumroad.com/l/ycaru",
+    gumroadUrl: "https://shop.digitallydefined.store/l/ycaru",
     guarantee: "Instant digital delivery via Gumroad. Lifetime access.",
   },
 };
