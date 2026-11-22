@@ -54,6 +54,7 @@ import AgentHub from "./AgentHub";
 import WealthCenter from "./WealthCenter";
 import AffiliateFlipperTab from "./AffiliateFlipperTab";
 import BrandSupervisorTab from "./BrandSupervisorTab";
+import KanbanTab from "./KanbanTab";
 import {
   fetchGoogleAnalytics,
   fetchSocialStats,
@@ -113,6 +114,7 @@ const tabIcons = {
   growth: TrendingUp,
   automations: Workflow,
   integrations: Plug,
+  kanban: Workflow,
   notion: FileText,
 };
 
@@ -1250,6 +1252,7 @@ const DashboardPage = () => {
     if (activeTab === "growth") return <GrowthTab integrations={integrations} />;
     if (activeTab === "integrations") return <IntegrationsTab integrations={integrations} onRefresh={syncEmpireData} />;
     if (activeTab === "notion") return <AntigravityPage onSync={syncEmpireData} />;
+    if (activeTab === "kanban") return <KanbanTab />;
     if (activeTab === "automations") return <AutomationsPage />;
     return <CommandTab data={data} stats={stats} latestBrief={latestBrief} onOpenAgentHub={() => setActiveTab("agents")} />;
   };

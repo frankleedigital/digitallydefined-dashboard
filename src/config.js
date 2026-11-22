@@ -213,6 +213,10 @@ const CONFIG = {
         label: "AUTOMATIONS & WORKERS",
       },
       {
+        id: "kanban",
+        label: "WORKFLOW KANBAN",
+      },
+      {
         id: "integrations",
         label: "SYSTEM HEALTH",
       },
