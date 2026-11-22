@@ -6,7 +6,7 @@ import React from "react";
 import { brutalBorder, brutalHeading, theme } from "../theme";
 import Logo from "../components/Logo";
 
-const LIVE_STORE_PRODUCTS = [
+const STORE_PRODUCTS = [
   {
     id: "legacy-os",
     name: "The Legacy OS Bundle",
@@ -14,18 +14,20 @@ const LIVE_STORE_PRODUCTS = [
     blurb:
       "Financial Autonomy Planner, Caregiver's Survival Kit & Legacy Command Center. The complete setup for Gen X women building permanent digital wealth.",
     forWho: "You want the flagship suite for long-term legacy and financial security.",
-    href: "https://legacyos.digitallydefined.store",
-    badge: "Flagship Bundle",
+    href: "https://shop.digitallydefined.store/l/legacy_os_bundle",
+    badge: "Live on Gumroad",
+    isLive: true,
   },
   {
     id: "digital-business-os",
-    name: "Digital Business OS",
-    price: "$49 - $197",
+    name: "Digital Business OS (Notion OS)",
+    price: "Coming Soon",
     blurb:
       "The complete operating system for running a faceless digital real estate business on Notion.",
-    forWho: "You want to organize your entire digital asset portfolio in one place.",
-    href: "https://shop.digitallydefined.store/l/digital-business-os",
-    badge: "Live on Gumroad",
+    forWho: "Being built by Notion OS Architect for Q4 release.",
+    href: "#",
+    badge: "In Development",
+    isLive: false,
   },
   {
     id: "digital-property-starter-kit",
@@ -36,16 +38,7 @@ const LIVE_STORE_PRODUCTS = [
     forWho: "You are starting out and need a low-friction entry point.",
     href: "https://shop.digitallydefined.store/l/ycaru",
     badge: "Starter Kit",
-  },
-  {
-    id: "local-seo-checklist",
-    name: "Local SEO Quick-Start Checklist",
-    price: "FREE ($0)",
-    blurb:
-      "High-converting free checklist that captures emails and funnels into the Digital Business OS.",
-    forWho: "You want an instant free framework to audit your search footprint.",
-    href: "https://shop.digitallydefined.store/l/noodsi",
-    badge: "Free Download",
+    isLive: true,
   },
   {
     id: "superpower-quiz",
@@ -55,8 +48,18 @@ const LIVE_STORE_PRODUCTS = [
       "Find your unfair advantage. Discover your persona, get your personalized roadmap, and unlock your first three moves.",
     forWho: "You are at the start and need to know where you fit in the digital economy.",
     href: "/quiz",
-    badge: "Start Here",
+    badge: "Free Funnel Start",
+    isLive: true,
   },
+];
+
+const STYLING_TOOLS_SCORECARD = [
+  { name: "Affiliate Flip Calculator", profitability: "9/10", demand: "High intent, fast monetization", status: "Live Tool" },
+  { name: "10X ROI Calculator & System", profitability: "9.5/10", demand: "Proven lead magnet + tripwire", status: "Live Tool" },
+  { name: "Unfiltered Balance Sheet", profitability: "8.5/10", demand: "Urgent transition & divorce math", status: "Ready to List" },
+  { name: "Catch-Up OS (Optimization Tool)", profitability: "10/10", demand: "Highest urgency for Gen X retirement gap", status: "Ready to List" },
+  { name: "High-Ticket Affiliate Kit + 36 Programs", profitability: "9/10", demand: "Double monetization (product + recurring)", status: "Ready to List" },
+  { name: "Keyword Suite: Advantage + Trigger Banks", profitability: "8/10", demand: "Essential SEO utility for rankings", status: "Ready to List" },
 ];
 
 const styles = {
@@ -214,18 +217,60 @@ export default function StorePage() {
       </div>
 
       <div style={styles.grid}>
-        {LIVE_STORE_PRODUCTS.map((p) => (
+        {STORE_PRODUCTS.map((p) => (
           <div key={p.id} style={styles.card}>
             {p.badge && <span style={styles.badge}>{p.badge}</span>}
             <h2 style={styles.cardName}>{p.name}</h2>
             <p style={styles.price}>{p.price}</p>
             <p style={styles.blurb}>{p.blurb}</p>
             <p style={styles.forWho}>{p.forWho}</p>
-            <a href={p.href} style={styles.buy}>
-              Get {p.name}
-            </a>
+            {p.isLive ? (
+              <a href={p.href} style={styles.buy}>
+                Get {p.name}
+              </a>
+            ) : (
+              <span style={styles.disabledBuy}>In Architecture (Notion OS)</span>
+            )}
           </div>
         ))}
+      </div>
+
+      {/* HTML Tools Profitability Scorecard */}
+      <div style={styles.scorecardWrap}>
+        <span style={{ ...styles.eyebrow, color: "#7c3aed" }}>AI Market Intelligence</span>
+        <h2 style={{ fontFamily: theme.fonts.heading, fontWeight: 800, fontSize: "1.2rem", margin: "0.2rem 0 0 0", textTransform: "uppercase" }}>
+          Interactive Tools Profitability Scorecard (1-10)
+        </h2>
+        <p style={{ fontSize: "0.85rem", color: theme.colors.muted, margin: "0.4rem 0 1rem 0" }}>
+          AI-backed demand, competition, and conversion scoring for our standalone HTML utility tools.
+        </p>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={styles.scorecardTable}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Tool Name</th>
+                <th style={styles.th}>Profitability Score</th>
+                <th style={styles.th}>Demand & Monetization Angle</th>
+                <th style={styles.th}>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {STYLING_TOOLS_SCORECARD.map((tool, idx) => (
+                <tr key={idx}>
+                  <td style={{ ...styles.td, fontWeight: 700 }}>{tool.name}</td>
+                  <td style={{ ...styles.td, fontWeight: 900, color: theme.colors.orange }}>{tool.profitability}</td>
+                  <td style={{ ...styles.td, color: "#374151" }}>{tool.demand}</td>
+                  <td style={{ ...styles.td }}>
+                    <span style={{ fontSize: "0.7rem", fontWeight: 800, padding: "0.15rem 0.4rem", backgroundColor: tool.status === "Live Tool" ? "#d1fae5" : "#fef3c7", color: tool.status === "Live Tool" ? "#065f46" : "#92400e", border: "1px solid #111" }}>
+                      {tool.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <p style={styles.note}>
