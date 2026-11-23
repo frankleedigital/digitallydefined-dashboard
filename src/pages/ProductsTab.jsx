@@ -227,6 +227,15 @@ const PRODUCT_CATALOG = [
   },
 ];
 
+const STYLING_TOOLS_SCORECARD = [
+  { name: "Affiliate Flip Calculator", profitability: "9/10", demand: "High intent, fast monetization", status: "Live Tool" },
+  { name: "10X ROI Calculator & System", profitability: "9.5/10", demand: "Proven lead magnet + tripwire", status: "Live Tool" },
+  { name: "Unfiltered Balance Sheet", profitability: "8.5/10", demand: "Urgent transition & divorce math", status: "Ready to List" },
+  { name: "Catch-Up OS (Optimization Tool)", profitability: "10/10", demand: "Highest urgency for Gen X retirement gap", status: "Ready to List" },
+  { name: "High-Ticket Affiliate Kit + 36 Programs", profitability: "9/10", demand: "Double monetization (product + recurring)", status: "Ready to List" },
+  { name: "Keyword Suite: Advantage + Trigger Banks", profitability: "8/10", demand: "Essential SEO utility for rankings", status: "Ready to List" },
+];
+
 export default function ProductsTab({ onAskHermes }) {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -652,6 +661,44 @@ export default function ProductsTab({ onAskHermes }) {
             </article>
           );
         })}
+      </div>
+
+      {/* HTML Tools Profitability Scorecard */}
+      <div style={{ border: brutalBorder, backgroundColor: theme.colors.card, padding: "1.5rem", marginTop: "2rem", marginBottom: "2rem" }}>
+        <span style={{ ...brutalEyebrow, color: "#7c3aed" }}>AI Market Intelligence</span>
+        <h3 style={{ fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: "1.1rem", margin: "0.2rem 0 0 0", textTransform: "uppercase" }}>
+          Interactive Tools Profitability Scorecard (1-10)
+        </h3>
+        <p style={{ fontSize: "0.85rem", color: theme.colors.muted, margin: "0.4rem 0 1rem 0" }}>
+          AI-backed demand, competition, and conversion scoring for standalone HTML utility tools.
+        </p>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #111", fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: "0.82rem", textTransform: "uppercase" }}>Tool Name</th>
+                <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #111", fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: "0.82rem", textTransform: "uppercase" }}>Profitability Score</th>
+                <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #111", fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: "0.82rem", textTransform: "uppercase" }}>Demand & Monetization Angle</th>
+                <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #111", fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: "0.82rem", textTransform: "uppercase" }}>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {STYLING_TOOLS_SCORECARD.map((tool, idx) => (
+                <tr key={idx}>
+                  <td style={{ padding: "0.75rem", borderBottom: "1px solid #e5e7eb", fontSize: "0.88rem", fontWeight: 700 }}>{tool.name}</td>
+                  <td style={{ padding: "0.75rem", borderBottom: "1px solid #e5e7eb", fontSize: "0.88rem", fontWeight: 900, color: theme.colors.orange }}>{tool.profitability}</td>
+                  <td style={{ padding: "0.75rem", borderBottom: "1px solid #e5e7eb", fontSize: "0.85rem", color: "#374151" }}>{tool.demand}</td>
+                  <td style={{ padding: "0.75rem", borderBottom: "1px solid #e5e7eb", fontSize: "0.85rem" }}>
+                    <span style={{ fontSize: "0.7rem", fontWeight: 800, padding: "0.15rem 0.4rem", backgroundColor: tool.status === "Live Tool" ? "#d1fae5" : "#fef3c7", color: tool.status === "Live Tool" ? "#065f46" : "#92400e", border: "1px solid #111" }}>
+                      {tool.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pipeline Result Modal */}

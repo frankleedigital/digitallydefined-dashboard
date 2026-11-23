@@ -179,21 +179,6 @@ export default function StorePage() {
     <div style={styles.wrap}>
       <div style={styles.headerRow}>
         <Logo />
-        <a 
-          href="/dashboard" 
-          style={{ 
-            fontSize: "0.8rem", 
-            fontWeight: 800, 
-            textTransform: "uppercase", 
-            color: "#111111", 
-            textDecoration: "none",
-            border: brutalBorder,
-            padding: "0.4rem 0.8rem",
-            backgroundColor: "#ffffff"
-          }}
-        >
-          OS Dashboard →
-        </a>
       </div>
 
       <span style={styles.eyebrow}>DigitallyDefined Store</span>
@@ -233,44 +218,6 @@ export default function StorePage() {
             )}
           </div>
         ))}
-      </div>
-
-      {/* HTML Tools Profitability Scorecard */}
-      <div style={styles.scorecardWrap}>
-        <span style={{ ...styles.eyebrow, color: "#7c3aed" }}>AI Market Intelligence</span>
-        <h2 style={{ fontFamily: theme.fonts.heading, fontWeight: 800, fontSize: "1.2rem", margin: "0.2rem 0 0 0", textTransform: "uppercase" }}>
-          Interactive Tools Profitability Scorecard (1-10)
-        </h2>
-        <p style={{ fontSize: "0.85rem", color: theme.colors.muted, margin: "0.4rem 0 1rem 0" }}>
-          AI-backed demand, competition, and conversion scoring for our standalone HTML utility tools.
-        </p>
-
-        <div style={{ overflowX: "auto" }}>
-          <table style={styles.scorecardTable}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Tool Name</th>
-                <th style={styles.th}>Profitability Score</th>
-                <th style={styles.th}>Demand & Monetization Angle</th>
-                <th style={styles.th}>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STYLING_TOOLS_SCORECARD.map((tool, idx) => (
-                <tr key={idx}>
-                  <td style={{ ...styles.td, fontWeight: 700 }}>{tool.name}</td>
-                  <td style={{ ...styles.td, fontWeight: 900, color: theme.colors.orange }}>{tool.profitability}</td>
-                  <td style={{ ...styles.td, color: "#374151" }}>{tool.demand}</td>
-                  <td style={{ ...styles.td }}>
-                    <span style={{ fontSize: "0.7rem", fontWeight: 800, padding: "0.15rem 0.4rem", backgroundColor: tool.status === "Live Tool" ? "#d1fae5" : "#fef3c7", color: tool.status === "Live Tool" ? "#065f46" : "#92400e", border: "1px solid #111" }}>
-                      {tool.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
 
       <p style={styles.note}>
