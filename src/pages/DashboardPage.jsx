@@ -1614,6 +1614,7 @@ const DashboardPage = () => {
           </div>
         </div>
       )}
+      <FeedbackWidget context="dashboard" />
     </div>
   );
 };
